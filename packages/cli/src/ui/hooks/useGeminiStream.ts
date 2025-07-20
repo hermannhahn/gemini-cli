@@ -677,10 +677,10 @@ export const useGeminiStream = (
         markToolsAsSubmitted(clientTools.map((t) => t.request.callId));
       }
 
-      // Identify new, successful save_memory calls that we haven't processed yet.
+      // Identify new, successful save_instruction calls that we haven't processed yet.
       const newSuccessfulMemorySaves = completedAndReadyToSubmitTools.filter(
         (t) =>
-          t.request.name === 'save_memory' &&
+          t.request.name === 'save_instruction' &&
           t.status === 'success' &&
           !processedMemoryToolsRef.current.has(t.request.callId),
       );
