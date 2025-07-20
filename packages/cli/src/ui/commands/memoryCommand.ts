@@ -65,8 +65,8 @@ export const memoryCommand: SlashCommand = {
 
         return {
           type: 'tool',
-          toolName: 'save_memory',
-          toolArgs: { fact: args.trim() },
+          toolName: 'save_instruction',
+          toolArgs: { instruction: args.trim() },
         };
       },
     },

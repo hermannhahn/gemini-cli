@@ -1091,23 +1091,23 @@ describe('useGeminiStream', () => {
     it('should schedule a tool call when the command processor returns a schedule_tool action', async () => {
       const clientToolRequest: SlashCommandProcessorResult = {
         type: 'schedule_tool',
-        toolName: 'save_memory',
-        toolArgs: { fact: 'test fact' },
+        toolName: 'save_instruction',
+        toolArgs: { instruction: 'test instruction' },
       };
       mockHandleSlashCommand.mockResolvedValue(clientToolRequest);
 
       const { result } = renderTestHook();
 
       await act(async () => {
-        await result.current.submitQuery('/memory add "test fact"');
+        await result.current.submitQuery('/memory add "test instruction"');
       });
 
       await waitFor(() => {
         expect(mockScheduleToolCalls).toHaveBeenCalledWith(
           [
             expect.objectContaining({
-              name: 'save_memory',
-              args: { fact: 'test fact' },
+              name: 'save_instruction',
+              args: { instruction: 'test instruction' },
               isClientInitiated: true,
             }),
           ],
@@ -1196,14 +1196,14 @@ describe('useGeminiStream', () => {
     });
   });
 
-  describe('Memory Refresh on save_memory', () => {
-    it('should call performMemoryRefresh when a save_memory tool call completes successfully', async () => {
+  describe('Memory Refresh on save_instruction', () => {
+    it('should call performMemoryRefresh when a save_instruction tool call completes successfully', async () => {
       const mockPerformMemoryRefresh = vi.fn();
       const completedToolCall: TrackedCompletedToolCall = {
         request: {
           callId: 'save-mem-call-1',
-          name: 'save_memory',
-          args: { fact: 'test' },
+          name: 'save_instruction',
+          args: { instruction: 'test' },
           isClientInitiated: true,
           prompt_id: 'prompt-id-6',
         },
@@ -1216,8 +1216,8 @@ describe('useGeminiStream', () => {
           error: undefined,
         },
         tool: {
-          name: 'save_memory',
-          displayName: 'save_memory',
+          name: 'save_instruction',
+          displayName: 'save_instruction',
           description: 'Saves memory',
           build: vi.fn(),
         } as any,
@@ -1255,7 +1255,7 @@ describe('useGeminiStream', () => {
         ),
       );
 
-      // Trigger the onComplete callback with the completed save_memory tool
+      // Trigger the onComplete callback with the completed save_instruction tool
       await act(async () => {
         if (capturedOnComplete) {
           await capturedOnComplete([completedToolCall]);
