@@ -341,7 +341,7 @@ describe('Server Config (config.ts)', () => {
 
     it('should propagate errors from loadServerHierarchicalMemory', async () => {
       const config = new Config(baseParams);
-      const testError = new Error('Failed to load memory');
+      const testError = new Error('Failed to load instruction');
 
       (loadServerHierarchicalMemory as Mock).mockRejectedValue(testError);
 
