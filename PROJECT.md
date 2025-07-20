@@ -5,7 +5,7 @@ This project is based on a fork of the official Gemini CLI repository, with the 
 ## Branches
 
 - **main**: Upstream of the official Gemini CLI repository.
-- **hermannhahn/main**: Hermann Hahn's personal branch, containing the modifications and improvements developed by him.
+- **hermannhahn/main**: Hermann Hahn's personal branch, containing the modifications and improvements developed by him. This branch is the main functional branch for testing and running the CLI.
 - **hermannhahn/tool/memory-tool**: Development branch for the memory tool improvement, which stores instructions for the Gemini agent. (In progress...)
 
 ## Additional Context
