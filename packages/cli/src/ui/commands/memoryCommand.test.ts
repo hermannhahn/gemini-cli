@@ -118,21 +118,21 @@ describe('memoryCommand', () => {
     it('should return a tool action and add an info message when arguments are provided', () => {
       if (!addCommand.action) throw new Error('Command has no action');
 
-      const fact = 'remember this';
-      const result = addCommand.action(mockContext, `  ${fact}  `);
+      const instruction = 'remember this';
+      const result = addCommand.action(mockContext, `  ${instruction}  `);
 
       expect(mockContext.ui.addItem).toHaveBeenCalledWith(
         {
           type: MessageType.INFO,
-          text: `Attempting to save to memory: "${fact}"`,
+          text: `Attempting to save to memory: "${instruction}"`,
         },
         expect.any(Number),
       );
 
       expect(result).toEqual({
         type: 'tool',
-        toolName: 'save_memory',
-        toolArgs: { fact },
+        toolName: 'save_instruction',
+        toolArgs: { instruction },
       });
     });
   });

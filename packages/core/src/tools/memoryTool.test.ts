@@ -20,7 +20,7 @@ import * as os from 'os';
 vi.mock('fs/promises');
 vi.mock('os');
 
-const MEMORY_SECTION_HEADER = '## Gemini Added Memories';
+const INSTRUCTION_SECTION_HEADER = '## Gemini Added Instructions';
 
 // Define a type for our fsAdapter to ensure consistency
 interface FsAdapter {
@@ -91,10 +91,14 @@ describe('MemoryTool', () => {
       DEFAULT_CONTEXT_FILENAME, // Use the default for basic tests
     );
 
-    it('should create section and save a fact if file does not exist', async () => {
+    it('should create section and save an instruction if file does not exist', async () => {
       mockFsAdapter.readFile.mockRejectedValue({ code: 'ENOENT' }); // Simulate file not found
-      const fact = 'The sky is blue';
-      await MemoryTool.performAddMemoryEntry(fact, testFilePath, mockFsAdapter);
+      const instruction = 'The sky is blue';
+      await MemoryTool.performAddMemoryEntry(
+        instruction,
+        testFilePath,
+        mockFsAdapter,
+      );
 
       expect(mockFsAdapter.mkdir).toHaveBeenCalledWith(
         path.dirname(testFilePath),
@@ -105,73 +109,105 @@ describe('MemoryTool', () => {
       expect(mockFsAdapter.writeFile).toHaveBeenCalledOnce();
       const writeFileCall = mockFsAdapter.writeFile.mock.calls[0];
       expect(writeFileCall[0]).toBe(testFilePath);
-      const expectedContent = `${MEMORY_SECTION_HEADER}\n- ${fact}\n`;
+      const expectedContent = `${INSTRUCTION_SECTION_HEADER}\n- ${instruction}\n`;
       expect(writeFileCall[1]).toBe(expectedContent);
       expect(writeFileCall[2]).toBe('utf-8');
     });
 
-    it('should create section and save a fact if file is empty', async () => {
+    it('should create section and save an instruction if file is empty', async () => {
       mockFsAdapter.readFile.mockResolvedValue(''); // Simulate empty file
-      const fact = 'The sky is blue';
-      await MemoryTool.performAddMemoryEntry(fact, testFilePath, mockFsAdapter);
+      const instruction = 'The sky is blue';
+      await MemoryTool.performAddMemoryEntry(
+        instruction,
+        testFilePath,
+        mockFsAdapter,
+      );
       const writeFileCall = mockFsAdapter.writeFile.mock.calls[0];
-      const expectedContent = `${MEMORY_SECTION_HEADER}\n- ${fact}\n`;
+      const expectedContent = `${INSTRUCTION_SECTION_HEADER}\n- ${instruction}\n`;
       expect(writeFileCall[1]).toBe(expectedContent);
     });
 
-    it('should add a fact to an existing section', async () => {
-      const initialContent = `Some preamble.\n\n${MEMORY_SECTION_HEADER}\n- Existing fact 1\n`;
+    it('should add an instruction to an existing section', async () => {
+      const initialContent = `Some preamble.\n\n${INSTRUCTION_SECTION_HEADER}\n- Existing instruction 1\n`;
       mockFsAdapter.readFile.mockResolvedValue(initialContent);
-      const fact = 'New fact 2';
-      await MemoryTool.performAddMemoryEntry(fact, testFilePath, mockFsAdapter);
+      const instruction = 'New instruction 2';
+      await MemoryTool.performAddMemoryEntry(
+        instruction,
+        testFilePath,
+        mockFsAdapter,
+      );
 
       expect(mockFsAdapter.writeFile).toHaveBeenCalledOnce();
       const writeFileCall = mockFsAdapter.writeFile.mock.calls[0];
-      const expectedContent = `Some preamble.\n\n${MEMORY_SECTION_HEADER}\n- Existing fact 1\n- ${fact}\n`;
+      const expectedContent = `Some preamble.\n\n${INSTRUCTION_SECTION_HEADER}\n- Existing instruction 1\n- ${instruction}\n`;
       expect(writeFileCall[1]).toBe(expectedContent);
     });
 
-    it('should add a fact to an existing empty section', async () => {
-      const initialContent = `Some preamble.\n\n${MEMORY_SECTION_HEADER}\n`; // Empty section
+    it('should add an instruction to an existing empty section', async () => {
+      const initialContent = `Some preamble.\n\n${INSTRUCTION_SECTION_HEADER}\n`; // Empty section
       mockFsAdapter.readFile.mockResolvedValue(initialContent);
-      const fact = 'First fact in section';
-      await MemoryTool.performAddMemoryEntry(fact, testFilePath, mockFsAdapter);
+      const instruction = 'First instruction in section';
+      await MemoryTool.performAddMemoryEntry(
+        instruction,
+        testFilePath,
+        mockFsAdapter,
+      );
 
       expect(mockFsAdapter.writeFile).toHaveBeenCalledOnce();
       const writeFileCall = mockFsAdapter.writeFile.mock.calls[0];
-      const expectedContent = `Some preamble.\n\n${MEMORY_SECTION_HEADER}\n- ${fact}\n`;
+      const expectedContent = `Some preamble.
+
+${INSTRUCTION_SECTION_HEADER}
+- ${instruction}
+`;
       expect(writeFileCall[1]).toBe(expectedContent);
     });
 
-    it('should add a fact when other ## sections exist and preserve spacing', async () => {
-      const initialContent = `${MEMORY_SECTION_HEADER}\n- Fact 1\n\n## Another Section\nSome other text.`;
+    it('should add an instruction when other ## sections exist and preserve spacing', async () => {
+      const initialContent = `${INSTRUCTION_SECTION_HEADER}\n- Instruction 1\n\n## Another Section\nSome other text.`;
       mockFsAdapter.readFile.mockResolvedValue(initialContent);
-      const fact = 'Fact 2';
-      await MemoryTool.performAddMemoryEntry(fact, testFilePath, mockFsAdapter);
+      const instruction = 'Instruction 2';
+      await MemoryTool.performAddMemoryEntry(
+        instruction,
+        testFilePath,
+        mockFsAdapter,
+      );
 
       expect(mockFsAdapter.writeFile).toHaveBeenCalledOnce();
       const writeFileCall = mockFsAdapter.writeFile.mock.calls[0];
       // Note: The implementation ensures a single newline at the end if content exists.
-      const expectedContent = `${MEMORY_SECTION_HEADER}\n- Fact 1\n- ${fact}\n\n## Another Section\nSome other text.\n`;
+      const expectedContent = `${INSTRUCTION_SECTION_HEADER}\n- Instruction 1\n- ${instruction}\n\n## Another Section\nSome other text.\n`;
       expect(writeFileCall[1]).toBe(expectedContent);
     });
 
-    it('should correctly trim and add a fact that starts with a dash', async () => {
-      mockFsAdapter.readFile.mockResolvedValue(`${MEMORY_SECTION_HEADER}\n`);
-      const fact = '- - My fact with dashes';
-      await MemoryTool.performAddMemoryEntry(fact, testFilePath, mockFsAdapter);
+    it('should correctly trim and add an instruction that starts with a dash', async () => {
+      mockFsAdapter.readFile.mockResolvedValue(
+        `${INSTRUCTION_SECTION_HEADER}\n`,
+      );
+      const instruction = '- - My instruction with dashes';
+      await MemoryTool.performAddMemoryEntry(
+        instruction,
+        testFilePath,
+        mockFsAdapter,
+      );
       const writeFileCall = mockFsAdapter.writeFile.mock.calls[0];
-      const expectedContent = `${MEMORY_SECTION_HEADER}\n- My fact with dashes\n`;
+      const expectedContent = `${INSTRUCTION_SECTION_HEADER}\n- My instruction with dashes\n`;
       expect(writeFileCall[1]).toBe(expectedContent);
     });
 
     it('should handle error from fsAdapter.writeFile', async () => {
       mockFsAdapter.readFile.mockResolvedValue('');
       mockFsAdapter.writeFile.mockRejectedValue(new Error('Disk full'));
-      const fact = 'This will fail';
+      const instruction = 'This will fail';
       await expect(
-        MemoryTool.performAddMemoryEntry(fact, testFilePath, mockFsAdapter),
-      ).rejects.toThrow('[MemoryTool] Failed to add memory entry: Disk full');
+        MemoryTool.performAddMemoryEntry(
+          instruction,
+          testFilePath,
+          mockFsAdapter,
+        ),
+      ).rejects.toThrow(
+        '[MemoryTool] Failed to add instruction entry: Disk full',
+      );
     });
   });
 
@@ -191,18 +227,20 @@ describe('MemoryTool', () => {
     });
 
     it('should have correct name, displayName, description, and schema', () => {
-      expect(memoryTool.name).toBe('save_memory');
-      expect(memoryTool.displayName).toBe('Save Memory');
+      expect(memoryTool.name).toBe('save_instruction');
+      expect(memoryTool.displayName).toBe('Save Instruction');
       expect(memoryTool.description).toContain(
         'Saves a specific piece of information',
       );
       expect(memoryTool.schema).toBeDefined();
-      expect(memoryTool.schema.name).toBe('save_memory');
-      expect(memoryTool.schema.parameters?.properties?.fact).toBeDefined();
+      expect(memoryTool.schema.name).toBe('save_instruction');
+      expect(
+        memoryTool.schema.parameters?.properties?.instruction,
+      ).toBeDefined();
     });
 
     it('should call performAddMemoryEntry with correct parameters and return success', async () => {
-      const params = { fact: 'The sky is blue' };
+      const params = { instruction: 'The sky is blue' };
       const result = await memoryTool.execute(params, mockAbortSignal);
       // Use getCurrentGeminiMdFilename for the default expectation before any setGeminiMdFilename calls in a test
       const expectedFilePath = path.join(
@@ -219,21 +257,22 @@ describe('MemoryTool', () => {
       };
 
       expect(performAddMemoryEntrySpy).toHaveBeenCalledWith(
-        params.fact,
+        params.instruction,
         expectedFilePath,
         expectedFsArgument,
       );
-      const successMessage = `Okay, I've remembered that: "${params.fact}"`;
+      const successMessage = `Okay, I've remembered that: "${params.instruction}"`;
       expect(result.llmContent).toBe(
         JSON.stringify({ success: true, message: successMessage }),
       );
       expect(result.returnDisplay).toBe(successMessage);
     });
 
-    it('should return an error if fact is empty', async () => {
-      const params = { fact: ' ' }; // Empty fact
+    it('should return an error if instruction is empty', async () => {
+      const params = { instruction: ' ' }; // Empty instruction
       const result = await memoryTool.execute(params, mockAbortSignal);
-      const errorMessage = 'Parameter "fact" must be a non-empty string.';
+      const errorMessage =
+        'Parameter "instruction" must be a non-empty string.';
 
       expect(performAddMemoryEntrySpy).not.toHaveBeenCalled();
       expect(result.llmContent).toBe(
@@ -243,9 +282,9 @@ describe('MemoryTool', () => {
     });
 
     it('should handle errors from performAddMemoryEntry', async () => {
-      const params = { fact: 'This will fail' };
+      const params = { instruction: 'This will fail' };
       const underlyingError = new Error(
-        '[MemoryTool] Failed to add memory entry: Disk full',
+        '[MemoryTool] Failed to add instruction entry: Disk full',
       );
       performAddMemoryEntrySpy.mockRejectedValue(underlyingError);
 
@@ -254,11 +293,11 @@ describe('MemoryTool', () => {
       expect(result.llmContent).toBe(
         JSON.stringify({
           success: false,
-          error: `Failed to save memory. Detail: ${underlyingError.message}`,
+          error: `Failed to Save Instruction. Detail: ${underlyingError.message}`,
         }),
       );
       expect(result.returnDisplay).toBe(
-        `Error saving memory: ${underlyingError.message}`,
+        `Error saving instruction: ${underlyingError.message}`,
       );
     });
   });

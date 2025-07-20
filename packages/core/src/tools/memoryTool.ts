@@ -11,44 +11,44 @@ import * as path from 'path';
 import { homedir } from 'os';
 
 const memoryToolSchemaData: FunctionDeclaration = {
-  name: 'save_memory',
+  name: 'save_instruction',
   description:
-    'Saves a specific piece of information or fact to your long-term memory. Use this when the user explicitly asks you to remember something, or when they state a clear, concise fact that seems important to retain for future interactions.',
+    'Saves a specific piece of information or instruction to your long-term memory. Use this when the user explicitly asks you to remember something, or when they state a clear, concise instruction that seems important to retain for future interactions.',
   parameters: {
     type: Type.OBJECT,
     properties: {
-      fact: {
+      instruction: {
         type: Type.STRING,
         description:
-          'The specific fact or piece of information to remember. Should be a clear, self-contained statement.',
+          'The specific instruction or piece of information to remember. Should be a clear, self-contained statement.',
       },
     },
-    required: ['fact'],
+    required: ['instruction'],
   },
 };
 
 const memoryToolDescription = `
-Saves a specific piece of information or fact to your long-term memory.
+Saves a specific piece of information or instruction to your long-term memory.
 
 Use this tool:
 
 - When the user explicitly asks you to remember something (e.g., "Remember that I like pineapple on pizza", "Please save this: my cat's name is Whiskers").
-- When the user states a clear, concise fact about themselves, their preferences, or their environment that seems important for you to retain for future interactions to provide a more personalized and effective assistance.
+- When the user states a clear, concise instruction about themselves, their preferences, or their environment that seems important for you to retain for future interactions to provide a more personalized and effective assistance.
 
 Do NOT use this tool:
 
 - To remember conversational context that is only relevant for the current session.
-- To save long, complex, or rambling pieces of text. The fact should be relatively short and to the point.
-- If you are unsure whether the information is a fact worth remembering long-term. If in doubt, you can ask the user, "Should I remember that for you?"
+- To save long, complex, or rambling pieces of text. The instruction should be relatively short and to the point.
+- If you are unsure whether the information is an instruction worth remembering long-term. If in doubt, you can ask the user, "Should I remember that for you?"
 
 ## Parameters
 
-- \`fact\` (string, required): The specific fact or piece of information to remember. This should be a clear, self-contained statement. For example, if the user says "My favorite color is blue", the fact would be "My favorite color is blue".
+- \`instruction\` (string, required): The specific instruction or piece of information to remember. This should be a clear, self-contained statement. For example, if the user says "My favorite color is blue", the instruction would be "My favorite color is blue".
 `;
 
 export const GEMINI_CONFIG_DIR = '.gemini';
 export const DEFAULT_CONTEXT_FILENAME = 'GEMINI.md';
-export const MEMORY_SECTION_HEADER = '## Gemini Added Memories';
+export const INSTRUCTION_SECTION_HEADER = '## Gemini Added Instructions';
 
 // This variable will hold the currently configured filename for GEMINI.md context files.
 // It defaults to DEFAULT_CONTEXT_FILENAME but can be overridden by setGeminiMdFilename.
@@ -79,7 +79,7 @@ export function getAllGeminiMdFilenames(): string[] {
 }
 
 interface SaveMemoryParams {
-  fact: string;
+  instruction: string;
 }
 
 function getGlobalMemoryFilePath(): string {
@@ -103,7 +103,7 @@ export class MemoryTool extends BaseTool<SaveMemoryParams, ToolResult> {
   constructor() {
     super(
       MemoryTool.Name,
-      'Save Memory',
+      'Save Instruction',
       memoryToolDescription,
       Icon.LightBulb,
       memoryToolSchemaData.parameters as Record<string, unknown>,
@@ -140,16 +140,16 @@ export class MemoryTool extends BaseTool<SaveMemoryParams, ToolResult> {
         // File doesn't exist, will be created with header and item.
       }
 
-      const headerIndex = content.indexOf(MEMORY_SECTION_HEADER);
+      const headerIndex = content.indexOf(INSTRUCTION_SECTION_HEADER);
 
       if (headerIndex === -1) {
         // Header not found, append header and then the entry
         const separator = ensureNewlineSeparation(content);
-        content += `${separator}${MEMORY_SECTION_HEADER}\n${newMemoryItem}\n`;
+        content += `${separator}${INSTRUCTION_SECTION_HEADER}\n${newMemoryItem}\n`;
       } else {
         // Header found, find where to insert the new memory entry
         const startOfSectionContent =
-          headerIndex + MEMORY_SECTION_HEADER.length;
+          headerIndex + INSTRUCTION_SECTION_HEADER.length;
         let endOfSectionIndex = content.indexOf('\n## ', startOfSectionContent);
         if (endOfSectionIndex === -1) {
           endOfSectionIndex = content.length; // End of file
@@ -171,11 +171,11 @@ export class MemoryTool extends BaseTool<SaveMemoryParams, ToolResult> {
       await fsAdapter.writeFile(memoryFilePath, content, 'utf-8');
     } catch (error) {
       console.error(
-        `[MemoryTool] Error adding memory entry to ${memoryFilePath}:`,
+        `[MemoryTool] Error adding instruction entry to ${memoryFilePath}:`,
         error,
       );
       throw new Error(
-        `[MemoryTool] Failed to add memory entry: ${error instanceof Error ? error.message : String(error)}`,
+        `[MemoryTool] Failed to add instruction entry: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
   }
@@ -184,10 +184,15 @@ export class MemoryTool extends BaseTool<SaveMemoryParams, ToolResult> {
     params: SaveMemoryParams,
     _signal: AbortSignal,
   ): Promise<ToolResult> {
-    const { fact } = params;
+    const { instruction } = params;
 
-    if (!fact || typeof fact !== 'string' || fact.trim() === '') {
-      const errorMessage = 'Parameter "fact" must be a non-empty string.';
+    if (
+      !instruction ||
+      typeof instruction !== 'string' ||
+      instruction.trim() === ''
+    ) {
+      const errorMessage =
+        'Parameter "instruction" must be a non-empty string.';
       return {
         llmContent: JSON.stringify({ success: false, error: errorMessage }),
         returnDisplay: `Error: ${errorMessage}`,
@@ -196,12 +201,16 @@ export class MemoryTool extends BaseTool<SaveMemoryParams, ToolResult> {
 
     try {
       // Use the static method with actual fs promises
-      await MemoryTool.performAddMemoryEntry(fact, getGlobalMemoryFilePath(), {
-        readFile: fs.readFile,
-        writeFile: fs.writeFile,
-        mkdir: fs.mkdir,
-      });
-      const successMessage = `Okay, I've remembered that: "${fact}"`;
+      await MemoryTool.performAddMemoryEntry(
+        instruction,
+        getGlobalMemoryFilePath(),
+        {
+          readFile: fs.readFile,
+          writeFile: fs.writeFile,
+          mkdir: fs.mkdir,
+        },
+      );
+      const successMessage = `Okay, I've remembered that: "${instruction}"`;
       return {
         llmContent: JSON.stringify({ success: true, message: successMessage }),
         returnDisplay: successMessage,
@@ -210,14 +219,14 @@ export class MemoryTool extends BaseTool<SaveMemoryParams, ToolResult> {
       const errorMessage =
         error instanceof Error ? error.message : String(error);
       console.error(
-        `[MemoryTool] Error executing save_memory for fact "${fact}": ${errorMessage}`,
+        `[MemoryTool] Error executing save_instruction for instruction "${instruction}": ${errorMessage}`,
       );
       return {
         llmContent: JSON.stringify({
           success: false,
-          error: `Failed to save memory. Detail: ${errorMessage}`,
+          error: `Failed to Save Instruction. Detail: ${errorMessage}`,
         }),
-        returnDisplay: `Error saving memory: ${errorMessage}`,
+        returnDisplay: `Error saving instruction: ${errorMessage}`,
       };
     }
   }
