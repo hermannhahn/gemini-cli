@@ -21,7 +21,7 @@ import { ToolConfirmationOutcome } from './tools.js';
 vi.mock('fs/promises');
 vi.mock('os');
 
-const INSTRUCTION_SECTION_HEADER = '## Gemini Added Memories';
+const INSTRUCTION_SECTION_HEADER = '## Gemini Added Instructions';
 
 // Define a type for our fsAdapter to ensure consistency
 interface FsAdapter {
@@ -160,7 +160,11 @@ describe('MemoryTool', () => {
 
       expect(mockFsAdapter.writeFile).toHaveBeenCalledOnce();
       const writeFileCall = mockFsAdapter.writeFile.mock.calls[0];
-      const expectedContent = `Some preamble.\n\n${INSTRUCTION_SECTION_HEADER}\n- ${instruction}\n`;
+      const expectedContent = `Some preamble.
+
+${INSTRUCTION_SECTION_HEADER}
+- ${instruction}
+`;
       expect(writeFileCall[1]).toBe(expectedContent);
     });
 
@@ -206,7 +210,9 @@ describe('MemoryTool', () => {
           testFilePath,
           mockFsAdapter,
         ),
-      ).rejects.toThrow('[MemoryTool] Failed to add memory entry: Disk full');
+      ).rejects.toThrow(
+        '[MemoryTool] Failed to add instruction entry: Disk full',
+      );
     });
   });
 
@@ -283,7 +289,7 @@ describe('MemoryTool', () => {
     it('should handle errors from performAddMemoryEntry', async () => {
       const params = { instruction: 'This will fail' };
       const underlyingError = new Error(
-        '[MemoryTool] Failed to add memory entry: Disk full',
+        '[MemoryTool] Failed to add instruction entry: Disk full',
       );
       performAddMemoryEntrySpy.mockRejectedValue(underlyingError);
 

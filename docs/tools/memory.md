@@ -16,7 +16,7 @@ Use `save_instruction` to save and recall information across your Gemini CLI ses
 
 The tool appends the provided `instruction` to a special `GEMINI.md` file located in the user's home directory (`~/.gemini/GEMINI.md`). This file can be configured to have a different name.
 
-Once added, the instructions are stored under a `## Gemini Added Memories` section. This file is loaded as context in subsequent sessions, allowing the CLI to recall the saved information.
+Once added, the instructions are stored under a `## Gemini Added Instructions` section. This file is loaded as context in subsequent sessions, allowing the CLI to recall the saved information.
 
 Usage:
 
