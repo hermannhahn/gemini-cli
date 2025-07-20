@@ -1218,7 +1218,7 @@ describe('useGeminiStream', () => {
         tool: {
           name: 'save_instruction',
           displayName: 'save_instruction',
-          description: 'Saves memory',
+          description: 'Saves instruction',
           build: vi.fn(),
         } as any,
         invocation: {
