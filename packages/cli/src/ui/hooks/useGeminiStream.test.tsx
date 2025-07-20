@@ -1141,7 +1141,7 @@ describe('useGeminiStream', () => {
         },
         tool: {
           name: 'save_instruction',
-          description: 'Saves memory',
+          description: 'Saves instruction',
           getDescription: vi.fn(),
         } as any,
       };

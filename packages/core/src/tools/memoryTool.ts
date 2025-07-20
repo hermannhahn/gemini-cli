@@ -58,7 +58,7 @@ Do NOT use this tool:
 
 export const GEMINI_CONFIG_DIR = '.gemini';
 export const DEFAULT_CONTEXT_FILENAME = 'GEMINI.md';
-export const MEMORY_SECTION_HEADER = '## Gemini Added Memories';
+export const INSTRUCTION_SECTION_HEADER = '## Gemini Added Instructions';
 
 // This variable will hold the currently configured filename for GEMINI.md context files.
 // It defaults to DEFAULT_CONTEXT_FILENAME but can be overridden by setGeminiMdFilename.
@@ -120,7 +120,7 @@ export class MemoryTool
   constructor() {
     super(
       MemoryTool.Name,
-      'Save Memory',
+      'Save Instruction',
       memoryToolDescription,
       Icon.LightBulb,
       memoryToolSchemaData.parameters as Record<string, unknown>,
@@ -262,16 +262,16 @@ export class MemoryTool
         // File doesn't exist, will be created with header and item.
       }
 
-      const headerIndex = content.indexOf(MEMORY_SECTION_HEADER);
+      const headerIndex = content.indexOf(INSTRUCTION_SECTION_HEADER);
 
       if (headerIndex === -1) {
         // Header not found, append header and then the entry
         const separator = ensureNewlineSeparation(content);
-        content += `${separator}${MEMORY_SECTION_HEADER}\n${newMemoryItem}\n`;
+        content += `${separator}${INSTRUCTION_SECTION_HEADER}\n${newMemoryItem}\n`;
       } else {
         // Header found, find where to insert the new memory entry
         const startOfSectionContent =
-          headerIndex + MEMORY_SECTION_HEADER.length;
+          headerIndex + INSTRUCTION_SECTION_HEADER.length;
         let endOfSectionIndex = content.indexOf('\n## ', startOfSectionContent);
         if (endOfSectionIndex === -1) {
           endOfSectionIndex = content.length; // End of file
@@ -293,11 +293,11 @@ export class MemoryTool
       await fsAdapter.writeFile(memoryFilePath, content, 'utf-8');
     } catch (error) {
       console.error(
-        `[MemoryTool] Error adding memory entry to ${memoryFilePath}:`,
+        `[MemoryTool] Error adding instruction entry to ${memoryFilePath}:`,
         error,
       );
       throw new Error(
-        `[MemoryTool] Failed to add memory entry: ${error instanceof Error ? error.message : String(error)}`,
+        `[MemoryTool] Failed to add instruction entry: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
   }
@@ -373,9 +373,9 @@ export class MemoryTool
       return {
         llmContent: JSON.stringify({
           success: false,
-          error: `Failed to save memory. Detail: ${errorMessage}`,
+          error: `Failed to Save Instruction. Detail: ${errorMessage}`,
         }),
-        returnDisplay: `Error saving memory: ${errorMessage}`,
+        returnDisplay: `Error saving instruction: ${errorMessage}`,
       };
     }
   }

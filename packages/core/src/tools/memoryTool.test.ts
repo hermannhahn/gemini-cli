@@ -21,7 +21,7 @@ import { ToolConfirmationOutcome } from './tools.js';
 vi.mock('fs/promises');
 vi.mock('os');
 
-const MEMORY_SECTION_HEADER = '## Gemini Added Memories';
+const INSTRUCTION_SECTION_HEADER = '## Gemini Added Memories';
 
 // Define a type for our fsAdapter to ensure consistency
 interface FsAdapter {
@@ -114,7 +114,7 @@ describe('MemoryTool', () => {
       expect(mockFsAdapter.writeFile).toHaveBeenCalledOnce();
       const writeFileCall = mockFsAdapter.writeFile.mock.calls[0];
       expect(writeFileCall[0]).toBe(testFilePath);
-      const expectedContent = `${MEMORY_SECTION_HEADER}\n- ${instruction}\n`;
+      const expectedContent = `${INSTRUCTION_SECTION_HEADER}\n- ${instruction}\n`;
       expect(writeFileCall[1]).toBe(expectedContent);
       expect(writeFileCall[2]).toBe('utf-8');
     });
@@ -128,12 +128,12 @@ describe('MemoryTool', () => {
         mockFsAdapter,
       );
       const writeFileCall = mockFsAdapter.writeFile.mock.calls[0];
-      const expectedContent = `${MEMORY_SECTION_HEADER}\n- ${instruction}\n`;
+      const expectedContent = `${INSTRUCTION_SECTION_HEADER}\n- ${instruction}\n`;
       expect(writeFileCall[1]).toBe(expectedContent);
     });
 
     it('should add an instruction to an existing section', async () => {
-      const initialContent = `Some preamble.\n\n${MEMORY_SECTION_HEADER}\n- Existing instruction 1\n`;
+      const initialContent = `Some preamble.\n\n${INSTRUCTION_SECTION_HEADER}\n- Existing instruction 1\n`;
       mockFsAdapter.readFile.mockResolvedValue(initialContent);
       const instruction = 'New instruction 2';
       await MemoryTool.performAddMemoryEntry(
@@ -144,12 +144,12 @@ describe('MemoryTool', () => {
 
       expect(mockFsAdapter.writeFile).toHaveBeenCalledOnce();
       const writeFileCall = mockFsAdapter.writeFile.mock.calls[0];
-      const expectedContent = `Some preamble.\n\n${MEMORY_SECTION_HEADER}\n- Existing instruction 1\n- ${instruction}\n`;
+      const expectedContent = `Some preamble.\n\n${INSTRUCTION_SECTION_HEADER}\n- Existing instruction 1\n- ${instruction}\n`;
       expect(writeFileCall[1]).toBe(expectedContent);
     });
 
     it('should add an instruction to an existing empty section', async () => {
-      const initialContent = `Some preamble.\n\n${MEMORY_SECTION_HEADER}\n`; // Empty section
+      const initialContent = `Some preamble.\n\n${INSTRUCTION_SECTION_HEADER}\n`; // Empty section
       mockFsAdapter.readFile.mockResolvedValue(initialContent);
       const instruction = 'First instruction in section';
       await MemoryTool.performAddMemoryEntry(
@@ -160,12 +160,12 @@ describe('MemoryTool', () => {
 
       expect(mockFsAdapter.writeFile).toHaveBeenCalledOnce();
       const writeFileCall = mockFsAdapter.writeFile.mock.calls[0];
-      const expectedContent = `Some preamble.\n\n${MEMORY_SECTION_HEADER}\n- ${instruction}\n`;
+      const expectedContent = `Some preamble.\n\n${INSTRUCTION_SECTION_HEADER}\n- ${instruction}\n`;
       expect(writeFileCall[1]).toBe(expectedContent);
     });
 
     it('should add an instruction when other ## sections exist and preserve spacing', async () => {
-      const initialContent = `${MEMORY_SECTION_HEADER}\n- Instruction 1\n\n## Another Section\nSome other text.`;
+      const initialContent = `${INSTRUCTION_SECTION_HEADER}\n- Instruction 1\n\n## Another Section\nSome other text.`;
       mockFsAdapter.readFile.mockResolvedValue(initialContent);
       const instruction = 'Instruction 2';
       await MemoryTool.performAddMemoryEntry(
@@ -177,12 +177,14 @@ describe('MemoryTool', () => {
       expect(mockFsAdapter.writeFile).toHaveBeenCalledOnce();
       const writeFileCall = mockFsAdapter.writeFile.mock.calls[0];
       // Note: The implementation ensures a single newline at the end if content exists.
-      const expectedContent = `${MEMORY_SECTION_HEADER}\n- Instruction 1\n- ${instruction}\n\n## Another Section\nSome other text.\n`;
+      const expectedContent = `${INSTRUCTION_SECTION_HEADER}\n- Instruction 1\n- ${instruction}\n\n## Another Section\nSome other text.\n`;
       expect(writeFileCall[1]).toBe(expectedContent);
     });
 
     it('should correctly trim and add an instruction that starts with a dash', async () => {
-      mockFsAdapter.readFile.mockResolvedValue(`${MEMORY_SECTION_HEADER}\n`);
+      mockFsAdapter.readFile.mockResolvedValue(
+        `${INSTRUCTION_SECTION_HEADER}\n`,
+      );
       const instruction = '- - My instruction with dashes';
       await MemoryTool.performAddMemoryEntry(
         instruction,
@@ -190,7 +192,7 @@ describe('MemoryTool', () => {
         mockFsAdapter,
       );
       const writeFileCall = mockFsAdapter.writeFile.mock.calls[0];
-      const expectedContent = `${MEMORY_SECTION_HEADER}\n- My instruction with dashes\n`;
+      const expectedContent = `${INSTRUCTION_SECTION_HEADER}\n- My instruction with dashes\n`;
       expect(writeFileCall[1]).toBe(expectedContent);
     });
 
@@ -225,7 +227,7 @@ describe('MemoryTool', () => {
 
     it('should have correct name, displayName, description, and schema', () => {
       expect(memoryTool.name).toBe('save_instruction');
-      expect(memoryTool.displayName).toBe('Save Memory');
+      expect(memoryTool.displayName).toBe('Save Instruction');
       expect(memoryTool.description).toContain(
         'Saves a specific piece of information',
       );
@@ -290,11 +292,11 @@ describe('MemoryTool', () => {
       expect(result.llmContent).toBe(
         JSON.stringify({
           success: false,
-          error: `Failed to save memory. Detail: ${underlyingError.message}`,
+          error: `Failed to Save Instruction. Detail: ${underlyingError.message}`,
         }),
       );
       expect(result.returnDisplay).toBe(
-        `Error saving memory: ${underlyingError.message}`,
+        `Error saving instruction: ${underlyingError.message}`,
       );
     });
   });
