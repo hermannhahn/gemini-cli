@@ -1,42 +1,42 @@
 # Short-Term Memory (STM) Feature Design
 
-## Visão Geral
+## Overview
 
-A feature Short-Term Memory (STM) visa fornecer ao modelo um conjunto de ferramentas para gerenciar memórias de curto prazo de forma estruturada. Essas memórias serão armazenadas em um arquivo JSON, permitindo que o modelo adicione, pesquise e limpe entradas de forma eficiente.
+The Short-Term Memory (STM) feature aims to provide the model with a set of tools to manage short-term memories in a structured way. These memories will be stored in a JSON file, allowing the model to efficiently add, search, and clean entries.
 
-## Ferramentas Propostas
+## Proposed Tools
 
-As seguintes ferramentas serão desenvolvidas como parte da feature STM:
+The following tools have been developed as part of the STM feature:
 
-1.  **`add_stm`**: Adiciona uma nova entrada de memória ao arquivo JSON.
-    *   **Parâmetros**: `key` (string), `value` (string)
-    *   **Funcionalidade**: Armazena um par chave-valor no arquivo de memória.
+1.  **`add_stm`**: Adds a new memory entry to the JSON file.
+    - **Parameters**: `key` (string), `value` (string)
+    - **Functionality**: Stores a key-value pair in the memory file.
 
-2.  **`search_stm`**: Pesquisa entradas de memória no arquivo JSON.
-    *   **Parâmetros**: `query` (string, opcional), `key` (string, opcional)
-    *   **Funcionalidade**: Permite pesquisar memórias por um termo geral ou por uma chave específica.
+2.  **`search_stm`**: Searches for memory entries in the JSON file.
+    - **Parameters**: `query` (string, optional), `key` (string, optional)
+    - **Functionality**: Allows searching memories by a general term or by a specific key.
 
-3.  **`clean_stm`**: Limpa entradas de memória do arquivo JSON.
-    *   **Parâmetros**: `key` (string, opcional), `all` (boolean, opcional)
-    *   **Funcionalidade**: Remove memórias específicas por chave ou limpa todas as memórias.
+3.  **`clean_stm`**: Cleans (removes) memory entries from the JSON file.
+    - **Parameters**: `key` (string, optional), `all` (boolean, optional)
+    - **Functionality**: Removes specific memories by key or clears all memories.
 
-## Estrutura de Armazenamento
+## Storage Structure
 
-As memórias serão armazenadas em um arquivo JSON (ex: `stm.json`) dentro do diretório de configuração do usuário ou do projeto. O formato será um array de objetos, onde cada objeto representa uma memória com `key`, `value` e um timestamp.
+Memories will be stored in a JSON file (e.g., `stm.json`) within the user's or project's configuration directory. The format will be an array of objects, where each object represents a memory with `key`, `value`, and a timestamp.
 
 ```json
 [
   {
-    "key": "exemplo_chave",
-    "value": "exemplo_valor",
+    "key": "example_key",
+    "value": "example_value",
     "timestamp": "2025-07-20T12:00:00Z"
   }
 ]
 ```
 
-## Próximos Passos
+## Implementation Status
 
-*   Definir a localização exata do arquivo `stm.json`.
-*   Implementar as funções de leitura, escrita e manipulação do arquivo JSON.
-*   Integrar as ferramentas `add_stm`, `search_stm` e `clean_stm` ao `ToolRegistry` do modelo.
-*   Desenvolver testes unitários e de integração para todas as ferramentas.
+- The exact location of the `stm.json` file has been defined in `packages/core/src/utils/paths.ts`.
+- The functions for reading, writing, and manipulating the JSON file have been implemented within `packages/core/src/tools/stm.ts`.
+- The `add_stm`, `search_stm`, and `clean_stm` tools have been integrated into the `ToolRegistry` of the model.
+- Unit and integration tests for all tools are pending development.
