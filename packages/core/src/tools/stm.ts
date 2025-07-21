@@ -9,18 +9,20 @@ import { getProjectStmFile } from '../utils/paths.js';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
 import { Type } from '@google/genai';
+import * as crypto from 'crypto';
 
 interface StmEntry {
-  key: string;
-  value: string;
-  timestamp: string;
+  id: string;
+  content: string;
+  created_at: string;
+  viewed_at: string;
 }
 
 /**
  * Adds a new entry to the Short-Term Memory (STM) file.
  */
 export class AddStmTool extends BaseTool<
-  { key: string; value: string },
+  { content: string },
   ToolResult
 > {
   constructor() {
@@ -32,16 +34,12 @@ export class AddStmTool extends BaseTool<
       {
         type: Type.OBJECT,
         properties: {
-          key: {
+          content: {
             type: Type.STRING,
-            description: 'The key for the STM entry.',
-          },
-          value: {
-            type: Type.STRING,
-            description: 'The value for the STM entry.',
+            description: 'The content of the STM entry.',
           },
         },
-        required: ['key', 'value'],
+        required: ['content'],
       },
       false, // isOutputMarkdown
       false, // canUpdateOutput
@@ -49,7 +47,7 @@ export class AddStmTool extends BaseTool<
   }
 
   async execute(
-    args: { key: string; value: string },
+    args: { content: string },
     _signal: AbortSignal,
   ): Promise<ToolResult> {
     const stmFilePath = getProjectStmFile();
@@ -65,17 +63,19 @@ export class AddStmTool extends BaseTool<
       }
     }
 
+    const now = new Date().toISOString();
     const newEntry: StmEntry = {
-      key: args.key,
-      value: args.value,
-      timestamp: new Date().toISOString(),
+      id: crypto.randomUUID(),
+      content: args.content,
+      created_at: now,
+      viewed_at: now,
     };
     stmEntries.push(newEntry);
 
     writeFileSync(stmFilePath, JSON.stringify(stmEntries, null, 2), 'utf-8');
     return {
-      llmContent: `STM entry added: key='${args.key}'`,
-      returnDisplay: `STM entry added: key='${args.key}'`,
+      llmContent: `STM entry added: id='${newEntry.id}'`,
+      returnDisplay: `STM entry added: id='${newEntry.id}'`,
     };
   }
 }
@@ -84,7 +84,7 @@ export class AddStmTool extends BaseTool<
  * Searches for entries in the Short-Term Memory (STM) file.
  */
 export class SearchStmTool extends BaseTool<
-  { query?: string; key?: string },
+  { query?: string; id?: string },
   ToolResult
 > {
   constructor() {
@@ -100,9 +100,9 @@ export class SearchStmTool extends BaseTool<
             type: Type.STRING,
             description: 'A general query to search for in STM entries.',
           },
-          key: {
+          id: {
             type: Type.STRING,
-            description: 'A specific key to search for in STM entries.',
+            description: 'A specific ID to search for in STM entries.',
           },
         },
       },
@@ -112,13 +112,13 @@ export class SearchStmTool extends BaseTool<
   }
 
   async execute(
-    args: { query?: string; key?: string },
+    args: { query?: string; id?: string },
     _signal: AbortSignal,
   ): Promise<ToolResult> {
-    if (!args.query && !args.key) {
+    if (!args.query && !args.id) {
       return {
-        llmContent: `Invalid arguments for search_stm. Please provide either 'query' or 'key'.`,
-        returnDisplay: `Invalid arguments for search_stm. Please provide either 'query' or 'key'.`,
+        llmContent: `Invalid arguments for search_stm. Please provide either 'query' or 'id'.`,
+        returnDisplay: `Invalid arguments for search_stm. Please provide either 'query' or 'id'.`,
       };
     }
 
@@ -130,21 +130,17 @@ export class SearchStmTool extends BaseTool<
       };
     }
 
-    const fileContent = readFileSync(stmFilePath, 'utf-8');
-    const stmEntries: StmEntry[] = JSON.parse(fileContent);
+    let stmEntries: StmEntry[] = JSON.parse(readFileSync(stmFilePath, 'utf-8'));
 
     let results: StmEntry[] = [];
-    if (args.key) {
-      results = stmEntries.filter((entry) => entry.key === args.key);
+    if (args.id) {
+      results = stmEntries.filter((entry) => entry.id === args.id);
     } else if (args.query) {
       const lowerCaseQuery = args.query.toLowerCase();
       const scoredEntries = stmEntries.map((entry) => {
         let score = 0;
-        if (entry.key.toLowerCase().includes(lowerCaseQuery)) {
-          score += 2; // Higher score for key matches
-        }
-        if (entry.value.toLowerCase().includes(lowerCaseQuery)) {
-          score += 1; // Lower score for value matches
+        if (entry.content.toLowerCase().includes(lowerCaseQuery)) {
+          score += 1; // Score for content matches
         }
         return { entry, score };
       });
@@ -155,6 +151,16 @@ export class SearchStmTool extends BaseTool<
         .map((item) => item.entry)
         .slice(0, 3); // Take top 3
     }
+
+    // Update viewed_at for returned results and save back to file
+    const now = new Date().toISOString();
+    const updatedStmEntries = stmEntries.map((entry) => {
+      if (results.some((result) => result.id === entry.id)) {
+        return { ...entry, viewed_at: now };
+      }
+      return entry;
+    });
+    writeFileSync(stmFilePath, JSON.stringify(updatedStmEntries, null, 2), 'utf-8');
 
     if (results.length === 0) {
       return {
@@ -175,7 +181,7 @@ export class SearchStmTool extends BaseTool<
  * Cleans (removes) entries from the Short-Term Memory (STM) file.
  */
 export class CleanStmTool extends BaseTool<
-  { key?: string; all?: boolean },
+  { id?: string; all?: boolean },
   ToolResult
 > {
   constructor() {
@@ -187,9 +193,9 @@ export class CleanStmTool extends BaseTool<
       {
         type: Type.OBJECT,
         properties: {
-          key: {
+          id: {
             type: Type.STRING,
-            description: 'The key of the STM entry to remove.',
+            description: 'The ID of the STM entry to remove.',
           },
           all: {
             type: Type.BOOLEAN,
@@ -203,13 +209,13 @@ export class CleanStmTool extends BaseTool<
   }
 
   async execute(
-    args: { key?: string; all?: boolean },
+    args: { id?: string; all?: boolean },
     _signal: AbortSignal,
   ): Promise<ToolResult> {
-    if (!args.key && !args.all) {
+    if (!args.id && !args.all) {
       return {
-        llmContent: `Invalid arguments for clean_stm. Please provide either 'key' or 'all'.`,
-        returnDisplay: `Invalid arguments for clean_stm. Please provide either 'key' or 'all'.`,
+        llmContent: `Invalid arguments for clean_stm. Please provide either 'id' or 'all'.`,
+        returnDisplay: `Invalid arguments for clean_stm. Please provide either 'id' or 'all'.`,
       };
     }
 
@@ -227,28 +233,28 @@ export class CleanStmTool extends BaseTool<
         llmContent: 'All STM entries cleaned.',
         returnDisplay: 'All STM entries cleaned.',
       };
-    } else if (args.key) {
+    } else if (args.id) {
       const fileContent = readFileSync(stmFilePath, 'utf-8');
       let stmEntries: StmEntry[] = JSON.parse(fileContent);
       const initialLength = stmEntries.length;
-      stmEntries = stmEntries.filter((entry) => entry.key !== args.key);
+      stmEntries = stmEntries.filter((entry) => entry.id !== args.id);
 
       if (stmEntries.length === initialLength) {
         return {
-          llmContent: `No STM entry found with key: '${args.key}'.`,
-          returnDisplay: `No STM entry found with key: '${args.key}'.`,
+          llmContent: `No STM entry found with ID: '${args.id}'.`,
+          returnDisplay: `No STM entry found with ID: '${args.id}'.`,
         };
       }
 
       writeFileSync(stmFilePath, JSON.stringify(stmEntries, null, 2), 'utf-8');
       return {
-        llmContent: `STM entry with key '${args.key}' removed.`,
-        returnDisplay: `STM entry with key '${args.key}' removed.`,
+        llmContent: `STM entry with ID '${args.id}' removed.`,
+        returnDisplay: `STM entry with ID '${args.id}' removed.`,
       };
     }
     return {
-      llmContent: `Invalid arguments for clean_stm. Please provide either 'key' or 'all'.`,
-      returnDisplay: `Invalid arguments for clean_stm. Please provide either 'key' or 'all'.`,
+      llmContent: `Invalid arguments for clean_stm. Please provide either 'id' or 'all'.`,
+      returnDisplay: `Invalid arguments for clean_stm. Please provide either 'id' or 'all'.`,
     };
   }
 }
