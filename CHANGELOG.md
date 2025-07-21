@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Refactoring date handling in STM tools to use `YYYY-MM-DD` format for storage and search.
-- Updated the description of the `MemoryTool` in the system prompt.
+- Updated the description of the `MemoryTool` in the system prompt to improve proactive search behavior.
 
 ### Added
 
