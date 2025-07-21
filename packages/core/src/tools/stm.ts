@@ -91,7 +91,7 @@ export class SearchStmTool extends BaseTool<
     super(
       'search_stm',
       'Search Short-Term Memory',
-      'Searches for entries in the Short-Term Memory (STM) file.',
+      'Searches for up to 3 most relevant entries in the Short-Term Memory (STM) file. Use descriptive keywords in your query to find the most relevant memories. This tool should be used when the model receives a request and needs to recall information to understand the context or formulate a response.',
       Icon.FileSearch,
       {
         type: Type.OBJECT,
@@ -138,11 +138,22 @@ export class SearchStmTool extends BaseTool<
       results = stmEntries.filter((entry) => entry.key === args.key);
     } else if (args.query) {
       const lowerCaseQuery = args.query.toLowerCase();
-      results = stmEntries.filter(
-        (entry) =>
-          entry.key.toLowerCase().includes(lowerCaseQuery) ||
-          entry.value.toLowerCase().includes(lowerCaseQuery),
-      );
+      const scoredEntries = stmEntries.map((entry) => {
+        let score = 0;
+        if (entry.key.toLowerCase().includes(lowerCaseQuery)) {
+          score += 2; // Higher score for key matches
+        }
+        if (entry.value.toLowerCase().includes(lowerCaseQuery)) {
+          score += 1; // Lower score for value matches
+        }
+        return { entry, score };
+      });
+
+      scoredEntries.sort((a, b) => b.score - a.score); // Sort by score descending
+      results = scoredEntries
+        .filter((item) => item.score > 0)
+        .map((item) => item.entry)
+        .slice(0, 3); // Take top 3
     }
 
     if (results.length === 0) {
