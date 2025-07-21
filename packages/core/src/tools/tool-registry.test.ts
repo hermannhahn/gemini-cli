@@ -204,7 +204,7 @@ describe('ToolRegistry', () => {
       // Assert that the returned array is sorted by displayName
       expect(displayNames).toEqual([
         'Add Short-Term Memory',
-        'Clean Short-Term Memory',
+        'Delete Short-Term Memory',
         'Search Short-Term Memory',
         'Tool A',
         'Tool B',

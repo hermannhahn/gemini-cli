@@ -49,6 +49,7 @@ Gemini CLI's built-in tools can be broadly categorized as follows:
 - **[Web Search Tool](./web-search.md) (`web_search`):** For searching the web.
 - **[Multi-File Read Tool](./multi-file.md) (`read_many_files`):** A specialized tool for reading content from multiple files or directories, often used by the `@` command.
 - **[Memory Tool](./memory.md) (`save_instruction`):** For saving and recalling information across sessions.
+- **[Short-Term Memory (STM) Tools](./stm.md):** For managing short-term conversational memory.
 
 Additionally, these tools incorporate:
 

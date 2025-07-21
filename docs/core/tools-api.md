@@ -44,7 +44,10 @@ The core comes with a suite of pre-defined tools, typically found in `packages/c
   - `WebFetchTool` (`web-fetch.ts`): Fetches content from a URL.
   - `WebSearchTool` (`web-search.ts`): Performs a web search.
 - **Memory Tools:**
-  - `MemoryTool` (`memoryTool.ts`): Interacts with the AI's memory.
+  - `AddStmTool` (`stm.ts`): Adds a new entry to the Short-Term Memory (STM) file.
+  - `SearchStmTool` (`stm.ts`): Searches for entries in the Short-Term Memory (STM) file.
+  - `DeleteStmTool` (`stm.ts`): Deletes an entry from the Short-Term Memory (STM) file by ID.
+  - `ClearStmTool` (`stm.ts`): Clears entries from the Short-Term Memory (STM) file older than 35 days.
 
 Each of these tools extends `BaseTool` and implements the required methods for its specific functionality.
 
