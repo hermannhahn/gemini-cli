@@ -18,11 +18,13 @@ This document describes the branch workflow adopted for Hermann Hahn's personal 
 - Hermann uses the compiled version of the CLI in development (`npm start`) to interact. Any code changes require recompilation, error correction, commit, and CLI restart for changes to be applied and tested.
 - The Gemini Assistant has full access to the CLI code and can make direct changes to improve the user experience.
 
-**Documentação da Feature STM:**
-- Para detalhes sobre a feature Short-Term Memory (STM), consulte [docs/stm.md](./docs/stm.md).
+**STM Feature Documentation:**
 
-**Lista de Tarefas (TODO):**
-- Para acompanhar as tarefas pendentes do projeto, consulte [TODO.md](./TODO.md).
+- For details on the Short-Term Memory (STM) feature, refer to [docs/stm.md](./docs/stm.md).
+
+**Project TODO List:**
+
+- To track pending project tasks, refer to [TODO.md](./TODO.md).
 
 ## Branching Strategy
 
