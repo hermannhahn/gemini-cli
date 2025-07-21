@@ -11,7 +11,14 @@ import { dirname } from 'path';
 import { Type } from '@google/genai';
 import * as crypto from 'crypto';
 
-interface StmEntry {
+function formatDateToYYYYMMDD(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+export interface StmEntry {
   id: string;
   content: string;
   created_at: string;
@@ -21,15 +28,12 @@ interface StmEntry {
 /**
  * Adds a new entry to the Short-Term Memory (STM) file.
  */
-export class AddStmTool extends BaseTool<
-  { content: string },
-  ToolResult
-> {
+export class AddStmTool extends BaseTool<{ content: string }, ToolResult> {
   constructor() {
     super(
       'add_stm',
       'Add Short-Term Memory',
-      'Adds a new entry to the Short-Term Memory (STM) file.',
+      'Adds a new memory entry. Use to store important information (user preferences, conversation context, project details) when explicitly asked by the user or when crucial for maintaining context across sessions.',
       Icon.LightBulb,
       {
         type: Type.OBJECT,
@@ -63,12 +67,12 @@ export class AddStmTool extends BaseTool<
       }
     }
 
-    const now = new Date().toISOString();
+    const now = new Date();
     const newEntry: StmEntry = {
       id: crypto.randomUUID(),
       content: args.content,
-      created_at: now,
-      viewed_at: now,
+      created_at: formatDateToYYYYMMDD(now),
+      viewed_at: formatDateToYYYYMMDD(now),
     };
     stmEntries.push(newEntry);
 
@@ -84,14 +88,14 @@ export class AddStmTool extends BaseTool<
  * Searches for entries in the Short-Term Memory (STM) file.
  */
 export class SearchStmTool extends BaseTool<
-  { query?: string; id?: string },
+  { query?: string; id?: string; date?: string },
   ToolResult
 > {
   constructor() {
     super(
       'search_stm',
       'Search Short-Term Memory',
-      'Searches for up to 3 most relevant entries in the Short-Term Memory (STM) file. Use descriptive keywords in your query to find the most relevant memories. This tool should be used when the model receives a request and needs to recall information to understand the context or formulate a response.',
+      'Searches for up to 3 relevant memories. Use descriptive keywords. Invoke when needing to recall information to understand context or formulate a response.',
       Icon.FileSearch,
       {
         type: Type.OBJECT,
@@ -104,6 +108,11 @@ export class SearchStmTool extends BaseTool<
             type: Type.STRING,
             description: 'A specific ID to search for in STM entries.',
           },
+          date: {
+            type: Type.STRING,
+            description:
+              'A specific date (YYYY-MM-DD) to search for in STM entries.',
+          },
         },
       },
       true, // isOutputMarkdown
@@ -112,13 +121,13 @@ export class SearchStmTool extends BaseTool<
   }
 
   async execute(
-    args: { query?: string; id?: string },
+    args: { query?: string; id?: string; date?: string },
     _signal: AbortSignal,
   ): Promise<ToolResult> {
-    if (!args.query && !args.id) {
+    if (!args.query && !args.id && !args.date) {
       return {
-        llmContent: `Invalid arguments for search_stm. Please provide either 'query' or 'id'.`,
-        returnDisplay: `Invalid arguments for search_stm. Please provide either 'query' or 'id'.`,
+        llmContent: `Invalid arguments for search_stm. Please provide either 'query', 'id', or 'date'.`,
+        returnDisplay: `Invalid arguments for search_stm. Please provide either 'query', 'id', or 'date'.`,
       };
     }
 
@@ -130,11 +139,15 @@ export class SearchStmTool extends BaseTool<
       };
     }
 
-    let stmEntries: StmEntry[] = JSON.parse(readFileSync(stmFilePath, 'utf-8'));
+    const stmEntries: StmEntry[] = JSON.parse(
+      readFileSync(stmFilePath, 'utf-8'),
+    );
 
     let results: StmEntry[] = [];
     if (args.id) {
       results = stmEntries.filter((entry) => entry.id === args.id);
+    } else if (args.date) {
+      results = stmEntries.filter((entry) => entry.created_at === args.date);
     } else if (args.query) {
       const lowerCaseQuery = args.query.toLowerCase();
       const scoredEntries = stmEntries.map((entry) => {
@@ -153,14 +166,18 @@ export class SearchStmTool extends BaseTool<
     }
 
     // Update viewed_at for returned results and save back to file
-    const now = new Date().toISOString();
+    const now = new Date();
     const updatedStmEntries = stmEntries.map((entry) => {
       if (results.some((result) => result.id === entry.id)) {
-        return { ...entry, viewed_at: now };
+        return { ...entry, viewed_at: formatDateToYYYYMMDD(now) };
       }
       return entry;
     });
-    writeFileSync(stmFilePath, JSON.stringify(updatedStmEntries, null, 2), 'utf-8');
+    writeFileSync(
+      stmFilePath,
+      JSON.stringify(updatedStmEntries, null, 2),
+      'utf-8',
+    );
 
     if (results.length === 0) {
       return {
@@ -178,30 +195,24 @@ export class SearchStmTool extends BaseTool<
 }
 
 /**
- * Cleans (removes) entries from the Short-Term Memory (STM) file.
+ * Deletes an entry from the Short-Term Memory (STM) file by ID.
  */
-export class CleanStmTool extends BaseTool<
-  { id?: string; all?: boolean },
-  ToolResult
-> {
+export class DeleteStmTool extends BaseTool<{ id: string }, ToolResult> {
   constructor() {
     super(
-      'clean_stm',
-      'Clean Short-Term Memory',
-      'Cleans (removes) entries from the Short-Term Memory (STM) file.',
-      Icon.Hammer,
+      'delete_stm',
+      'Delete Short-Term Memory',
+      'Deletes a specific memory entry by its ID.',
+      Icon.Trash,
       {
         type: Type.OBJECT,
         properties: {
           id: {
             type: Type.STRING,
-            description: 'The ID of the STM entry to remove.',
-          },
-          all: {
-            type: Type.BOOLEAN,
-            description: 'If true, removes all STM entries.',
+            description: 'The ID of the STM entry to delete.',
           },
         },
+        required: ['id'],
       },
       false, // isOutputMarkdown
       false, // canUpdateOutput
@@ -209,52 +220,70 @@ export class CleanStmTool extends BaseTool<
   }
 
   async execute(
-    args: { id?: string; all?: boolean },
+    args: { id: string },
     _signal: AbortSignal,
   ): Promise<ToolResult> {
-    if (!args.id && !args.all) {
-      return {
-        llmContent: `Invalid arguments for clean_stm. Please provide either 'id' or 'all'.`,
-        returnDisplay: `Invalid arguments for clean_stm. Please provide either 'id' or 'all'.`,
-      };
-    }
-
     const stmFilePath = getProjectStmFile();
+
     if (!existsSync(stmFilePath)) {
       return {
-        llmContent: 'STM file does not exist. No entries to clean.',
-        returnDisplay: 'STM file does not exist. No entries to clean.',
+        llmContent: 'STM file does not exist. No entries to delete.',
+        returnDisplay: 'STM file does not exist. No entries to delete.',
       };
     }
 
-    if (args.all) {
-      writeFileSync(stmFilePath, JSON.stringify([], null, 2), 'utf-8');
-      return {
-        llmContent: 'All STM entries cleaned.',
-        returnDisplay: 'All STM entries cleaned.',
-      };
-    } else if (args.id) {
-      const fileContent = readFileSync(stmFilePath, 'utf-8');
-      let stmEntries: StmEntry[] = JSON.parse(fileContent);
-      const initialLength = stmEntries.length;
-      stmEntries = stmEntries.filter((entry) => entry.id !== args.id);
+    let stmEntries: StmEntry[] = JSON.parse(readFileSync(stmFilePath, 'utf-8'));
 
-      if (stmEntries.length === initialLength) {
-        return {
-          llmContent: `No STM entry found with ID: '${args.id}'.`,
-          returnDisplay: `No STM entry found with ID: '${args.id}'.`,
-        };
-      }
+    const initialLength = stmEntries.length;
+    stmEntries = stmEntries.filter((entry) => entry.id !== args.id);
 
-      writeFileSync(stmFilePath, JSON.stringify(stmEntries, null, 2), 'utf-8');
+    if (stmEntries.length === initialLength) {
       return {
-        llmContent: `STM entry with ID '${args.id}' removed.`,
-        returnDisplay: `STM entry with ID '${args.id}' removed.`,
+        llmContent: `No STM entry found with ID: ${args.id}`,
+        returnDisplay: `No STM entry found with ID: ${args.id}`,
       };
     }
+
+    writeFileSync(stmFilePath, JSON.stringify(stmEntries, null, 2), 'utf-8');
+
     return {
-      llmContent: `Invalid arguments for clean_stm. Please provide either 'id' or 'all'.`,
-      returnDisplay: `Invalid arguments for clean_stm. Please provide either 'id' or 'all'.`,
+      llmContent: `STM entry with ID ${args.id} deleted successfully.`,
+      returnDisplay: `STM entry with ID ${args.id} deleted successfully.`,
     };
+  }
+}
+
+/**
+ * Clears entries from the Short-Term Memory (STM) file older than 35 days.
+ */
+export class ClearStmTool {
+  async execute(): Promise<void> {
+    const stmFilePath = getProjectStmFile();
+
+    if (!existsSync(stmFilePath)) {
+      console.log('STM file does not exist. No entries to clear.');
+      return;
+    }
+
+    let stmEntries: StmEntry[] = JSON.parse(readFileSync(stmFilePath, 'utf-8'));
+
+    const thirtyFiveDaysAgo = new Date();
+    thirtyFiveDaysAgo.setDate(thirtyFiveDaysAgo.getDate() - 35);
+    const thirtyFiveDaysAgoFormatted = formatDateToYYYYMMDD(thirtyFiveDaysAgo);
+
+    const initialLength = stmEntries.length;
+    stmEntries = stmEntries.filter(
+      (entry) => entry.viewed_at > thirtyFiveDaysAgoFormatted,
+    );
+
+    if (stmEntries.length === initialLength) {
+      console.log('No STM entries older than 35 days found to clear.');
+      return;
+    }
+
+    writeFileSync(stmFilePath, JSON.stringify(stmEntries, null, 2), 'utf-8');
+    console.log(
+      `Cleared ${initialLength - stmEntries.length} old STM entries.`,
+    );
   }
 }
