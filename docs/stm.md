@@ -14,7 +14,7 @@ The following tools have been developed as part of the STM feature:
 
 2.  **`search_stm`**: Searches for memory entries in the JSON file.
     - **Parameters**: `query` (string, optional), `key` (string, optional)
-    - **Functionality**: Allows searching memories by a general term or by a specific key.
+    - **Functionality**: Allows searching memories by a general term or by a specific key. Returns up to 3 most relevant results based on keyword occurrences. This tool should be used when the model needs to recall information to understand the context or formulate a response, using descriptive keywords in the query.
 
 3.  **`clean_stm`**: Cleans (removes) memory entries from the JSON file.
     - **Parameters**: `key` (string, optional), `all` (boolean, optional)
