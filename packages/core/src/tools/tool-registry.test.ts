@@ -173,7 +173,14 @@ describe('ToolRegistry', () => {
       const displayNames = allTools.map((t) => t.displayName);
 
       // Assert that the returned array is sorted by displayName
-      expect(displayNames).toEqual(['Tool A', 'Tool B', 'Tool C']);
+      expect(displayNames).toEqual([
+        'Add Short-Term Memory',
+        'Clean Short-Term Memory',
+        'Search Short-Term Memory',
+        'Tool A',
+        'Tool B',
+        'Tool C',
+      ]);
     });
   });
 
