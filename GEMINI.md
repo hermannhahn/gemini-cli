@@ -1,3 +1,53 @@
+# Hermann Hahn's Personal Gemini CLI Project Overview
+
+This project is based on a fork of the official Gemini CLI repository, with the primary goal of modifying, implementing, and improving the CLI experience for personal use. The project is structured to allow for easy integration of future updates from the official repository while maintaining a clear workflow for development and testing.
+
+## Branches
+
+- **main**: Upstream of the official Gemini CLI repository.
+- **hermannhahn/main**: Hermann Hahn's personal branch, containing the modifications and improvements developed by him. This branch is the main functional branch for testing and running the CLI.
+- **hermannhahn/tool/memory-tool**: Development branch for the memory tool improvement, which stores instructions for the Gemini agent.
+- **hermannhahn/feat/short-term-memory**: Development branch for the Short-Term Memory (STM) feature, which will provide tools to manage structured memories in a JSON file.
+
+## Additional Context
+
+This document describes the branch workflow adopted for Hermann Hahn's personal project, a fork of `@google/gemini-cli`. The objective is to allow modifications, increments, and fixes for personal use, while maintaining the ability to integrate future updates from the official repository.
+
+**Important Notes for the Gemini Assistant:**
+
+- Hermann uses the compiled version of the CLI in development (`npm start`) to interact. Any code changes require recompilation, error correction, commit, and CLI restart for changes to be applied and tested.
+- The Gemini Assistant has full access to the CLI code and can make direct changes to improve the user experience.
+
+**STM Feature Documentation:**
+
+- For details on the Short-Term Memory (STM) feature, refer to [docs/stm.md](./docs/stm.md).
+
+**Project Markdown Files:**
+
+Keep in mind that the project has several markdown files that provide additional context and documentation, keep them updated as the project evolves:
+
+- To track pending project tasks, refer to [TODO.md](./TODO.md).
+- For the changelog and updates, refer to [CHANGELOG.md](./CHANGELOG.md).
+- Documentation can be found in the `docs` directory.
+- For the workflow details and branch management, refer to [WORKFLOW.md](./WORKFLOW.md).
+
+## Branching Strategy
+
+1.  **`main` (from Hermann's fork): The Upstream Base**
+    - **Purpose:** This branch should be an exact mirror of the `main` branch from the official repository (`https://github.com/google-gemini/gemini-cli.git`). It serves as the synchronization point for updates from the original project.
+    - **Usage:** Never commit directly to this branch.
+    - **Maintenance:** Regularly synchronize with `upstream/main`.
+
+2.  **`hermannhahn/main`: Your Main Functional Branch**
+    - **Purpose:** This is Hermann's primary working branch, containing all developed and tested functionalities. It is the "complete" and functional version of the personal project.
+    - **Usage:** Base for creating new features and for running the CLI with personal modifications.
+    - **Maintenance:** Integrate updates from `main` (from the fork) to stay current with the upstream.
+
+3.  **`hermannhahn/feat/feature-name`: Feature Development Branches**
+    - **Purpose:** Isolate the development of a specific feature, bug fix, or experiment.
+    - **Usage:** Created from `hermannhahn/main`. All development and commits for a specific feature occur here.
+    - **Maintenance:** After completion and testing of the feature, it is merged back into `hermannhahn/main` and the feature branch is deleted.
+
 ## Building and running
 
 Before submitting any changes, it is crucial to validate them by running the full preflight check. This command will build the repository, run all tests, check for type errors, and lint the code.

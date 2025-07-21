@@ -16,9 +16,9 @@ The following tools have been developed as part of the STM feature:
     - **Parameters**: `query` (string, optional), `id` (string, optional)
     - **Functionality**: Allows searching memories by a general term in their content or by a specific ID. Returns up to 3 most relevant results based on keyword occurrences. This tool should be used when the model needs to recall information to understand the context or formulate a response, using descriptive keywords in the query. When memories are returned, their `viewed_at` timestamp is silently updated.
 
-3.  **`clean_stm`**: Cleans (removes) memory entries from the JSON file.
-    - **Parameters**: `id` (string, optional), `all` (boolean, optional)
-    - **Functionality**: Removes a specific memory by its ID or clears all memories.
+3.  **`clear_stm`**: Clears (removes) memory entries from the JSON file that are older than 35 days based on their `viewed_at` timestamp.
+    - **Parameters**: None
+    - **Functionality**: Automatically removes entries older than 35 days. This tool is primarily for maintenance and should not be directly invoked by the model. It is designed to be run automatically to manage memory size and relevance.
 
 ## Storage Structure
 
@@ -47,4 +47,4 @@ Memories will be stored in a JSON file (e.g., `stm.json`) within the user's or p
 - The functions for reading, writing, and manipulating the JSON file have been implemented within `packages/core/src/tools/stm.ts`.
 - The `add_stm`, `search_stm`, and `clean_stm` tools have been integrated into the `ToolRegistry` of the model.
 - The `SearchStmTool` now returns up to 3 most relevant results and silently updates the `viewed_at` timestamp of returned memories.
-- Unit and integration tests for all tools are pending development.
+- Unit and integration tests for all tools have been developed and passed.
