@@ -185,18 +185,10 @@ export function getProjectTempDir(projectRoot: string): string {
 }
 
 /**
- * Returns the absolute path to the user-level commands directory.
- * @returns The path to the user's commands directory.
+ * Returns the absolute path to the Short-Term Memory (STM) file.
+ * The STM file is located in the user's home directory, inside the .gemini directory.
+ * @returns The absolute path to the STM file.
  */
-export function getUserCommandsDir(): string {
-  return path.join(os.homedir(), GEMINI_DIR, COMMANDS_DIR_NAME);
-}
-
-/**
- * Returns the absolute path to the project-level commands directory.
- * @param projectRoot The absolute path to the project's root directory.
- * @returns The path to the project's commands directory.
- */
-export function getProjectCommandsDir(projectRoot: string): string {
-  return path.join(projectRoot, GEMINI_DIR, COMMANDS_DIR_NAME);
+export function getProjectStmFile(): string {
+  return path.join(os.homedir(), GEMINI_DIR, 'stm.json');
 }

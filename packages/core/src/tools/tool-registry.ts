@@ -6,6 +6,7 @@
 
 import { FunctionDeclaration } from '@google/genai';
 import { AnyDeclarativeTool, Icon, ToolResult, BaseTool } from './tools.js';
+import { AddStmTool, SearchStmTool, CleanStmTool } from './stm.js';
 import { Config } from '../config/config.js';
 import { spawn } from 'node:child_process';
 import { StringDecoder } from 'node:string_decoder';
@@ -130,6 +131,9 @@ export class ToolRegistry {
 
   constructor(config: Config) {
     this.config = config;
+    this.registerTool(new AddStmTool());
+    this.registerTool(new SearchStmTool());
+    this.registerTool(new CleanStmTool());
   }
 
   /**
