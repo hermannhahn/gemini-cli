@@ -84,6 +84,7 @@ describe('STM Tools', () => {
       }
     });
     vi.spyOn(console, 'log').mockImplementation(() => {}); // Mock console.log
+    process.env.STM_SHOW_STATUS = 'TRUE'; // Default to TRUE for most tests
   });
 
   afterEach(() => {
@@ -117,7 +118,9 @@ describe('STM Tools', () => {
       expect(mockStmContent[0].content).toBe(content);
       expect(mockStmContent[0].id).toMatch(/^00000000-0000-4000-8000-/); // Check UUID format
       expect(result.llmContent).toBe(
-        `STM entry added: id='${mockStmContent[0].id}'`,
+        process.env.STM_SHOW_STATUS === 'TRUE'
+          ? `STM entry added: id='${mockStmContent[0].id}'`
+          : '',
       );
     });
 
@@ -182,7 +185,9 @@ describe('STM Tools', () => {
         /^00000000-0000-4000-8000-/,
       );
       expect(result.llmContent).toBe(
-        `STM entry added: id='${mockStmContent[1].id}'`,
+        process.env.STM_SHOW_STATUS === 'TRUE'
+          ? `STM entry added: id='${mockStmContent[1].id}'`
+          : '',
       );
     });
 
@@ -248,7 +253,9 @@ describe('STM Tools', () => {
       const tool = new SearchStmTool();
       const result = await tool.execute({}, new AbortController().signal);
       expect(result.llmContent).toBe(
-        `Invalid arguments for search_stm. Please provide either 'query', 'id', or 'date'.`,
+        process.env.STM_SHOW_STATUS === 'TRUE'
+          ? `Invalid arguments for search_stm. Please provide either 'query', 'id', or 'date'.`
+          : '',
       );
     });
 
@@ -260,7 +267,9 @@ describe('STM Tools', () => {
         new AbortController().signal,
       );
       expect(result.llmContent).toBe(
-        'STM file does not exist. No entries to search.',
+        process.env.STM_SHOW_STATUS === 'TRUE'
+          ? 'STM file does not exist. No entries to search.'
+          : '',
       );
     });
 
@@ -273,7 +282,10 @@ describe('STM Tools', () => {
         { id: 'id-2' },
         new AbortController().signal,
       );
-      const parsedResult = JSON.parse(result.llmContent as string);
+      const parsedResult =
+        process.env.STM_SHOW_STATUS === 'TRUE'
+          ? JSON.parse(result.llmContent as string)
+          : [];
       expect(parsedResult).toHaveLength(1);
       expect(parsedResult[0].id).toBe('id-2');
       // viewed_at deve ser uma string e diferente de created_at
@@ -293,7 +305,10 @@ describe('STM Tools', () => {
         { query: 'apple' },
         new AbortController().signal,
       );
-      const parsedResult = JSON.parse(result.llmContent as string);
+      const parsedResult =
+        process.env.STM_SHOW_STATUS === 'TRUE'
+          ? JSON.parse(result.llmContent as string)
+          : [];
       expect(parsedResult).toHaveLength(3);
       expect(parsedResult.map((entry: StmEntry) => entry.id)).toEqual([
         'id-1',
@@ -320,7 +335,11 @@ describe('STM Tools', () => {
         { query: 'xyz' },
         new AbortController().signal,
       );
-      expect(result.llmContent).toBe('No matching STM entries found.');
+      expect(result.llmContent).toBe(
+        process.env.STM_SHOW_STATUS === 'TRUE'
+          ? 'No matching STM entries found.'
+          : '',
+      );
     });
   });
 
@@ -367,7 +386,9 @@ describe('STM Tools', () => {
         'utf-8',
       );
       expect(result.llmContent).toBe(
-        'STM entry with ID id-1 deleted successfully.',
+        process.env.STM_SHOW_STATUS === 'TRUE'
+          ? 'STM entry with ID id-1 deleted successfully.'
+          : '',
       );
       expect(mockStmContent).toHaveLength(1);
       expect(mockStmContent[0].id).toBe('id-2');
@@ -392,7 +413,9 @@ describe('STM Tools', () => {
         new AbortController().signal,
       );
       expect(result.llmContent).toBe(
-        'No STM entry found with ID: non-existent-id',
+        process.env.STM_SHOW_STATUS === 'TRUE'
+          ? 'No STM entry found with ID: non-existent-id'
+          : '',
       );
       expect(writeFileSync).not.toHaveBeenCalled(); // No write operation if no change
     });
