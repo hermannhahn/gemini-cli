@@ -7,10 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
+### Fixed
 
-- Implementação da ferramenta de memória de longo prazo (`hermannhahn/tool/memory-tool`).
-- Implementação da funcionalidade de memória de curto prazo (STM) (`hermannhahn/feat/short-term-memory`).
+- Corrigida a supressão de saída da ferramenta `search_stm` para garantir que o `llmContent` seja sempre retornado ao modelo.
 
 ### Changed
 
@@ -44,3 +43,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Refactored the `MemoryTool`.
+
+## [0.0.2] - 2025-07-21
+
+### Added
+
+- Merged the `hermannhahn/tool/memory-tool` branch into the `hermannhahn/main` branch.
+
+## [0.0.3] - 2025-07-21
+
+### Added
+
+- Initial setup of the `hermannhahn/feat/short-term-memory` branch from the `hermannhahn/main` branch.
+- Introduzida a funcionalidade de Short-Term Memory (STM).
