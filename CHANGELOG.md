@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Ajustada a supressão de status para ferramentas STM: `llmContent` é sempre enviado ao modelo, enquanto `returnDisplay` é controlado pela variável de ambiente `STM_SHOW_STATUS` para exibição no terminal.
+- Ajustada a supressão de status para ferramentas STM.
 
 ### Fixed
 
@@ -17,8 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Refactoring date handling in STM tools to use `YYYY-MM-DD` format for storage and search.
-- Updated the description of the `MemoryTool` in the system prompt to improve proactive search behavior.
+- Refatorado o tratamento de datas nas ferramentas STM.
+- Atualizada a descrição da `MemoryTool`.
 
 ### Added
 
@@ -61,8 +61,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Initial setup of the `hermannhahn/feat/short-term-memory` branch from the `hermannhahn/main` branch.
-- Introduced the `Short-Term Memory (STM)` feature with the following tasks:
-  - Defined the exact location of the `stm.json` file.
-  - Implemented functions for reading, writing, and manipulating the JSON file.
-  - Integrated `add_stm` and `search_stm` tools into the model's `ToolRegistry`.
-  - Added unit and integration tests for all tools.
+- Introduzida a funcionalidade de Short-Term Memory (STM).
