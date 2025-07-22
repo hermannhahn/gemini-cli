@@ -17,6 +17,9 @@ This document describes the branch workflow adopted for Hermann Hahn's personal 
 
 - Hermann uses the compiled version of the CLI in development (`npm start`) to interact. Any code changes require recompilation, error correction, commit, and CLI restart for changes to be applied and tested.
 - The Gemini Assistant has full access to the CLI code and can make direct changes to improve the user experience.
+- **Saída da Ferramenta (`ToolResult`):** É crucial entender a distinção entre `llmContent` e `returnDisplay` dentro do `ToolResult` retornado pelas ferramentas:
+  - `llmContent`: Este conteúdo é sempre enviado ao modelo de IA para processamento e tomada de decisão. Ele nunca é suprimido, garantindo que o modelo tenha todas as informações necessárias.
+  - `returnDisplay`: Este conteúdo é usado para a exibição no terminal para o usuário final. Sua exibição pode ser controlada por variáveis de ambiente (como `STM_SHOW_STATUS`) para suprimir ou exibir mensagens de status, proporcionando uma experiência de usuário mais limpa sem afetar a capacidade do modelo de raciocinar sobre a saída da ferramenta.
 
 **STM Feature Documentation:**
 
