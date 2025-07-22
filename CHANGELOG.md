@@ -9,8 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Implemented suppression of `llmContent` for STM tools when `STM_SHOW_STATUS` is not `TRUE`, providing cleaner output.
-- Adjusted `stm.test.ts` to correctly test `llmContent` suppression based on `STM_SHOW_STATUS` environment variable.
+- Ajustada a supressão de status para ferramentas STM: `llmContent` é sempre enviado ao modelo, enquanto `returnDisplay` é controlado pela variável de ambiente `STM_SHOW_STATUS` para exibição no terminal.
 
 ### Fixed
 

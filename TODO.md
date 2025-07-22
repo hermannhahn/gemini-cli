@@ -10,3 +10,4 @@
 - [x] Develop unit and integration tests for all tools.
 - [x] Create/Update the documentation for the STM feature.
 - [x] Ensure the STM instructions exposed to the model are clear and concise.
+- [ ] Investigate complete suppression of tool name and description display in the terminal when `STM_SHOW_STATUS` is false, without affecting `llmContent`.
