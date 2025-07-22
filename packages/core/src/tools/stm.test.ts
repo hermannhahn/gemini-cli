@@ -341,6 +341,22 @@ describe('STM Tools', () => {
           : '',
       );
     });
+
+    it('should return llmContent even when STM_SHOW_STATUS is FALSE', async () => {
+      process.env.STM_SHOW_STATUS = 'FALSE';
+      const tool = new SearchStmTool();
+      const result = await tool.execute(
+        { query: 'apple' },
+        new AbortController().signal,
+      );
+      const parsedResult = JSON.parse(result.llmContent as string);
+      expect(parsedResult).toHaveLength(3);
+      expect(parsedResult.map((entry: StmEntry) => entry.id)).toEqual([
+        'id-1',
+        'id-2',
+        'id-4',
+      ]);
+    });
   });
 
   describe('DeleteStmTool', () => {
