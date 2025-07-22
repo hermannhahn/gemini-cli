@@ -23,7 +23,7 @@ import { ModifiableTool, ModifyContext } from './modifiable-tool.js';
 const memoryToolSchemaData: FunctionDeclaration = {
   name: 'save_instruction',
   description:
-    'Saves a specific piece of information or instruction to your long-term memory. Use this when the user explicitly asks you to remember something, or when they state a clear, concise instruction that seems important to retain for future interactions.',
+    'Saves a permanent, immutable instruction for long-term memory. Use for general, lasting guidelines that shape behavior across all future sessions. Not for temporary or project-specific details; use STM for those.',
   parameters: {
     type: Type.OBJECT,
     properties: {
@@ -37,24 +37,24 @@ const memoryToolSchemaData: FunctionDeclaration = {
   },
 };
 
-const memoryToolDescription = `
-Saves a specific piece of information or instruction to your long-term memory.
+const memoryToolDescription = '''
+Saves a permanent, immutable instruction for long-term memory.
 
 Use this tool:
 
-- When the user explicitly asks you to remember something (e.g., "Remember that I like pineapple on pizza", "Please save this: my cat's name is Whiskers").
-- When the user states a clear, concise instruction about themselves, their preferences, or their environment that seems important for you to retain for future interactions to provide a more personalized and effective assistance.
+- For general, lasting guidelines that shape your behavior or interaction style across all future sessions.
+- When the user explicitly asks you to remember something permanently (e.g., "Always use React with Hooks for new components").
 
 Do NOT use this tool:
 
-- To remember conversational context that is only relevant for the current session.
-- To save long, complex, or rambling pieces of text. The instruction should be relatively short and to the point.
-- If you are unsure whether the information is an instruction worth remembering long-term. If in doubt, you can ask the user, "Should I remember that for you?"
+- For temporary or project-specific details; use STM tools (`add_stm`, `search_stm`, `delete_stm`) for those.
+- To store conversational context relevant only to the current session.
+- To save long, complex, or rambling texts.
 
 ## Parameters
 
-- \`instruction\` (string, required): The specific instruction or piece of information to remember. This should be a clear, self-contained statement. For example, if the user says "My favorite color is blue", the instruction would be "My favorite color is blue".
-`;
+- `instruction` (string, required): The specific, concise instruction to remember permanently.
+''';
 
 export const GEMINI_CONFIG_DIR = '.gemini';
 export const DEFAULT_CONTEXT_FILENAME = 'GEMINI.md';
