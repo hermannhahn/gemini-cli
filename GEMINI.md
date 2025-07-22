@@ -13,6 +13,11 @@ This project is based on a fork of the official Gemini CLI repository, with the 
 
 This document describes the branch workflow adopted for Hermann Hahn's personal project, a fork of `@google/gemini-cli`. The objective is to allow modifications, increments, and fixes for personal use, while maintaining the ability to integrate future updates from the official repository.
 
+**Implemented Features:**
+
+- **Ferramenta de Memória de Longo Prazo:** Implementação de uma ferramenta para armazenar instruções e informações permanentes para o agente Gemini.
+- **Memória de Curto Prazo (STM):** Funcionalidade para gerenciar memórias estruturadas em um arquivo JSON, permitindo ao agente manter contexto entre sessões.
+
 **Important Notes for the Gemini Assistant:**
 
 - Hermann uses the compiled version of the CLI in development (`npm start`) to interact. Any code changes require recompilation, error correction, commit, and CLI restart for changes to be applied and tested.
