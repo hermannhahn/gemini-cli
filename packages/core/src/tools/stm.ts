@@ -77,9 +77,13 @@ export class AddStmTool extends BaseTool<{ content: string }, ToolResult> {
     stmEntries.push(newEntry);
 
     writeFileSync(stmFilePath, JSON.stringify(stmEntries, null, 2), 'utf-8');
+    let returnDisplay = `STM entry added: id='${newEntry.id}'`;
+    if (process.env.STM_SHOW_STATUS !== 'TRUE') {
+      returnDisplay = '';
+    }
     return {
       llmContent: `STM entry added: id='${newEntry.id}'`,
-      returnDisplay: `STM entry added: id='${newEntry.id}'`,
+      returnDisplay,
     };
   }
 }
@@ -125,17 +129,25 @@ export class SearchStmTool extends BaseTool<
     _signal: AbortSignal,
   ): Promise<ToolResult> {
     if (!args.query && !args.id && !args.date) {
+      let returnDisplay = `Invalid arguments for search_stm. Please provide either 'query', 'id', or 'date'.`;
+      if (process.env.STM_SHOW_STATUS !== 'TRUE') {
+        returnDisplay = '';
+      }
       return {
         llmContent: `Invalid arguments for search_stm. Please provide either 'query', 'id', or 'date'.`,
-        returnDisplay: `Invalid arguments for search_stm. Please provide either 'query', 'id', or 'date'.`,
+        returnDisplay,
       };
     }
 
     const stmFilePath = getProjectStmFile();
     if (!existsSync(stmFilePath)) {
+      let returnDisplay = 'STM file does not exist. No entries to search.';
+      if (process.env.STM_SHOW_STATUS !== 'TRUE') {
+        returnDisplay = '';
+      }
       return {
         llmContent: 'STM file does not exist. No entries to search.',
-        returnDisplay: 'STM file does not exist. No entries to search.',
+        returnDisplay,
       };
     }
 
@@ -179,17 +191,25 @@ export class SearchStmTool extends BaseTool<
       'utf-8',
     );
 
+    const jsonResult = JSON.stringify(results, null, 2);
+    let llmContent: string;
+    let returnDisplay: string;
+
     if (results.length === 0) {
-      return {
-        llmContent: 'No matching STM entries found.',
-        returnDisplay: 'No matching STM entries found.',
-      };
+      llmContent = 'No matching STM entries found.';
+      returnDisplay = 'No matching STM entries found.';
+    } else {
+      llmContent = jsonResult;
+      returnDisplay = jsonResult;
     }
 
-    const jsonResult = JSON.stringify(results, null, 2);
+    if (process.env.STM_SHOW_STATUS !== 'TRUE') {
+      returnDisplay = '';
+    }
+
     return {
-      llmContent: jsonResult,
-      returnDisplay: jsonResult,
+      llmContent,
+      returnDisplay,
     };
   }
 }
@@ -237,18 +257,24 @@ export class DeleteStmTool extends BaseTool<{ id: string }, ToolResult> {
     const initialLength = stmEntries.length;
     stmEntries = stmEntries.filter((entry) => entry.id !== args.id);
 
+    let llmContent: string;
+    let returnDisplay: string;
     if (stmEntries.length === initialLength) {
-      return {
-        llmContent: `No STM entry found with ID: ${args.id}`,
-        returnDisplay: `No STM entry found with ID: ${args.id}`,
-      };
+      llmContent = `No STM entry found with ID: ${args.id}`;
+      returnDisplay = `No STM entry found with ID: ${args.id}`;
+    } else {
+      llmContent = `STM entry with ID ${args.id} deleted successfully.`;
+      returnDisplay = `STM entry with ID ${args.id} deleted successfully.`;
+      writeFileSync(stmFilePath, JSON.stringify(stmEntries, null, 2), 'utf-8');
     }
 
-    writeFileSync(stmFilePath, JSON.stringify(stmEntries, null, 2), 'utf-8');
+    if (process.env.STM_SHOW_STATUS !== 'TRUE') {
+      returnDisplay = '';
+    }
 
     return {
-      llmContent: `STM entry with ID ${args.id} deleted successfully.`,
-      returnDisplay: `STM entry with ID ${args.id} deleted successfully.`,
+      llmContent,
+      returnDisplay,
     };
   }
 }

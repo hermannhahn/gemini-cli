@@ -8,5 +8,5 @@
 - [x] Implement the `delete_stm` tool to be used by the model to remove specific entries when requested.
 - [x] Implement the `clear_stm` tool to auto remove all entries older than 35 days. This tool shouldn't be used by the model. Automatically run once on session start.
 - [x] Develop unit and integration tests for all tools.
-- [ ] Create/Update the documentation for the STM feature.
-- [ ] Ensure the STM instructions exposed to the model are clear and concise.
+- [x] Create/Update the documentation for the STM feature.
+- [x] Ensure the STM instructions exposed to the model are clear and concise.
