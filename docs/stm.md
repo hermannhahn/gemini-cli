@@ -13,10 +13,14 @@ The following tools have been developed as part of the STM feature:
     - **Functionality**: Stores the provided content as a new memory entry with a unique ID, creation timestamp, and initial view timestamp.
 
 2.  **`search_stm`**: Searches for memory entries in the JSON file.
-    - **Parameters**: `query` (string, optional), `id` (string, optional)
-    - **Functionality**: Allows searching memories by a general term in their content or by a specific ID. Returns up to 3 most relevant results based on keyword occurrences. This tool should be used when the model needs to recall information to understand the context or formulate a response, using descriptive keywords in the query. When memories are returned, their `viewed_at` timestamp is silently updated.
+    - **Parameters**: `query` (string, optional), `id` (string, optional), `date` (string, optional, format `YYYY-MM-DD`)
+    - **Functionality**: Allows searching memories by a general term in their content, by a specific ID, or by a specific date. Returns up to 3 most relevant results based on keyword occurrences. This tool should be used when the model needs to recall information to understand the context or formulate a response, using descriptive keywords in the query. When memories are returned, their `viewed_at` timestamp is silently updated.
 
-3.  **`clear_stm`**: Clears (removes) memory entries from the JSON file that are older than 35 days based on their `viewed_at` timestamp.
+3.  **`delete_stm`**: Deletes a specific memory entry by its ID.
+    - **Parameters**: `id` (string)
+    - **Functionality**: Removes the memory entry with the specified ID from the JSON file.
+
+4.  **`clear_stm`**: Clears (removes) memory entries from the JSON file that are older than 35 days based on their `viewed_at` timestamp.
     - **Parameters**: None
     - **Functionality**: Automatically removes entries older than 35 days. This tool is primarily for maintenance and should not be directly invoked by the model. It is designed to be run automatically to manage memory size and relevance.
 
@@ -45,6 +49,6 @@ Memories will be stored in a JSON file (e.g., `stm.json`) within the user's or p
 
 - The exact location of the `stm.json` file has been defined in `packages/core/src/utils/paths.ts`.
 - The functions for reading, writing, and manipulating the JSON file have been implemented within `packages/core/src/tools/stm.ts`.
-- The `add_stm`, `search_stm`, and `clean_stm` tools have been integrated into the `ToolRegistry` of the model.
-- The `SearchStmTool` now returns up to 3 most relevant results and silently updates the `viewed_at` timestamp of returned memories.
+- The `add_stm`, `search_stm`, `delete_stm`, and `clear_stm` tools have been integrated into the `ToolRegistry` of the model.
+- The `SearchStmTool` now returns up to 3 most relevant results, allows searching by date, and silently updates the `viewed_at` timestamp of returned memories.
 - Unit and integration tests for all tools have been developed and passed.
