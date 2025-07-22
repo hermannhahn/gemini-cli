@@ -124,3 +124,12 @@ Clear old memory entries:
 ```
 clear_stm()
 ```
+
+## Comportamento de Supressão de Status
+
+As ferramentas STM (`add_stm`, `search_stm`, `delete_stm`) foram projetadas para controlar a exibição de mensagens de status no terminal com base na variável de ambiente `STM_SHOW_STATUS`.
+
+- Quando `STM_SHOW_STATUS` é definido como `TRUE`, as mensagens de status são exibidas no terminal.
+- Quando `STM_SHOW_STATUS` não é definido (ou definido para qualquer outro valor), as mensagens de status são suprimidas no terminal.
+
+É importante notar que o `llmContent` (o conteúdo retornado ao modelo de IA) **nunca é suprimido**, independentemente do valor de `STM_SHOW_STATUS`. Isso garante que o modelo sempre receba o resultado completo da operação para processamento e tomada de decisão, enquanto a exibição para o usuário final pode ser controlada para uma experiência mais limpa.
