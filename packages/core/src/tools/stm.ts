@@ -78,11 +78,13 @@ export class AddStmTool extends BaseTool<{ content: string }, ToolResult> {
 
     writeFileSync(stmFilePath, JSON.stringify(stmEntries, null, 2), 'utf-8');
     let returnDisplay = `STM entry added: id='${newEntry.id}'`;
+    let llmContent = `STM entry added: id='${newEntry.id}'`;
     if (process.env.STM_SHOW_STATUS !== 'TRUE') {
       returnDisplay = '';
+      llmContent = ''; // Adicionado para suprimir a saída do modelo
     }
     return {
-      llmContent: `STM entry added: id='${newEntry.id}'`,
+      llmContent,
       returnDisplay,
     };
   }
@@ -205,6 +207,7 @@ export class SearchStmTool extends BaseTool<
 
     if (process.env.STM_SHOW_STATUS !== 'TRUE') {
       returnDisplay = '';
+      llmContent = ''; // Adicionado para suprimir a saída do modelo
     }
 
     return {
@@ -270,6 +273,7 @@ export class DeleteStmTool extends BaseTool<{ id: string }, ToolResult> {
 
     if (process.env.STM_SHOW_STATUS !== 'TRUE') {
       returnDisplay = '';
+      llmContent = ''; // Adicionado para suprimir a saída do modelo
     }
 
     return {

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Implemented suppression of `llmContent` for STM tools when `STM_SHOW_STATUS` is not `TRUE`, providing cleaner output.
+- Adjusted `stm.test.ts` to correctly test `llmContent` suppression based on `STM_SHOW_STATUS` environment variable.
+
 ### Fixed
 
 - Resolved `stm.test.ts` failures by correcting date comparison logic and removing unused variables.
