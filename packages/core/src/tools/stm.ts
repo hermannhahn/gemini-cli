@@ -33,7 +33,7 @@ export class AddStmTool extends BaseTool<{ content: string }, ToolResult> {
     super(
       'add_stm',
       'Add Short-Term Memory',
-      'Adds a temporary, contextual memory entry. Use for session-specific or project-related information (e.g., bugs, features, temporary decisions).',
+      'Use it to save memories that help maintain context between sessions. Notes, reminders, instructions, information, ideas, memories, or any information relevant to the user and your social interactions with them. Or if the user asks you to remember something.',
       Icon.LightBulb,
       {
         type: Type.OBJECT,
@@ -101,7 +101,7 @@ export class SearchStmTool extends BaseTool<
     super(
       'search_stm',
       'Search Short-Term Memory',
-      'Searches for relevant temporary memories. Use to recall session or project context, or to answer user questions based on stored STM entries.',
+      'Search for relevant or date-related memories. Use to find memories that help understand the context of the user request.',
       Icon.FileSearch,
       {
         type: Type.OBJECT,
@@ -225,7 +225,7 @@ export class DeleteStmTool extends BaseTool<{ id: string }, ToolResult> {
     super(
       'delete_stm',
       'Delete Short-Term Memory',
-      'Deletes a specific temporary memory entry by its ID. Use to remove irrelevant or outdated STM entries.',
+      'Deletes a specific temporary memory entry by its ID. Use to remove irrelevant or outdated STM entries or if the user requests deletion.',
       Icon.Trash,
       {
         type: Type.OBJECT,

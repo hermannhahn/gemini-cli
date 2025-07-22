@@ -230,7 +230,7 @@ ${INSTRUCTION_SECTION_HEADER}
       expect(memoryTool.name).toBe('save_instruction');
       expect(memoryTool.displayName).toBe('Save Instruction');
       expect(memoryTool.description).toContain(
-        'Saves a specific piece of information',
+        'Saves a permanent, immutable instruction for long-term memory.',
       );
       expect(memoryTool.schema).toBeDefined();
       expect(memoryTool.schema.name).toBe('save_instruction');

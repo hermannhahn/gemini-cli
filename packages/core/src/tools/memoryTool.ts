@@ -27,24 +27,24 @@ const memoryToolSchemaData: FunctionDeclaration = {
   },
 };
 
-const memoryToolDescription = '''
+const memoryToolDescription = `
 Saves a permanent, immutable instruction for long-term memory.
 
 Use this tool:
 
 - For general, lasting guidelines that shape your behavior or interaction style across all future sessions.
-- When the user explicitly asks you to remember something permanently (e.g., "Always use React with Hooks for new components").
+- When the user explicitly asks you to remember something permanently (e.g., "Always Always ask for permission before executing a command.").
 
 Do NOT use this tool:
 
-- For temporary or project-specific details; use STM tools (`add_stm`, `search_stm`, `delete_stm`) for those.
-- To store conversational context relevant only to the current session.
+- For temporary or project-specific details; use STM tools ('add_stm', 'search_stm', 'delete_stm') for those.
+- To store conversational context.
 - To save long, complex, or rambling texts.
 
 ## Parameters
 
-- `instruction` (string, required): The specific, concise instruction to remember permanently.
-''';
+- 'instruction' (string, required): The specific, concise instruction to remember permanently.
+`;
 
 export const GEMINI_CONFIG_DIR = '.gemini';
 export const DEFAULT_CONTEXT_FILENAME = 'GEMINI.md';
