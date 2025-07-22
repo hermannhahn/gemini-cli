@@ -10,4 +10,5 @@
 - [x] Develop unit and integration tests for all tools.
 - [x] Create/Update the documentation for the STM feature.
 - [x] Ensure the STM instructions exposed to the model are clear and concise.
+- [ ] Testar a funcionalidade de pesquisa e visualização de memórias após a correção da supressão de saída da ferramenta `search_stm`, garantindo que o resultado da pesquisa retorne para o modelo de IA (`llmContent`) mesmo quando o status de exibição (`returnDisplay`) estiver suprimido.
 - [ ] Investigate complete suppression of tool name and description display in the terminal when `STM_SHOW_STATUS` is false, without affecting `llmContent`.

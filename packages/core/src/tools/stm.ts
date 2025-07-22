@@ -206,7 +206,6 @@ export class SearchStmTool extends BaseTool<
 
     if (process.env.STM_SHOW_STATUS !== 'TRUE') {
       returnDisplay = '';
-      llmContent = ''; // Adicionado para suprimir a saída do modelo
     }
 
     return {
