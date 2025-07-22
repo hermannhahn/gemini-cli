@@ -23,14 +23,14 @@ import { ModifiableTool, ModifyContext } from './modifiable-tool.js';
 const memoryToolSchemaData: FunctionDeclaration = {
   name: 'save_instruction',
   description:
-    'Saves a permanent, immutable instruction for long-term memory. Use for general, lasting guidelines that shape behavior across all future sessions. Not for temporary or project-specific details; use STM for those.',
+    'Saves permanent, immutable instructions or information that are universally applicable across all contexts, projects, and conversations. Proactively use this tool to store lasting guidelines that should always be considered for any future request, without needing explicit user instruction.',
   parameters: {
     type: Type.OBJECT,
     properties: {
       instruction: {
         type: Type.STRING,
         description:
-          'The specific instruction or piece of information to remember. Should be a clear, self-contained statement.',
+          'The specific instruction or information to remember. Should be a clear, self-contained statement.',
       },
     },
     required: ['instruction'],
