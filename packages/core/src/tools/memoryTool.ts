@@ -30,7 +30,7 @@ const memoryToolSchemaData: FunctionDeclaration = {
       instruction: {
         type: 'string',
         description:
-          'The specific instruction or piece of information to remember. Should be a clear, self-contained statement.',
+          'The specific instruction or information to remember. Should be a clear, self-contained statement.',
       },
     },
     required: ['instruction'],

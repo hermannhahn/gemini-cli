@@ -33,14 +33,14 @@ export class AddStmTool extends BaseTool<{ content: string }, ToolResult> {
     super(
       'add_stm',
       'Add Short-Term Memory',
-      'Use it to save memories that help maintain context between sessions. Notes, reminders, instructions, information, ideas, memories, or any information relevant to the user and your social interactions with them. Or if the user asks you to remember something.',
+      'Use it to save memories to maintain context and enhance future interactions. Proactively record notes, reminders, instructions, ideas, and information relevant to the user and our conversations, reducing the need for repetition.',
       Icon.LightBulb,
       {
         type: Type.OBJECT,
         properties: {
           content: {
             type: Type.STRING,
-            description: 'The content of the STM entry.',
+            description: 'Memories or pieces of memories.',
           },
         },
         required: ['content'],
@@ -101,23 +101,22 @@ export class SearchStmTool extends BaseTool<
     super(
       'search_stm',
       'Search Short-Term Memory',
-      'Search for relevant or date-related memories. Use to find memories that help understand the context of the user request.',
+      'Searches for relevant memories to clarify or confirm the context of user requests. Use proactively when understanding is uncertain, and carefully evaluate results, as not all entries may be directly relevant.',
       Icon.FileSearch,
       {
         type: Type.OBJECT,
         properties: {
           query: {
             type: Type.STRING,
-            description: 'A general query to search for in STM entries.',
+            description: 'Memories keywords or phrases to search for',
           },
           id: {
             type: Type.STRING,
-            description: 'A specific ID to search for in STM entries.',
+            description: 'A specific ID to search for.',
           },
           date: {
             type: Type.STRING,
-            description:
-              'A specific date (YYYY-MM-DD) to search for in STM entries.',
+            description: 'A specific date (YYYY-MM-DD) to search for.',
           },
         },
       },
