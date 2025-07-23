@@ -1,6 +1,9 @@
 name: 'Release'
 
 on:
+  push:
+    branches:
+      - hermannhahn/main
   workflow_dispatch:
     inputs:
       version:
@@ -11,7 +14,7 @@ on:
         description: 'The branch or ref (full git sha) to release from.'
         required: true
         type: 'string'
-        default: 'main'
+        default: 'hermannhahn/main'
 
 jobs:
   release:
