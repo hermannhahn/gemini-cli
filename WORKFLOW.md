@@ -55,38 +55,33 @@ After a feature or fix is merged into `hermannhahn/develop` and a new release is
     git push origin hermannhahn/main # Updates your remote release branch
     ```
 
-2.  **Decide New Version:** Determine the new version number following Semantic Versioning (SemVer: `MAJOR.MINOR.PATCH`). For new packages on npm, start with `0.0.1`.
-
-3.  **Update Version & Tag:** On the `hermannhahn/main` branch, run `npm version <major|minor|patch>`. This command:
-    - Updates the `version` field in `package.json` (root) and `packages/cli/package.json`.
-    - Creates a new Git commit with the version update.
-    - Creates a new Git tag (e.g., `v0.0.1`).
+2.  **Create Tag:** Create the new version tag (e.g., `v0.0.3`) on the merge commit.
 
     ```bash
-    npm version patch # Example for a patch release
+    git tag v0.0.3 # Example for a patch release
     ```
 
-4.  **Push Tag:** Push the newly created tag to your remote GitHub repository.
+3.  **Push Tag:** Push the newly created tag to your remote GitHub repository.
 
     ```bash
     git push origin hermannhahn/main --tags
     ```
 
-5.  **Trigger Release Workflow:** Manually trigger the `Release` workflow in GitHub Actions. This can be done via the GitHub web interface or using the `gh` CLI.
+4.  **Trigger Release Workflow:** Manually trigger the `Release` workflow in GitHub Actions. This can be done via the GitHub web interface or using the `gh` CLI.
     - **Via GitHub Web Interface:**
       1.  Go to your repository on GitHub.
       2.  Navigate to the "Actions" tab.
       3.  Select the "Release" workflow from the left sidebar.
       4.  Click "Run workflow" (or "Run workflow from branch").
       5.  For "Use workflow from", select `hermannhahn/main`.
-      6.  For "version", enter the new version (e.g., `v0.0.1`).
+      6.  For "version", enter the new version (e.g., `v0.0.3`).
       7.  For "ref", enter `hermannhahn/main`.
       8.  Click "Run workflow".
 
     - **Via `gh` CLI:**
 
       ```bash
-      gh workflow run release.yml --ref hermannhahn/main -F version=v0.0.1 -F ref=hermannhahn/main
+      gh workflow run release.yml --ref hermannhahn/main -F version=v0.0.3 -F ref=hermannhahn/main
       ```
 
     **Outcome:** The workflow will:
