@@ -9,7 +9,7 @@
   "workspaces": [
     "packages/*"
   ],
-  "private": "false",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hermannhahn/gemini-cli.git"
