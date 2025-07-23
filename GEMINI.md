@@ -7,8 +7,9 @@ This document provides essential context and instructions for the Gemini AI assi
 - **Purpose:** Develop and maintain the Dev CLI, a personal command-line interface.
 - **Branching Strategy:**
   - `main`: Upstream base (mirror of official `google-gemini/gemini-cli`). Do not commit directly.
-  - `hermannhahn/main`: Main functional branch for personal development. Features are merged here.
-  - `hermannhahn/feat/feature-name`: Feature/fix development branches, merged into `hermannhahn/main` upon completion.
+  - `hermannhahn/main`: Release branch for personal development. Only stable features are merged here.
+  - `hermannhahn/develop`: Development branch for personal features and fixes. Features are merged here first.
+  - `hermannhahn/feat/feature-name`: Feature/fix development branches, merged into `hermannhahn/develop` upon completion.
 - **Key Files:**
   - `TODO.md`: Project tasks.
   - `CHANGELOG.md`: Project updates.
