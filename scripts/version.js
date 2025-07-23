@@ -31,15 +31,21 @@ if (!versionType) {
   process.exit(1);
 }
 
-// 2. Bump the version in the root and all workspace package.json files.
+// 2. Bump the version in the root package.json.
 run(`npm version ${versionType} --no-git-tag-version --allow-same-version`);
-run(
-  `npm version ${versionType} --workspaces --no-git-tag-version --allow-same-version`,
-);
 
 // 3. Get the new version number from the root package.json
 const rootPackageJsonPath = resolve(process.cwd(), 'package.json');
 const newVersion = readJson(rootPackageJsonPath).version;
+
+// Explicitly update the version in packages/cli/package.json
+const cliPackageJsonPath = resolve(process.cwd(), 'packages/cli/package.json');
+const cliPackageJson = readJson(cliPackageJsonPath);
+if (cliPackageJson.version !== newVersion) {
+  cliPackageJson.version = newVersion;
+  console.log(`Updated version in cli package to ${newVersion}`);
+  writeJson(cliPackageJsonPath, cliPackageJson);
+}
 
 // 4. Update the sandboxImageUri in the root package.json
 const rootPackageJson = readJson(rootPackageJsonPath);
@@ -51,8 +57,6 @@ if (rootPackageJson.config?.sandboxImageUri) {
 }
 
 // 5. Update the sandboxImageUri in the cli package.json
-const cliPackageJsonPath = resolve(process.cwd(), 'packages/cli/package.json');
-const cliPackageJson = readJson(cliPackageJsonPath);
 if (cliPackageJson.config?.sandboxImageUri) {
   cliPackageJson.config.sandboxImageUri =
     cliPackageJson.config.sandboxImageUri.replace(/:.*$/, `:${newVersion}`);
