@@ -43,6 +43,9 @@ jobs:
           npm run build:packages
           npm run prepare:package
 
+      - name: List bundle directory contents
+        run: ls -l bundle/
+
       - name: Create GitHub Release and Tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
