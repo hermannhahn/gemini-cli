@@ -1,5 +1,5 @@
 {
-  "name": "@google/gemini-cli",
+  "name": "@hahnd/gemini-dev-cli",
   "version": "0.0.1",
   "description": "Gemini Dev CLI - A personal command-line interface for developers, based on Google's Gemini CLI",
   "engines": {
