@@ -50,8 +50,8 @@ jobs:
           registry-url: 'https://registry.npmjs.org/'
           scope: '@hahnd'
 
-      - name: Publish @hahnd/gemini-dev-cli
-        run: npm publish --workspace=@hahnd/gemini-dev-cli --access public
+      - name: Publish @hahnd/gemini-dev
+        run: npm publish --workspace=@hahnd/gemini-dev --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
