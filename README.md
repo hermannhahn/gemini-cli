@@ -1,4 +1,4 @@
-# Gemini CLI
+# Gemini Dev CLI
 
 [![Gemini CLI CI](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml)
 [![Version](https://img.shields.io/npm/v/@google/gemini-cli)](https://www.npmjs.com/package/@google/gemini-cli)
@@ -6,35 +6,51 @@
 
 ![Gemini CLI Screenshot](./docs/assets/gemini-screenshot.png)
 
-Gemini CLI is an open-source AI agent that brings the power of Gemini directly into your terminal. It provides lightweight access to Gemini, giving you the most direct path from your prompt to our model.
+Este repositório contém o **Gemini Dev CLI**, um fork pessoal do [Gemini CLI oficial](https://github.com/google-gemini/gemini-cli). Nosso objetivo é estender e personalizar a ferramenta para fluxos de trabalho de desenvolvimento específicos, mantendo a compatibilidade para futuras atualizações do projeto original.
 
-## 🚀 Why Gemini CLI?
+O Gemini CLI é uma ferramenta de fluxo de trabalho de IA de linha de comando que se conecta às suas ferramentas, entende seu código e acelera seus fluxos de trabalho. Com ele, você pode:
 
-- **🎯 Free tier**: 60 requests/min and 1,000 requests/day with personal Google account
-- **🧠 Powerful Gemini 2.5 Pro**: Access to 1M token context window
-- **🔧 Built-in tools**: Google Search grounding, file operations, shell commands, web fetching
-- **🔌 Extensible**: MCP (Model Context Protocol) support for custom integrations
-- **💻 Terminal-first**: Designed for developers who live in the command line
-- **🛡️ Open source**: Apache 2.0 licensed
+- Query and edit large codebases in and beyond Gemini's 1M token context window.
+- Generate new apps from PDFs or sketches, using Gemini's multimodal capabilities.
+- Automate operational tasks, like querying pull requests or handling complex rebases.
+- Use tools and MCP servers to connect new capabilities, including [media generation with Imagen,
+  Veo or Lyria](https://github.com/GoogleCloudPlatform/vertex-ai-creative-studio/tree/main/experiments/mcp-genmedia)
+- Ground your queries with the [Google Search](https://ai.google.dev/gemini-api/docs/grounding)
+  tool, built into Gemini.
 
-## 📦 Installation
+## Quickstart
 
-### Quick Install
+You have two options to install Gemini CLI.
 
-#### Run instantly with npx
+### With Node
 
-```bash
-# Using npx (no installation required)
-npx https://github.com/google-gemini/gemini-cli
-```
+1.  **Pré-requisitos:** Certifique-se de ter o [Node.js versão 20](https://nodejs.org/en/download) ou superior instalado.
+2.  **Executar o CLI:** Execute o seguinte comando em seu terminal para instalar e usar o Gemini Dev CLI:
 
-#### Install globally with npm
+    ```bash
+    npm install -g @hahnd/gemini-dev
+    ```
+
+    Em seguida, execute o CLI de qualquer lugar:
 
 ```bash
 npm install -g @google/gemini-cli
 ```
 
-#### Install globally with Homebrew (macOS/Linux)
+```bash
+npm install -g @google/gemini-cli
+```
+
+Then, run the CLI from anywhere:
+
+```bash
+gemini
+```
+
+### With Homebrew
+
+1. **Prerequisites:** Ensure you have [Homebrew](https://brew.sh/) installed.
+2. **Install the CLI** Execute the following command in your terminal:
 
 ```bash
 brew install gemini-cli
@@ -88,195 +104,153 @@ Choose the authentication method that best fits your needs:
 gemini
 ```
 
-#### If you are using a paid Code Assist License from your organization, remember to set the Google Cloud Project
+### Common Configuration steps
 
-```bash
-# Set your Google Cloud Project
-export GOOGLE_CLOUD_PROJECT="YOUR_PROJECT_NAME"
-gemini
-```
+3. **Pick a color theme**
+4. **Authenticate:** When prompted, sign in with your personal Google account. This will grant you up to 60 model requests per minute and 1,000 model requests per day using Gemini.
 
-### Option 2: Gemini API Key
+Você está pronto para usar o Gemini Dev CLI!
 
-**✨ Best for:** Developers who need specific model control or paid tier access
+### Usar uma chave de API do Gemini:
 
-**Benefits:**
+A API Gemini oferece um nível gratuito com [100 solicitações por dia](https://ai.google.dev/gemini-api/docs/rate-limits#free-tier) usando o Gemini 2.5 Pro, controle sobre qual modelo você usa e acesso a limites de taxa mais altos (com um plano pago):
 
-- **Free tier**: 100 requests/day with Gemini 2.5 Pro
-- **Model selection**: Choose specific Gemini models
-- **Usage-based billing**: Upgrade for higher limits when needed
+1.  Gere uma chave em [Google AI Studio](https://aistudio.google.com/apikey).
+2.  Defina-a como uma variável de ambiente em seu terminal. Substitua `YOUR_API_KEY` pela sua chave gerada.
 
-```bash
-# Get your key from https://aistudio.google.com/apikey
-export GEMINI_API_KEY="YOUR_API_KEY"
-gemini
-```
+    ```bash
+    export GEMINI_API_KEY="YOUR_API_KEY"
+    ```
 
-### Option 3: Vertex AI
+3.  (Opcional) Atualize seu projeto da API Gemini para um plano pago na página da chave da API (desbloqueará automaticamente os [limites de taxa do Nível 1](https://ai.google.dev/gemini-api/docs/rate-limits#tier-1))
 
-**✨ Best for:** Enterprise teams and production workloads
+### Usar uma chave de API do Vertex AI:
 
-**Benefits:**
+A API Vertex AI oferece um [nível gratuito](https://cloud.google.com/vertex-ai/generative-ai/docs/start/express-mode/overview) usando o modo expresso para o Gemini 2.5 Pro, controle sobre qual modelo você usa e acesso a limites de taxa mais altos com uma conta de faturamento:
 
-- **Enterprise features**: Advanced security and compliance
-- **Scalable**: Higher rate limits with billing account
-- **Integration**: Works with existing Google Cloud infrastructure
+1.  Gere uma chave em [Google Cloud](https://cloud.google.com/vertex-ai/generative-ai/docs/start/api-keys).
+2.  Defina-a como uma variável de ambiente em seu terminal. Substitua `YOUR_API_KEY` pela sua chave gerada e defina GOOGLE_GENAI_USE_VERTEXAI como true
 
-```bash
-# Get your key from Google Cloud Console
-export GOOGLE_API_KEY="YOUR_API_KEY"
-export GOOGLE_GENAI_USE_VERTEXAI=true
-gemini
-```
+    ```bash
+    export GOOGLE_API_KEY="YOUR_API_KEY"
+    export GOOGLE_GENAI_USE_VERTEXAI=true
+    ```
 
-For Google Workspace accounts and other authentication methods, see the [authentication guide](./docs/cli/authentication.md).
+3.  (Opcional) Adicione uma conta de faturamento ao seu projeto para ter acesso a [limites de uso mais altos](https://cloud.google.com/vertex-ai/generative-ai/docs/quotas)
 
-## 🚀 Getting Started
+Para outros métodos de autenticação, incluindo contas do Google Workspace, consulte o guia de [autenticação](./docs/cli/authentication.md).
 
-### Basic Usage
+## Exemplos
 
-#### Start in current directory
+Uma vez que o CLI esteja em execução, você pode começar a interagir com o Gemini a partir do seu shell.
 
-```bash
-gemini
-```
+Você pode iniciar um projeto a partir de um novo diretório:
 
-#### Include multiple directories
-
-```bash
-gemini --include-directories ../lib,../docs
-```
-
-#### Use specific model
-
-```bash
-gemini -m gemini-2.5-flash
-```
-
-#### Non-interactive mode for scripts
-
-```bash
-gemini -p "Explain the architecture of this codebase"
-```
-
-### Quick Examples
-
-#### Start a new project
-
-````bash
+```sh
 cd new-project/
-gemini
-> Write me a Discord bot that answers questions using a FAQ.md file I will provide
+gemini-dev
+> Write me a Gemini Discord bot that answers questions using a FAQ.md file I will provide
+```
 
-#### Analyze existing code
-```bash
-git clone https://github.com/google-gemini/gemini-cli
+Ou trabalhar com um projeto existente:
+
+```sh
+git clone https://github.com/hermannhahn/gemini-cli
 cd gemini-cli
-gemini
+gemini-dev
 > Give me a summary of all of the changes that went in yesterday
-````
+```
 
-## 🔗 GitHub Integration
+### Próximos passos
 
-Integrate Gemini CLI directly into your GitHub workflows with the [**Gemini CLI GitHub Action**](https://github.com/google-github-actions/run-gemini-cli). Key features include:
+- Explore os **[Comandos CLI](./docs/cli/commands.md)** disponíveis.
+- Se você encontrar algum problema, revise o **[guia de solução de problemas](./docs/troubleshooting.md)**.
+- Para documentação mais abrangente, consulte a [documentação completa](./docs/index.md).
+- Dê uma olhada em algumas [tarefas populares](#popular-tasks) para mais inspiração.
+- Para detalhes sobre o fluxo de trabalho de desenvolvimento e contribuição, consulte o [WORKFLOW.md](./WORKFLOW.md).
 
-- **Pull Request Reviews**: Automatically review pull requests when they're opened.
-- **Issue Triage**: Automatically triage and label GitHub issues.
-- **On-demand Collaboration**: Mention `@gemini-cli` in issues and pull requests for assistance and task delegation.
-- **Custom Workflows**: Set up your own scheduled tasks and event-driven automations.
+### Solução de problemas
 
-## 📚 Documentation
+Dirija-se ao [guia de solução de problemas](docs/troubleshooting.md) se estiver tendo problemas.
 
-### Getting Started
+## Tarefas populares
 
-- [**Quickstart Guide**](./docs/cli/index.md) - Get up and running quickly
-- [**Authentication Setup**](./docs/cli/authentication.md) - Detailed auth configuration
-- [**Configuration Guide**](./docs/cli/configuration.md) - Settings and customization
-- [**Keyboard Shortcuts**](./docs/keyboard-shortcuts.md) - Productivity tips
+### Explorar uma nova base de código
 
-### Core Features
-
-- [**Commands Reference**](./docs/cli/commands.md) - All slash commands (`/help`, `/chat`, `/mcp`, etc.)
-- [**Checkpointing**](./docs/checkpointing.md) - Save and resume conversations
-- [**Memory Management**](./docs/tools/memory.md) - Using GEMINI.md context files
-- [**Token Caching**](./docs/cli/token-caching.md) - Optimize token usage
-
-### Tools & Extensions
-
-- [**Built-in Tools Overview**](./docs/tools/index.md)
-  - [File System Operations](./docs/tools/file-system.md)
-  - [Shell Commands](./docs/tools/shell.md)
-  - [Web Fetch & Search](./docs/tools/web-fetch.md)
-  - [Multi-file Operations](./docs/tools/multi-file.md)
-- [**MCP Server Integration**](./docs/tools/mcp-server.md) - Extend with custom tools
-- [**Custom Extensions**](./docs/extension.md) - Build your own commands
-
-### Advanced Topics
-
-- [**Architecture Overview**](./docs/architecture.md) - How Gemini CLI works
-- [**IDE Integration**](./docs/extension.md) - VS Code companion
-- [**Sandboxing & Security**](./docs/sandbox.md) - Safe execution environments
-- [**Enterprise Deployment**](./docs/deployment.md) - Docker, system-wide config
-- [**Telemetry & Monitoring**](./docs/telemetry.md) - Usage tracking
-- [**Tools API Development**](./docs/core/tools-api.md) - Create custom tools
-
-### Configuration & Customization
-
-- [**Settings Reference**](./docs/cli/configuration.md) - All configuration options
-- [**Theme Customization**](./docs/cli/themes.md) - Visual customization
-- [**.gemini Directory**](./docs/gemini-ignore.md) - Project-specific settings
-- [**Environment Variables**](./docs/cli/configuration.md#environment-variables)
-
-### Troubleshooting & Support
-
-- [**Troubleshooting Guide**](./docs/troubleshooting.md) - Common issues and solutions
-- [**FAQ**](./docs/troubleshooting.md#frequently-asked-questions) - Quick answers
-- Use `/bug` command to report issues directly from the CLI
-
-### Using MCP Servers
-
-Configure MCP servers in `~/.gemini/settings.json` to extend Gemini CLI with custom tools:
+Comece entrando em um repositório existente ou recém-clonado e executando `gemini-dev`.
 
 ```text
-> @github List my open pull requests
-> @slack Send a summary of today's commits to #dev channel
-> @database Run a query to find inactive users
+> Descreva as principais partes da arquitetura deste sistema.
 ```
 
-See the [MCP Server Integration guide](./docs/tools/mcp-server.md) for setup instructions.
+```text
+> What security mechanisms are in place?
+```
 
-## 🤝 Contributing
+```text
+> Provide a step-by-step dev onboarding doc for developers new to the codebase.
+```
 
-We welcome contributions! Gemini CLI is fully open source (Apache 2.0), and we encourage the community to:
+```text
+> Summarize this codebase and highlight the most interesting patterns or techniques I could learn from.
+```
 
-- Report bugs and suggest features
-- Improve documentation
-- Submit code improvements
-- Share your MCP servers and extensions
+```text
+> Identify potential areas for improvement or refactoring in this codebase, highlighting parts that appear fragile, complex, or hard to maintain.
+```
 
-See our [Contributing Guide](./CONTRIBUTING.md) for development setup, coding standards, and how to submit pull requests.
+```text
+> Which parts of this codebase might be challenging to scale or debug?
+```
 
-Check our [Official Roadmap](https://github.com/orgs/google-gemini/projects/11/) for planned features and priorities.
+```text
+> Generate a README section for the [module name] module explaining what it does and how to use it.
+```
 
-## 📖 Resources
+```text
+> What kind of error handling and logging strategies does the project use?
+```
 
-- **[Official Roadmap](./ROADMAP.md)** - See what's coming next
-- **[NPM Package](https://www.npmjs.com/package/@google/gemini-cli)** - Package registry
-- **[GitHub Issues](https://github.com/google-gemini/gemini-cli/issues)** - Report bugs or request features
-- **[Security Advisories](https://github.com/google-gemini/gemini-cli/security/advisories)** - Security updates
+```text
+> Which tools, libraries, and dependencies are used in this project?
+```
 
-### Uninstall
+### Trabalhar com seu código existente
 
-See the [Uninstall Guide](docs/Uninstall.md) for removal instructions.
+```text
+> Implemente um primeiro rascunho para o problema do GitHub #123.
+```
 
-## 📄 Legal
+```text
+> Ajude-me a migrar esta base de código para a versão mais recente do Java. Comece com um plano.
+```
 
-- **License**: [Apache License 2.0](LICENSE)
-- **Terms of Service**: [Terms & Privacy](./docs/tos-privacy.md)
-- **Security**: [Security Policy](SECURITY.md)
+### Automatizar seus fluxos de trabalho
 
----
+Use servidores MCP para integrar suas ferramentas de sistema local com sua suíte de colaboração empresarial.
 
-<p align="center">
-  Built with ❤️ by Google and the open source community
-</p>
+```text
+> Crie uma apresentação de slides mostrando o histórico do git dos últimos 7 dias, agrupado por recurso e membro da equipe.
+```
+
+```text
+> Crie um aplicativo web em tela cheia para um display de parede para mostrar nossos problemas mais interagidos do GitHub.
+```
+
+### Interagir com seu sistema
+
+```text
+> Converta todas as imagens neste diretório para png e renomeie-as para usar datas dos dados exif.
+```
+
+```text
+> Organize minhas faturas em PDF por mês de despesa.
+```
+
+### Desinstalar
+
+Dirija-se ao guia de [Desinstalação](docs/Uninstall.md) para instruções de desinstalação.
+
+## Termos de Serviço e Aviso de Privacidade
+
+Para detalhes sobre os termos de serviço e aviso de privacidade aplicáveis ao seu uso do Gemini CLI, consulte os [Termos de Serviço e Aviso de Privacidade](./docs/tos-privacy.md).
