@@ -48,10 +48,10 @@ jobs:
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org/'
-          scope: '@hermannhahn'
+          scope: '@hahnd'
 
-      - name: Publish @hermannhahn/dev-cli
-        run: npm publish --workspace=@hermannhahn/dev-cli --access public
+      - name: Publish @hahnd/dev-cli
+        run: npm publish --workspace=@hahnd/dev-cli --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
