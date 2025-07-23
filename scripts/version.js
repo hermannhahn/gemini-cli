@@ -31,7 +31,7 @@ if (!versionType) {
   process.exit(1);
 }
 
-// 2. Bump the version in the root and all workspace package.json files.
+// 2. Bump the version in the root package.json.
 run(`npm version ${versionType} --no-git-tag-version --allow-same-version`);
 
 // 3. Get all workspaces and filter out the one we don't want to version.
@@ -64,8 +64,6 @@ if (rootPackageJson.config?.sandboxImageUri) {
 }
 
 // 5. Update the sandboxImageUri in the cli package.json
-const cliPackageJsonPath = resolve(process.cwd(), 'packages/cli/package.json');
-const cliPackageJson = readJson(cliPackageJsonPath);
 if (cliPackageJson.config?.sandboxImageUri) {
   cliPackageJson.config.sandboxImageUri =
     cliPackageJson.config.sandboxImageUri.replace(/:.*$/, `:${newVersion}`);
