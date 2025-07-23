@@ -61,5 +61,3 @@ When a feature/fix is merged into `hermannhahn/main` and a new release is desire
 4. **Trigger Workflow:** Manually trigger the `Release` workflow in GitHub Actions (via UI or `gh workflow run`).
     - **Inputs:** `version` (e.g., `v0.0.1`), `ref` (`hermannhahn/main`).
     - **Outcome:** The workflow builds the CLI, creates the GitHub Release, attaches the executable, and publishes the `@hahnd/dev-cli` package to npm.
-
-**Note:** If a "tag already exists" error occurs during release, delete the remote tag (`git push --delete origin <tag_name>`) before retrying. If a "version already published" error occurs on npm, increment the version (e.g., from `0.0.1` to `0.0.2`).
