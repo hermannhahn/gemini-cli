@@ -49,6 +49,9 @@ jobs:
       - name: Check gh CLI version
         run: gh --version
 
+      - name: Update gh CLI
+        run: sudo apt-get update && sudo apt-get install -y gh
+
       - name: Create GitHub Release and Tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
