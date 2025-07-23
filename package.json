@@ -1,6 +1,7 @@
 {
   "name": "@hahnd/dev-cli",
-  "version": "0.0.3",
+  "version": "0.0.1",
+  "description": "Gemini Dev CLI - A personal command-line interface for developers, based on Google's Gemini CLI",
   "engines": {
     "node": ">=20.0.0"
   },
