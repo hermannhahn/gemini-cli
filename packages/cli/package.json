@@ -1,6 +1,6 @@
 {
-  "name": "@hahnd/gemini-dev",
-  "version": "0.0.1",
+  "name": "@hahnd/geminid",
+  "version": "0.0.0",
   "description": "Hermann Hahn's personal Gemini Dev CLI",
   "repository": {
     "type": "git",
@@ -9,7 +9,7 @@
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "gemini-dev": "bundle/gemini.js"
+    "geminid": "bundle/gemini.js"
   },
   "scripts": {
     "build": "node ../../scripts/build_package.js",
