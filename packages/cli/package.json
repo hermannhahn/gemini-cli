@@ -1,6 +1,6 @@
 {
   "name": "@hahnd/gemini-dev-cli",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Hermann Hahn's personal Gemini Dev CLI",
   "repository": {
     "type": "git",
