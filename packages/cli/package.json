@@ -9,7 +9,7 @@
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "dev-cli": "bundle/gemini.js"
+    "gemini-dev": "bundle/gemini.js"
   },
   "scripts": {
     "build": "node ../../scripts/build_package.js",
