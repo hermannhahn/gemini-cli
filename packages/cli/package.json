@@ -1,7 +1,7 @@
 {
-  "name": "@google/gemini-cli",
+  "name": "@hahnd/gemini-dev-cli",
   "version": "0.0.2",
-  "description": "Gemini CLI",
+  "description": "Hermann Hahn's personal Gemini Dev CLI",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/google-gemini/gemini-cli.git"
@@ -9,7 +9,7 @@
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "dev-cli": "bundle/gemini.js"
+    "gemini-dev": "bundle/gemini.js"
   },
   "scripts": {
     "build": "node ../../scripts/build_package.js",
