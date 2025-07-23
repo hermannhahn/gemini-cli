@@ -7,7 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-
 ## [0.0.2] - 2025-07-23
 
 ### Added
@@ -18,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Adjustments and refactorings in memory and STM tools, and `MemoryTool` description update.
 - Adjusted status suppression for STM tools.
-- Configured CLI package for npm publication as `@hahnd/dev-cli`.
+- Configured CLI package for npm publication as `@hahnd/gemini-dev`.
 
 ### Fixed
 
