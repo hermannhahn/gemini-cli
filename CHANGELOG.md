@@ -16,5 +16,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Configured CLI package for npm publication as `@hahnd/gemini-dev`.
+- Configured CLI package for npm publication as `@hahnd/geminid`.
 - Updated branching strategy and refactored documentation.
