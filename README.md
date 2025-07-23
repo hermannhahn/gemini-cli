@@ -4,11 +4,18 @@
 [![Version](https://img.shields.io/npm/v/@google/gemini-cli)](https://www.npmjs.com/package/@google/gemini-cli)
 [![License](https://img.shields.io/github/license/google-gemini/gemini-cli)](https://github.com/google-gemini/gemini-cli/blob/main/LICENSE)
 
-![Gemini CLI Screenshot](./docs/assets/gemini-screenshot.png)
-
----
-
-## English Version
+██████╗ ███████╗███╗ ███╗██╗███╗ ██╗██╗
+██╔════╝ ██╔════╝████╗ ████║██║████╗ ██║██║
+██║ ███╗█████╗ ██╔████╔██║██║██╔██╗ ██║██║
+██║ ██║██╔══╝ ██║╚██╔╝██║██║██║╚██╗██║██║
+╚██████╔╝███████╗██║ ╚═╝ ██║██║██║ ╚████║██║
+╚═════╝ ╚══════╝╚═╝ ╚═╝╚═╝╚═╝ ╚═══╝╚═╝
+██████╗ ███████╗██╗ ██╗
+██╔══██╗██╔════╝╚██╗ ██╔╝
+██║ ██║█████╗ ╚██ ██╔╝
+██║ ██║██╔══╝ ╚██ ██╔╝
+██████╔╝███████╗ ███║  
+ ╚═════╝ ╚══════╝ ╚══╝
 
 This repository contains the **Gemini Dev CLI**, a personal fork of the [official Gemini CLI](https://github.com/google-gemini/gemini-cli). Our goal is to extend and customize the tool for specific development workflows, while maintaining compatibility for future updates from the original project.
 
