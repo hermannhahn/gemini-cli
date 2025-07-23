@@ -6,8 +6,9 @@ This project is based on a fork of the official Gemini CLI repository, with the 
 
 - **main**: Upstream of the official Gemini CLI repository.
 - **hermannhahn/main**: Hermann Hahn's personal branch, containing the modifications and improvements developed by him. This branch is the main functional branch for testing and running the CLI.
-- **hermannhahn/tool/memory-tool**: Development branch for the memory tool improvement, which stores instructions for the Gemini agent.
-- **hermannhahn/feat/short-term-memory**: Development branch for the Short-Term Memory (STM) feature, which will provide tools to manage structured memories in a JSON file.
+- **hermannhahn/tool/memory-tool**: Development branch for the memory tool improvement, which stores instructions for the Gemini agent. (finished)
+- **hermannhahn/feat/short-term-memory**: Development branch for the Short-Term Memory (STM) feature, which will provide tools to manage structured memories in a JSON file. (in progress)
+- **hermannhahn/feat/microsoft-tts**: Next development branch.
 
 ## Additional Context
 
@@ -53,7 +54,7 @@ Keep in mind that the project has several markdown files that provide additional
 
 ## Building and running
 
-Before submitting any changes, it is crucial to validate them by running the full preflight check. This command will build the repository, run all tests, check for type errors, and lint the code.
+Before submitting any changes, it is crucial to validate them by running the full preflight check. This command will build the repository, run all tests, check for type errors, lint the code and fix all errors. After successful completion, update the [CHANGELOG.md](./CHANGELOG.md) and [TODO.md](./TODO.md), commit the changes and push to github. Restart CLI to apply changes.
 
 To run the full suite of checks, execute the following command:
 
