@@ -43,6 +43,18 @@ jobs:
           npm run build:packages
           npm run prepare:package
 
+      - name: Configure npm for publishing
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org/'
+          scope: '@hermannhahn'
+
+      - name: Publish @hermannhahn/dev-cli
+        run: npm publish --workspace=@hermannhahn/dev-cli --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: List bundle directory contents
         run: ls -l bundle/
 
