@@ -29,7 +29,6 @@ git push origin hermannhahn/main # Optional: to keep your remote fork updated
 ```bash
 git checkout hermannhahn/main # Make sure you are on your latest functional branch
 git checkout -b hermannhahn/feat/feature-name # Creates the new feature branch
-# ... Faça suas modificações e commits aqui ...
 ```
 
 ### 4. Finalizing and Integrating the Feature
@@ -37,7 +36,6 @@ git checkout -b hermannhahn/feat/feature-name # Creates the new feature branch
 ```bash
 git checkout hermannhahn/main
 git merge hermannhahn/feat/feature-name --no-ff # Merges the feature with an explicit merge commit
-git branch -d hermannhahn/feat/feature-name # Deletes the feature branch
 git push origin hermannhahn/main # Updates your remote fork with the new feature
 ```
 

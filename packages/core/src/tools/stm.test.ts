@@ -119,7 +119,7 @@ describe('STM Tools', () => {
       expect(mockStmContent[0].id).toMatch(/^00000000-0000-4000-8000-/); // Check UUID format
       expect(result.llmContent).toBe(
         process.env.STM_SHOW_STATUS === 'TRUE'
-          ? `STM entry added: id='${mockStmContent[0].id}'`
+          ? `memory entry added: id='${mockStmContent[0].id}'`
           : '',
       );
     });
@@ -186,7 +186,7 @@ describe('STM Tools', () => {
       );
       expect(result.llmContent).toBe(
         process.env.STM_SHOW_STATUS === 'TRUE'
-          ? `STM entry added: id='${mockStmContent[1].id}'`
+          ? `memory entry added: id='${mockStmContent[1].id}'`
           : '',
       );
     });
@@ -267,9 +267,7 @@ describe('STM Tools', () => {
         new AbortController().signal,
       );
       expect(result.llmContent).toBe(
-        process.env.STM_SHOW_STATUS === 'TRUE'
-          ? 'STM file does not exist. No entries to search.'
-          : '',
+        'Memory file does not exist. No entries to search.',
       );
     });
 
@@ -336,10 +334,55 @@ describe('STM Tools', () => {
         new AbortController().signal,
       );
       expect(result.llmContent).toBe(
-        process.env.STM_SHOW_STATUS === 'TRUE'
-          ? 'No matching STM entries found.'
-          : '',
+        'No matching memories entries found. The search returns occurrences containing all query words, case-insensitive. Consider trying broader terms or alternative queries to locate the memory.',
       );
+    });
+
+    it('should return llmContent even when STM_SHOW_STATUS is FALSE', async () => {
+      process.env.STM_SHOW_STATUS = 'FALSE';
+      const tool = new SearchStmTool();
+      const result = await tool.execute(
+        { query: 'apple' },
+        new AbortController().signal,
+      );
+      const parsedResult = JSON.parse(result.llmContent as string);
+      expect(parsedResult).toHaveLength(3);
+      expect(parsedResult.map((entry: StmEntry) => entry.id)).toEqual([
+        'id-1',
+        'id-2',
+        'id-4',
+      ]);
+    });
+
+    it('should search by keywords and return relevant entries', async () => {
+      mockStmContent = [
+        {
+          id: 'id-5',
+          content: 'My favorite color is blue.',
+          created_at: formatDateToYYYYMMDD(new Date()),
+          viewed_at: formatDateToYYYYMMDD(new Date()),
+        },
+        {
+          id: 'id-6',
+          content: 'The sky is blue and the ocean is vast.',
+          created_at: formatDateToYYYYMMDD(new Date()),
+          viewed_at: formatDateToYYYYMMDD(new Date()),
+        },
+        {
+          id: 'id-7',
+          content: 'Red apples are delicious.',
+          created_at: formatDateToYYYYMMDD(new Date()),
+          viewed_at: formatDateToYYYYMMDD(new Date()),
+        },
+      ];
+      const tool = new SearchStmTool();
+      const result = await tool.execute(
+        { query: 'color blue' },
+        new AbortController().signal,
+      );
+      const parsedResult = JSON.parse(result.llmContent as string);
+      expect(parsedResult).toHaveLength(1);
+      expect(parsedResult.map((entry: StmEntry) => entry.id)).toEqual(['id-5']);
     });
   });
 
@@ -402,7 +445,7 @@ describe('STM Tools', () => {
         new AbortController().signal,
       );
       expect(result.llmContent).toBe(
-        'STM file does not exist. No entries to delete.',
+        'Memory file does not exist. No entries to delete.',
       );
     });
 
