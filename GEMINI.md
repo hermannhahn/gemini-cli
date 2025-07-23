@@ -1,244 +1,65 @@
-# Hermann Hahn's Personal Gemini CLI Project Overview
-
-This project is based on a fork of the official Gemini CLI repository, with the primary goal of modifying, implementing, and improving the CLI experience for personal use. The project is structured to allow for easy integration of future updates from the official repository while maintaining a clear workflow for development and testing.
-
-## Branches
-
-- **main**: Upstream of the official Gemini CLI repository.
-- **hermannhahn/main**: Hermann Hahn's personal branch, containing the modifications and improvements developed by him. This branch is the main functional branch for testing and running the CLI.
-- **hermannhahn/tool/memory-tool**: Development branch for the memory tool improvement, which stores instructions for the Gemini agent. (finished)
-- **hermannhahn/feat/short-term-memory**: Development branch for the Short-Term Memory (STM) feature, which will provide tools to manage structured memories in a JSON file. (in progress)
-- **hermannhahn/feat/microsoft-tts**: Next development branch.
-
-## Additional Context
-
-This document describes the branch workflow adopted for Hermann Hahn's personal project, a fork of `@google/gemini-cli`. The objective is to allow modifications, increments, and fixes for personal use, while maintaining the ability to integrate future updates from the official repository.
-
-**Implemented Features:**
-
-- **Ferramenta de Memória de Longo Prazo:** Implementação de uma ferramenta para armazenar instruções e informações permanentes para o agente Gemini.
-- **Memória de Curto Prazo (STM):** Funcionalidade para gerenciar memórias estruturadas em um arquivo JSON, permitindo ao agente manter contexto entre sessões.
-
-**Important Notes for the Gemini Assistant:**
-
-- Hermann uses the compiled version of the CLI in development (`npm start`) to interact. Any code changes require recompilation, error correction, commit, and CLI restart for changes to be applied and tested.
-- The Gemini Assistant has full access to the CLI code and can make direct changes to improve the user experience.
-- **Saída da Ferramenta (`ToolResult`):** É crucial entender a distinção entre `llmContent` e `returnDisplay` dentro do `ToolResult` retornado pelas ferramentas:
-  - `llmContent`: Este conteúdo é sempre enviado ao modelo de IA para processamento e tomada de decisão. Ele nunca é suprimido, garantindo que o modelo tenha todas as informações necessárias.
-  - `returnDisplay`: Este conteúdo é usado para a exibição no terminal para o usuário final. Sua exibição pode ser controlada por variáveis de ambiente (como `STM_SHOW_STATUS`) para suprimir ou exibir mensagens de status, proporcionando uma experiência de usuário mais limpa sem afetar a capacidade do modelo de raciocinar sobre a saída da ferramenta.
-
-**STM Feature Documentation:**
-
-- For details on the Short-Term Memory (STM) feature, refer to [docs/stm.md](./docs/stm.md).
-
-**Project Markdown Files:**
-
-Keep in mind that the project has several markdown files that provide additional context and documentation, keep them updated as the project evolves:
-
-- To track pending project tasks, refer to [TODO.md](./TODO.md).
-- For the changelog and updates, refer to [CHANGELOG.md](./CHANGELOG.md).
-- Documentation can be found in the `docs` directory.
-- For the workflow details and branch management, refer to [WORKFLOW.md](./WORKFLOW.md).
-
-## Branching Strategy
-
-1.  **`main` (from Hermann's fork): The Upstream Base**
-    - **Purpose:** This branch should be an exact mirror of the `main` branch from the official repository (`https://github.com/google-gemini/gemini-cli.git`). It serves as the synchronization point for updates from the original project.
-    - **Usage:** Never commit directly to this branch.
-    - **Maintenance:** Regularly synchronize with `upstream/main`.
-
-2.  **`hermannhahn/main`: Your Main Functional Branch**
-    - **Purpose:** This is Hermann's primary working branch, containing all developed and tested functionalities. It is the "complete" and functional version of the personal project.
-    - **Usage:** Base for creating new features and for running the CLI with personal modifications.
-    - **Maintenance:** Integrate updates from `main` (from the fork) to stay current with the upstream.
-
-3.  **`hermannhahn/feat/feature-name`: Feature Development Branches**
-    - **Purpose:** Isolate the development of a specific feature, bug fix, or experiment.
-    - **Usage:** Created from `hermannhahn/main`. All development and commits for a specific feature occur here.
-    - **Maintenance:** After completion and testing of the feature, it is merged back into `hermannhahn/main` and the feature branch is deleted.
-
-## Building and running
-
-Before submitting any changes, it is crucial to validate them by running the full preflight check. This command will build the repository, run all tests, check for type errors, lint the code and fix all errors. After successful completion, update the [CHANGELOG.md](./CHANGELOG.md) and [TODO.md](./TODO.md), commit the changes and push to github. Restart CLI to apply changes.
-
-To run the full suite of checks, execute the following command:
-
-```bash
-npm run preflight
-```
-
-This single command ensures that your changes meet all the quality gates of the project. While you can run the individual steps (`build`, `test`, `typecheck`, `lint`) separately, it is highly recommended to use `npm run preflight` to ensure a comprehensive validation.
-
-## Writing Tests
-
-This project uses **Vitest** as its primary testing framework. When writing tests, aim to follow existing patterns. Key conventions include:
-
-### Test Structure and Framework
-
-- **Framework**: All tests are written using Vitest (`describe`, `it`, `expect`, `vi`).
-- **File Location**: Test files (`*.test.ts` for logic, `*.test.tsx` for React components) are co-located with the source files they test.
-- **Configuration**: Test environments are defined in `vitest.config.ts` files.
-- **Setup/Teardown**: Use `beforeEach` and `afterEach`. Commonly, `vi.resetAllMocks()` is called in `beforeEach` and `vi.restoreAllMocks()` in `afterEach`.
-
-### Mocking (`vi` from Vitest)
-
-- **ES Modules**: Mock with `vi.mock('module-name', async (importOriginal) => { ... })`. Use `importOriginal` for selective mocking.
-  - _Example_: `vi.mock('os', async (importOriginal) => { const actual = await importOriginal(); return { ...actual, homedir: vi.fn() }; });`
-- **Mocking Order**: For critical dependencies (e.g., `os`, `fs`) that affect module-level constants, place `vi.mock` at the _very top_ of the test file, before other imports.
-- **Hoisting**: Use `const myMock = vi.hoisted(() => vi.fn());` if a mock function needs to be defined before its use in a `vi.mock` factory.
-- **Mock Functions**: Create with `vi.fn()`. Define behavior with `mockImplementation()`, `mockResolvedValue()`, or `mockRejectedValue()`.
-- **Spying**: Use `vi.spyOn(object, 'methodName')`. Restore spies with `mockRestore()` in `afterEach`.
-
-### Commonly Mocked Modules
-
-- **Node.js built-ins**: `fs`, `fs/promises`, `os` (especially `os.homedir()`), `path`, `child_process` (`execSync`, `spawn`).
-- **External SDKs**: `@google/genai`, `@modelcontextprotocol/sdk`.
-- **Internal Project Modules**: Dependencies from other project packages are often mocked.
-
-### React Component Testing (CLI UI - Ink)
-
-- Use `render()` from `ink-testing-library`.
-- Assert output with `lastFrame()`.
-- Wrap components in necessary `Context.Provider`s.
-- Mock custom React hooks and complex child components using `vi.mock()`.
-
-### Asynchronous Testing
-
-- Use `async/await`.
-- For timers, use `vi.useFakeTimers()`, `vi.advanceTimersByTimeAsync()`, `vi.runAllTimersAsync()`.
-- Test promise rejections with `await expect(promise).rejects.toThrow(...)`.
-
-### General Guidance
-
-- When adding tests, first examine existing tests to understand and conform to established conventions.
-- Pay close attention to the mocks at the top of existing test files; they reveal critical dependencies and how they are managed in a test environment.
-
-## Git Repo
-
-The main branch for this project is called "main"
-
-## JavaScript/TypeScript
-
-When contributing to this React, Node, and TypeScript codebase, please prioritize the use of plain JavaScript objects with accompanying TypeScript interface or type declarations over JavaScript class syntax. This approach offers significant advantages, especially concerning interoperability with React and overall code maintainability.
-
-### Preferring Plain Objects over Classes
-
-JavaScript classes, by their nature, are designed to encapsulate internal state and behavior. While this can be useful in some object-oriented paradigms, it often introduces unnecessary complexity and friction when working with React's component-based architecture. Here's why plain objects are preferred:
-
-- Seamless React Integration: React components thrive on explicit props and state management. Classes' tendency to store internal state directly within instances can make prop and state propagation harder to reason about and maintain. Plain objects, on the other hand, are inherently immutable (when used thoughtfully) and can be easily passed as props, simplifying data flow and reducing unexpected side effects.
-
-- Reduced Boilerplate and Increased Conciseness: Classes often promote the use of constructors, this binding, getters, setters, and other boilerplate that can unnecessarily bloat code. TypeScript interface and type declarations provide powerful static type checking without the runtime overhead or verbosity of class definitions. This allows for more succinct and readable code, aligning with JavaScript's strengths in functional programming.
-
-- Enhanced Readability and Predictability: Plain objects, especially when their structure is clearly defined by TypeScript interfaces, are often easier to read and understand. Their properties are directly accessible, and there's no hidden internal state or complex inheritance chains to navigate. This predictability leads to fewer bugs and a more maintainable codebase.
-
-- Simplified Immutability: While not strictly enforced, plain objects encourage an immutable approach to data. When you need to modify an object, you typically create a new one with the desired changes, rather than mutating the original. This pattern aligns perfectly with React's reconciliation process and helps prevent subtle bugs related to shared mutable state.
-
-- Better Serialization and Deserialization: Plain JavaScript objects are naturally easy to serialize to JSON and deserialize back, which is a common requirement in web development (e.g., for API communication or local storage). Classes, with their methods and prototypes, can complicate this process.
-
-### Embracing ES Module Syntax for Encapsulation
-
-Rather than relying on Java-esque private or public class members, which can be verbose and sometimes limit flexibility, we strongly prefer leveraging ES module syntax (`import`/`export`) for encapsulating private and public APIs.
-
-- Clearer Public API Definition: With ES modules, anything that is exported is part of the public API of that module, while anything not exported is inherently private to that module. This provides a very clear and explicit way to define what parts of your code are meant to be consumed by other modules.
-
-- Enhanced Testability (Without Exposing Internals): By default, unexported functions or variables are not accessible from outside the module. This encourages you to test the public API of your modules, rather than their internal implementation details. If you find yourself needing to spy on or stub an unexported function for testing purposes, it's often a "code smell" indicating that the function might be a good candidate for extraction into its own separate, testable module with a well-defined public API. This promotes a more robust and maintainable testing strategy.
-
-- Reduced Coupling: Explicitly defined module boundaries through import/export help reduce coupling between different parts of your codebase. This makes it easier to refactor, debug, and understand individual components in isolation.
-
-### Avoiding `any` Types and Type Assertions; Preferring `unknown`
-
-TypeScript's power lies in its ability to provide static type checking, catching potential errors before your code runs. To fully leverage this, it's crucial to avoid the `any` type and be judicious with type assertions.
-
-- **The Dangers of `any`**: Using any effectively opts out of TypeScript's type checking for that particular variable or expression. While it might seem convenient in the short term, it introduces significant risks:
-  - **Loss of Type Safety**: You lose all the benefits of type checking, making it easy to introduce runtime errors that TypeScript would otherwise have caught.
-  - **Reduced Readability and Maintainability**: Code with `any` types is harder to understand and maintain, as the expected type of data is no longer explicitly defined.
-  - **Masking Underlying Issues**: Often, the need for any indicates a deeper problem in the design of your code or the way you're interacting with external libraries. It's a sign that you might need to refine your types or refactor your code.
-
-- **Preferring `unknown` over `any`**: When you absolutely cannot determine the type of a value at compile time, and you're tempted to reach for any, consider using unknown instead. unknown is a type-safe counterpart to any. While a variable of type unknown can hold any value, you must perform type narrowing (e.g., using typeof or instanceof checks, or a type assertion) before you can perform any operations on it. This forces you to handle the unknown type explicitly, preventing accidental runtime errors.
-
-  ```
-  function processValue(value: unknown) {
-     if (typeof value === 'string') {
-        // value is now safely a string
-        console.log(value.toUpperCase());
-     } else if (typeof value === 'number') {
-        // value is now safely a number
-        console.log(value * 2);
-     }
-     // Without narrowing, you cannot access properties or methods on 'value'
-     // console.log(value.someProperty); // Error: Object is of type 'unknown'.
-  }
-  ```
-
-- **Type Assertions (`as Type`) - Use with Caution**: Type assertions tell the TypeScript compiler, "Trust me, I know what I'm doing; this is definitely of this type." While there are legitimate use cases (e.g., when dealing with external libraries that don't have perfect type definitions, or when you have more information than the compiler), they should be used sparingly and with extreme caution.
-  - **Bypassing Type Checking**: Like `any`, type assertions bypass TypeScript's safety checks. If your assertion is incorrect, you introduce a runtime error that TypeScript would not have warned you about.
-  - **Code Smell in Testing**: A common scenario where `any` or type assertions might be tempting is when trying to test "private" implementation details (e.g., spying on or stubbing an unexported function within a module). This is a strong indication of a "code smell" in your testing strategy and potentially your code structure. Instead of trying to force access to private internals, consider whether those internal details should be refactored into a separate module with a well-defined public API. This makes them inherently testable without compromising encapsulation.
-
-### Embracing JavaScript's Array Operators
-
-To further enhance code cleanliness and promote safe functional programming practices, leverage JavaScript's rich set of array operators as much as possible. Methods like `.map()`, `.filter()`, `.reduce()`, `.slice()`, `.sort()`, and others are incredibly powerful for transforming and manipulating data collections in an immutable and declarative way.
-
-Using these operators:
-
-- Promotes Immutability: Most array operators return new arrays, leaving the original array untouched. This functional approach helps prevent unintended side effects and makes your code more predictable.
-- Improves Readability: Chaining array operators often lead to more concise and expressive code than traditional for loops or imperative logic. The intent of the operation is clear at a glance.
-- Facilitates Functional Programming: These operators are cornerstones of functional programming, encouraging the creation of pure functions that take inputs and produce outputs without causing side effects. This paradigm is highly beneficial for writing robust and testable code that pairs well with React.
-
-By consistently applying these principles, we can maintain a codebase that is not only efficient and performant but also a joy to work with, both now and in the future.
-
-## React (mirrored and adjusted from [react-mcp-server](https://github.com/facebook/react/blob/4448b18760d867f9e009e810571e7a3b8930bb19/compiler/packages/react-mcp-server/src/index.ts#L376C1-L441C94))
-
-### Role
-
-You are a React assistant that helps users write more efficient and optimizable React code. You specialize in identifying patterns that enable React Compiler to automatically apply optimizations, reducing unnecessary re-renders and improving application performance.
-
-### Follow these guidelines in all code you produce and suggest
-
-Use functional components with Hooks: Do not generate class components or use old lifecycle methods. Manage state with useState or useReducer, and side effects with useEffect (or related Hooks). Always prefer functions and Hooks for any new component logic.
-
-Keep components pure and side-effect-free during rendering: Do not produce code that performs side effects (like subscriptions, network requests, or modifying external variables) directly inside the component's function body. Such actions should be wrapped in useEffect or performed in event handlers. Ensure your render logic is a pure function of props and state.
-
-Respect one-way data flow: Pass data down through props and avoid any global mutations. If two components need to share data, lift that state up to a common parent or use React Context, rather than trying to sync local state or use external variables.
-
-Never mutate state directly: Always generate code that updates state immutably. For example, use spread syntax or other methods to create new objects/arrays when updating state. Do not use assignments like state.someValue = ... or array mutations like array.push() on state variables. Use the state setter (setState from useState, etc.) to update state.
-
-Accurately use useEffect and other effect Hooks: whenever you think you could useEffect, think and reason harder to avoid it. useEffect is primarily only used for synchronization, for example synchronizing React with some external state. IMPORTANT - Don't setState (the 2nd value returned by useState) within a useEffect as that will degrade performance. When writing effects, include all necessary dependencies in the dependency array. Do not suppress ESLint rules or omit dependencies that the effect's code uses. Structure the effect callbacks to handle changing values properly (e.g., update subscriptions on prop changes, clean up on unmount or dependency change). If a piece of logic should only run in response to a user action (like a form submission or button click), put that logic in an event handler, not in a useEffect. Where possible, useEffects should return a cleanup function.
-
-Follow the Rules of Hooks: Ensure that any Hooks (useState, useEffect, useContext, custom Hooks, etc.) are called unconditionally at the top level of React function components or other Hooks. Do not generate code that calls Hooks inside loops, conditional statements, or nested helper functions. Do not call Hooks in non-component functions or outside the React component rendering context.
-
-Use refs only when necessary: Avoid using useRef unless the task genuinely requires it (such as focusing a control, managing an animation, or integrating with a non-React library). Do not use refs to store application state that should be reactive. If you do use refs, never write to or read from ref.current during the rendering of a component (except for initial setup like lazy initialization). Any ref usage should not affect the rendered output directly.
-
-Prefer composition and small components: Break down UI into small, reusable components rather than writing large monolithic components. The code you generate should promote clarity and reusability by composing components together. Similarly, abstract repetitive logic into custom Hooks when appropriate to avoid duplicating code.
-
-Optimize for concurrency: Assume React may render your components multiple times for scheduling purposes (especially in development with Strict Mode). Write code that remains correct even if the component function runs more than once. For instance, avoid side effects in the component body and use functional state updates (e.g., setCount(c => c + 1)) when updating state based on previous state to prevent race conditions. Always include cleanup functions in effects that subscribe to external resources. Don't write useEffects for "do this when this changes" side effects. This ensures your generated code will work with React's concurrent rendering features without issues.
-
-Optimize to reduce network waterfalls - Use parallel data fetching wherever possible (e.g., start multiple requests at once rather than one after another). Leverage Suspense for data loading and keep requests co-located with the component that needs the data. In a server-centric approach, fetch related data together in a single request on the server side (using Server Components, for example) to reduce round trips. Also, consider using caching layers or global fetch management to avoid repeating identical requests.
-
-Rely on React Compiler - useMemo, useCallback, and React.memo can be omitted if React Compiler is enabled. Avoid premature optimization with manual memoization. Instead, focus on writing clear, simple components with direct data flow and side-effect-free render functions. Let the React Compiler handle tree-shaking, inlining, and other performance enhancements to keep your code base simpler and more maintainable.
-
-Design for a good user experience - Provide clear, minimal, and non-blocking UI states. When data is loading, show lightweight placeholders (e.g., skeleton screens) rather than intrusive spinners everywhere. Handle errors gracefully with a dedicated error boundary or a friendly inline message. Where possible, render partial data as it becomes available rather than making the user wait for everything. Suspense allows you to declare the loading states in your component tree in a natural way, preventing “flash” states and improving perceived performance.
-
-### Process
-
-1. Analyze the user's code for optimization opportunities:
-   - Check for React anti-patterns that prevent compiler optimization
-   - Look for component structure issues that limit compiler effectiveness
-   - Think about each suggestion you are making and consult React docs for best practices
-
-2. Provide actionable guidance:
-   - Explain specific code changes with clear reasoning
-   - Show before/after examples when suggesting changes
-   - Only suggest changes that meaningfully improve optimization potential
-
-### Optimization Guidelines
-
-- State updates should be structured to enable granular updates
-- Side effects should be isolated and dependencies clearly defined
-
-## Comments policy
-
-Only write high-value comments if at all. Avoid talking to the user through comments.
-
-## General style requirements
-
-Use hyphens instead of underscores in flag names (e.g. `my-flag` instead of `my_flag`).
+# Dev CLI Project Context for Gemini Agent
+
+This document provides essential context and instructions for the Gemini AI assisting in the development of the **Dev CLI**. This project is a personal fork of the official Gemini CLI, focused on custom modifications and improvements for personal use, while maintaining compatibility for upstream updates.
+
+## Project Structure & Workflow
+
+- **Purpose:** Develop and maintain the Dev CLI, a personal command-line interface.
+- **Branching Strategy:**
+    - `main`: Upstream base (mirror of official `google-gemini/gemini-cli`). Do not commit directly.
+    - `hermannhahn/main`: Main functional branch for personal development. Features are merged here.
+    - `hermannhahn/feat/feature-name`: Feature/fix development branches, merged into `hermannhahn/main` upon completion.
+- **Key Files:**
+    - `TODO.md`: Project tasks.
+    - `CHANGELOG.md`: Project updates.
+    - `WORKFLOW.md`: Development workflow details.
+    - `docs/`: Project documentation.
+
+## Implemented Features
+
+- **Long-Term Memory (LTM):** Tool for permanent instructions/information storage.
+- **Short-Term Memory (STM):** Manages structured memories in a JSON file for session context.
+
+## Instructions for Gemini Agent
+
+- **Development Environment:** Hermann uses `npm start` for development. Code changes require recompilation, error correction, commit, and CLI restart for testing.
+- **ToolResult Handling:**
+    - `llmContent`: Always sent to the AI model for processing. Never suppressed.
+    - `returnDisplay`: Used for terminal display. Can be suppressed by `STM_SHOW_STATUS` environment variable for cleaner UI, without affecting model reasoning.
+- **Code Quality & Standards:**
+    - **Build & Test:** Always run `npm run preflight` to validate changes (build, test, typecheck, lint, fix errors).
+    - **Testing:** Use Vitest. Test files (`*.test.ts`, `*.test.tsx`) are co-located with source. Follow existing mocking patterns (`vi.mock`, `vi.fn`, `vi.spyOn`).
+    - **JavaScript/TypeScript:**
+        - Prefer plain JavaScript objects with TypeScript interfaces/types over classes.
+        - Use ES module syntax (`import`/`export`) for encapsulation (private/public APIs).
+        - Avoid `any` types; prefer `unknown` with type narrowing.
+        - Embrace JavaScript array operators (`.map`, `.filter`, etc.) for immutability and readability.
+    - **React (CLI UI - Ink):**
+        - Use functional components with Hooks (`useState`, `useReducer`, `useEffect`).
+        - Components must be pure and side-effect-free during rendering (side effects in `useEffect` or event handlers).
+        - Update state immutably.
+        - Follow Rules of Hooks (unconditional calls at top level).
+        - Use `useRef` only when necessary.
+        - Prefer composition and small components.
+        - Optimize for concurrency (code works if component runs multiple times).
+        - Optimize for network waterfalls (parallel fetching, Suspense).
+        - Rely on React Compiler (avoid manual `useMemo`, `useCallback`, `React.memo` if compiler is enabled).
+        - Design for good user experience (minimal UI states, graceful error handling).
+- **Comments Policy:** Only high-value comments, explaining *why*. Avoid conversational comments.
+- **General Style:** Use hyphens for flag names (e.g., `my-flag`).
+
+## Git Repository
+
+- The main branch for this project is `main`.
+
+## Release Process (Automated via GitHub Actions)
+
+When a feature/fix is merged into `hermannhahn/main` and a new release is desired:
+1. **Decide New Version:** Determine `MAJOR.MINOR.PATCH` based on changes.
+2. **Update Version & Tag:** Run `npm version <major|minor|patch>` on `hermannhahn/main`. This updates `package.json`, creates a version commit, and a Git tag.
+3. **Push Tag:** Execute `git push origin hermannhahn/main --tags` to push the new tag to GitHub.
+4. **Trigger Workflow:** Manually trigger the `Release` workflow in GitHub Actions (via UI or `gh workflow run`).
+    - **Inputs:** `version` (e.g., `v0.0.1`), `ref` (`hermannhahn/main`).
+    - **Outcome:** The workflow builds the CLI, creates the GitHub Release, attaches the executable, and publishes the `@hahnd/dev-cli` package to npm.
+
+**Note:** If a "tag already exists" error occurs during release, delete the remote tag (`git push --delete origin <tag_name>`) before retrying. If a "version already published" error occurs on npm, increment the version (e.g., from `0.0.1` to `0.0.2`).
