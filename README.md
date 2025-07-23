@@ -2,18 +2,18 @@
 
 [![Gemini CLI CI](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml)
 
- ██████╗ ███████╗███╗   ███╗██╗███╗   ██╗██╗
-██╔════╝ ██╔════╝████╗ ████║██║████╗  ██║██║
-██║  ███╗█████╗  ██╔████╔██║██║██╔██╗ ██║██║
-██║   ██║██╔══╝  ██║╚██╔╝██║██║██║╚██╗██║██║
+██████╗ ███████╗███╗ ███╗██╗███╗ ██╗██╗
+██╔════╝ ██╔════╝████╗ ████║██║████╗ ██║██║
+██║ ███╗█████╗ ██╔████╔██║██║██╔██╗ ██║██║
+██║ ██║██╔══╝ ██║╚██╔╝██║██║██║╚██╗██║██║
 ╚██████╔╝███████╗██║ ╚═╝ ██║██║██║ ╚████║██║
- ╚═════╝ ╚══════╝╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝
-        ██████╗ ███████╗██╗      ██╗
-        ██╔══██╗██╔════╝╚██╗    ██╔╝
-        ██║  ██║█████╗   ╚██   ██╔╝ 
-        ██║  ██║██╔══╝    ╚██ ██╔╝
-        ██████╔╝███████╗    ███║   
-        ╚═════╝ ╚══════╝    ╚══╝   
+╚═════╝ ╚══════╝╚═╝ ╚═╝╚═╝╚═╝ ╚═══╝╚═╝
+██████╗ ███████╗██╗ ██╗
+██╔══██╗██╔════╝╚██╗ ██╔╝
+██║ ██║█████╗ ╚██ ██╔╝
+██║ ██║██╔══╝ ╚██ ██╔╝
+██████╔╝███████╗ ███║  
+ ╚═════╝ ╚══════╝ ╚══╝
 
 This repository contains the **Gemini Dev CLI**, a personal fork of the [official Gemini CLI](https://github.com/google-gemini/gemini-cli). Our goal is to extend and customize the tool for specific development workflows, while maintaining compatibility for future updates from the original project.
 
