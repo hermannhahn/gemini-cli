@@ -1,13 +1,12 @@
-# Gemini CLI
+# Gemini Dev CLI
 
 [![Gemini CLI CI](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml)
 
 ![Gemini CLI Screenshot](./docs/assets/gemini-screenshot.png)
 
-This repository contains the Gemini CLI, a command-line AI workflow tool that connects to your
-tools, understands your code and accelerates your workflows.
+Este repositório contém o **Gemini Dev CLI**, um fork pessoal do [Gemini CLI oficial](https://github.com/google-gemini/gemini-cli). Nosso objetivo é estender e personalizar a ferramenta para fluxos de trabalho de desenvolvimento específicos, mantendo a compatibilidade para futuras atualizações do projeto original.
 
-With the Gemini CLI you can:
+O Gemini CLI é uma ferramenta de fluxo de trabalho de IA de linha de comando que se conecta às suas ferramentas, entende seu código e acelera seus fluxos de trabalho. Com ele, você pode:
 
 - Query and edit large codebases in and beyond Gemini's 1M token context window.
 - Generate new apps from PDFs or sketches, using Gemini's multimodal capabilities.
@@ -23,24 +22,24 @@ You have two options to install Gemini CLI.
 
 ### With Node
 
-1. **Prerequisites:** Ensure you have [Node.js version 20](https://nodejs.org/en/download) or higher installed.
-2. **Run the CLI:** Execute the following command in your terminal:
+1.  **Pré-requisitos:** Certifique-se de ter o [Node.js versão 20](https://nodejs.org/en/download) ou superior instalado.
+2.  **Executar o CLI:** Execute o seguinte comando em seu terminal para instalar e usar o Gemini Dev CLI:
 
-   ```bash
-   npx https://github.com/google-gemini/gemini-cli
-   ```
+    ```bash
+    npm install -g @hahnd/gemini-dev
+    ```
 
-   Or install it with:
+    Em seguida, execute o CLI de qualquer lugar:
 
-   ```bash
-   npm install -g @google/gemini-cli
-   ```
+```bash
+npm install -g @google/gemini-cli
+```
 
-   Then, run the CLI from anywhere:
+Then, run the CLI from anywhere:
 
-   ```bash
-   gemini
-   ```
+```bash
+gemini
+```
 
 ### With Homebrew
 
@@ -62,80 +61,78 @@ You have two options to install Gemini CLI.
 3. **Pick a color theme**
 4. **Authenticate:** When prompted, sign in with your personal Google account. This will grant you up to 60 model requests per minute and 1,000 model requests per day using Gemini.
 
-You are now ready to use the Gemini CLI!
+Você está pronto para usar o Gemini Dev CLI!
 
-### Use a Gemini API key:
+### Usar uma chave de API do Gemini:
 
-The Gemini API provides a free tier with [100 requests per day](https://ai.google.dev/gemini-api/docs/rate-limits#free-tier) using Gemini 2.5 Pro, control over which model you use, and access to higher rate limits (with a paid plan):
+A API Gemini oferece um nível gratuito com [100 solicitações por dia](https://ai.google.dev/gemini-api/docs/rate-limits#free-tier) usando o Gemini 2.5 Pro, controle sobre qual modelo você usa e acesso a limites de taxa mais altos (com um plano pago):
 
-1. Generate a key from [Google AI Studio](https://aistudio.google.com/apikey).
-2. Set it as an environment variable in your terminal. Replace `YOUR_API_KEY` with your generated key.
+1.  Gere uma chave em [Google AI Studio](https://aistudio.google.com/apikey).
+2.  Defina-a como uma variável de ambiente em seu terminal. Substitua `YOUR_API_KEY` pela sua chave gerada.
 
-   ```bash
-   export GEMINI_API_KEY="YOUR_API_KEY"
-   ```
+    ```bash
+    export GEMINI_API_KEY="YOUR_API_KEY"
+    ```
 
-3. (Optionally) Upgrade your Gemini API project to a paid plan on the API key page (will automatically unlock [Tier 1 rate limits](https://ai.google.dev/gemini-api/docs/rate-limits#tier-1))
+3.  (Opcional) Atualize seu projeto da API Gemini para um plano pago na página da chave da API (desbloqueará automaticamente os [limites de taxa do Nível 1](https://ai.google.dev/gemini-api/docs/rate-limits#tier-1))
 
-### Use a Vertex AI API key:
+### Usar uma chave de API do Vertex AI:
 
-The Vertex AI API provides a [free tier](https://cloud.google.com/vertex-ai/generative-ai/docs/start/express-mode/overview) using express mode for Gemini 2.5 Pro, control over which model you use, and access to higher rate limits with a billing account:
+A API Vertex AI oferece um [nível gratuito](https://cloud.google.com/vertex-ai/generative-ai/docs/start/express-mode/overview) usando o modo expresso para o Gemini 2.5 Pro, controle sobre qual modelo você usa e acesso a limites de taxa mais altos com uma conta de faturamento:
 
-1. Generate a key from [Google Cloud](https://cloud.google.com/vertex-ai/generative-ai/docs/start/api-keys).
-2. Set it as an environment variable in your terminal. Replace `YOUR_API_KEY` with your generated key and set GOOGLE_GENAI_USE_VERTEXAI to true
+1.  Gere uma chave em [Google Cloud](https://cloud.google.com/vertex-ai/generative-ai/docs/start/api-keys).
+2.  Defina-a como uma variável de ambiente em seu terminal. Substitua `YOUR_API_KEY` pela sua chave gerada e defina GOOGLE_GENAI_USE_VERTEXAI como true
 
-   ```bash
-   export GOOGLE_API_KEY="YOUR_API_KEY"
-   export GOOGLE_GENAI_USE_VERTEXAI=true
-   ```
+    ```bash
+    export GOOGLE_API_KEY="YOUR_API_KEY"
+    export GOOGLE_GENAI_USE_VERTEXAI=true
+    ```
 
-3. (Optionally) Add a billing account on your project to get access to [higher usage limits](https://cloud.google.com/vertex-ai/generative-ai/docs/quotas)
+3.  (Opcional) Adicione uma conta de faturamento ao seu projeto para ter acesso a [limites de uso mais altos](https://cloud.google.com/vertex-ai/generative-ai/docs/quotas)
 
-For other authentication methods, including Google Workspace accounts, see the [authentication](./docs/cli/authentication.md) guide.
+Para outros métodos de autenticação, incluindo contas do Google Workspace, consulte o guia de [autenticação](./docs/cli/authentication.md).
 
-## Examples
+## Exemplos
 
-Once the CLI is running, you can start interacting with Gemini from your shell.
+Uma vez que o CLI esteja em execução, você pode começar a interagir com o Gemini a partir do seu shell.
 
-You can start a project from a new directory:
+Você pode iniciar um projeto a partir de um novo diretório:
 
 ```sh
 cd new-project/
-gemini
+gemini-dev
 > Write me a Gemini Discord bot that answers questions using a FAQ.md file I will provide
 ```
 
-Or work with an existing project:
+Ou trabalhar com um projeto existente:
 
 ```sh
-git clone https://github.com/google-gemini/gemini-cli
+git clone https://github.com/hermannhahn/gemini-cli
 cd gemini-cli
-gemini
+gemini-dev
 > Give me a summary of all of the changes that went in yesterday
 ```
 
-### Next steps
+### Próximos passos
 
-- Learn how to [contribute to or build from the source](./CONTRIBUTING.md).
-- Explore the available **[CLI Commands](./docs/cli/commands.md)**.
-- If you encounter any issues, review the **[troubleshooting guide](./docs/troubleshooting.md)**.
-- For more comprehensive documentation, see the [full documentation](./docs/index.md).
-- Take a look at some [popular tasks](#popular-tasks) for more inspiration.
-- Check out our **[Official Roadmap](./ROADMAP.md)**
+- Explore os **[Comandos CLI](./docs/cli/commands.md)** disponíveis.
+- Se você encontrar algum problema, revise o **[guia de solução de problemas](./docs/troubleshooting.md)**.
+- Para documentação mais abrangente, consulte a [documentação completa](./docs/index.md).
+- Dê uma olhada em algumas [tarefas populares](#popular-tasks) para mais inspiração.
+- Para detalhes sobre o fluxo de trabalho de desenvolvimento e contribuição, consulte o [WORKFLOW.md](./WORKFLOW.md).
 
-### Troubleshooting
+### Solução de problemas
 
-Head over to the [troubleshooting guide](docs/troubleshooting.md) if you're
-having issues.
+Dirija-se ao [guia de solução de problemas](docs/troubleshooting.md) se estiver tendo problemas.
 
-## Popular tasks
+## Tarefas populares
 
-### Explore a new codebase
+### Explorar uma nova base de código
 
-Start by `cd`ing into an existing or newly-cloned repository and running `gemini`.
+Comece entrando em um repositório existente ou recém-clonado e executando `gemini-dev`.
 
 ```text
-> Describe the main pieces of this system's architecture.
+> Descreva as principais partes da arquitetura deste sistema.
 ```
 
 ```text
@@ -170,42 +167,42 @@ Start by `cd`ing into an existing or newly-cloned repository and running `gemini
 > Which tools, libraries, and dependencies are used in this project?
 ```
 
-### Work with your existing code
+### Trabalhar com seu código existente
 
 ```text
-> Implement a first draft for GitHub issue #123.
+> Implemente um primeiro rascunho para o problema do GitHub #123.
 ```
 
 ```text
-> Help me migrate this codebase to the latest version of Java. Start with a plan.
+> Ajude-me a migrar esta base de código para a versão mais recente do Java. Comece com um plano.
 ```
 
-### Automate your workflows
+### Automatizar seus fluxos de trabalho
 
-Use MCP servers to integrate your local system tools with your enterprise collaboration suite.
-
-```text
-> Make me a slide deck showing the git history from the last 7 days, grouped by feature and team member.
-```
+Use servidores MCP para integrar suas ferramentas de sistema local com sua suíte de colaboração empresarial.
 
 ```text
-> Make a full-screen web app for a wall display to show our most interacted-with GitHub issues.
-```
-
-### Interact with your system
-
-```text
-> Convert all the images in this directory to png, and rename them to use dates from the exif data.
+> Crie uma apresentação de slides mostrando o histórico do git dos últimos 7 dias, agrupado por recurso e membro da equipe.
 ```
 
 ```text
-> Organize my PDF invoices by month of expenditure.
+> Crie um aplicativo web em tela cheia para um display de parede para mostrar nossos problemas mais interagidos do GitHub.
 ```
 
-### Uninstall
+### Interagir com seu sistema
 
-Head over to the [Uninstall](docs/Uninstall.md) guide for uninstallation instructions.
+```text
+> Converta todas as imagens neste diretório para png e renomeie-as para usar datas dos dados exif.
+```
 
-## Terms of Service and Privacy Notice
+```text
+> Organize minhas faturas em PDF por mês de despesa.
+```
 
-For details on the terms of service and privacy notice applicable to your use of Gemini CLI, see the [Terms of Service and Privacy Notice](./docs/tos-privacy.md).
+### Desinstalar
+
+Dirija-se ao guia de [Desinstalação](docs/Uninstall.md) para instruções de desinstalação.
+
+## Termos de Serviço e Aviso de Privacidade
+
+Para detalhes sobre os termos de serviço e aviso de privacidade aplicáveis ao seu uso do Gemini CLI, consulte os [Termos de Serviço e Aviso de Privacidade](./docs/tos-privacy.md).
