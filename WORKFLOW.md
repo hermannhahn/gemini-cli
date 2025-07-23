@@ -88,7 +88,7 @@ After a feature or fix is merged into `hermannhahn/develop` and a new release is
     - Build the CLI.
     - Create the GitHub Release associated with the tag.
     - Attach the compiled executable (`bundle/gemini.js`) to the release.
-    - Publish the `@hahnd/gemini-dev` package to npm.
+    - Publish the `@hahnd/geminid` package to npm.
 
 **Troubleshooting Release Issues:**
 
