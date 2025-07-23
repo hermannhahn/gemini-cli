@@ -119,7 +119,7 @@ describe('STM Tools', () => {
       expect(mockStmContent[0].id).toMatch(/^00000000-0000-4000-8000-/); // Check UUID format
       expect(result.llmContent).toBe(
         process.env.STM_SHOW_STATUS === 'TRUE'
-          ? `STM entry added: id='${mockStmContent[0].id}'`
+          ? `memory entry added: id='${mockStmContent[0].id}'`
           : '',
       );
     });
@@ -186,7 +186,7 @@ describe('STM Tools', () => {
       );
       expect(result.llmContent).toBe(
         process.env.STM_SHOW_STATUS === 'TRUE'
-          ? `STM entry added: id='${mockStmContent[1].id}'`
+          ? `memory entry added: id='${mockStmContent[1].id}'`
           : '',
       );
     });
@@ -267,9 +267,7 @@ describe('STM Tools', () => {
         new AbortController().signal,
       );
       expect(result.llmContent).toBe(
-        process.env.STM_SHOW_STATUS === 'TRUE'
-          ? 'STM file does not exist. No entries to search.'
-          : '',
+        'Memory file does not exist. No entries to search.',
       );
     });
 
@@ -336,9 +334,7 @@ describe('STM Tools', () => {
         new AbortController().signal,
       );
       expect(result.llmContent).toBe(
-        process.env.STM_SHOW_STATUS === 'TRUE'
-          ? 'No matching STM entries found.'
-          : '',
+        'No matching memories entries found. The search returns occurrences containing all query words, case-insensitive. Consider trying broader terms or alternative queries to locate the memory.',
       );
     });
 
@@ -418,7 +414,7 @@ describe('STM Tools', () => {
         new AbortController().signal,
       );
       expect(result.llmContent).toBe(
-        'STM file does not exist. No entries to delete.',
+        'Memory file does not exist. No entries to delete.',
       );
     });
 
