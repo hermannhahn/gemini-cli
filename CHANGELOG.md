@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Concluída a implementação da funcionalidade de Short-Term Memory (STM), incluindo ferramentas para adicionar, pesquisar e deletar memórias.
+
 ### Fixed
 
 - Corrigida a supressão de saída da ferramenta `search_stm` para garantir que o `llmContent` seja sempre retornado ao modelo.
