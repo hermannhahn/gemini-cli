@@ -165,10 +165,25 @@ export class SearchStmTool extends BaseTool<
       results = stmEntries.filter((entry) => entry.created_at === args.date);
     } else if (args.query) {
       const lowerCaseQuery = args.query.toLowerCase();
+      const lowerCaseQueryWords = lowerCaseQuery
+        .split(/\s+/)
+        .filter((word) => word.length > 0); // Divide a query em palavras
       const scoredEntries = stmEntries.map((entry) => {
         let score = 0;
-        if (entry.content.toLowerCase().includes(lowerCaseQuery)) {
-          score += 1; // Score for content matches
+        const lowerCaseContent = entry.content.toLowerCase();
+
+        // Verifica se todas as palavras da query estão presentes no conteúdo
+        const allWordsPresent = lowerCaseQueryWords.every((word) =>
+          lowerCaseContent.includes(word),
+        );
+
+        if (allWordsPresent) {
+          score += 1; // Pontua se todas as palavras estiverem presentes
+        }
+
+        // Opcional: Adicionar pontuação baseada em correspondência exata da frase para priorizar
+        if (lowerCaseContent.includes(lowerCaseQuery)) {
+          score += 0.5; // Pontuação extra para correspondência exata da frase
         }
         return { entry, score };
       });

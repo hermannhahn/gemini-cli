@@ -353,6 +353,37 @@ describe('STM Tools', () => {
         'id-4',
       ]);
     });
+
+    it('should search by keywords and return relevant entries', async () => {
+      mockStmContent = [
+        {
+          id: 'id-5',
+          content: 'My favorite color is blue.',
+          created_at: formatDateToYYYYMMDD(new Date()),
+          viewed_at: formatDateToYYYYMMDD(new Date()),
+        },
+        {
+          id: 'id-6',
+          content: 'The sky is blue and the ocean is vast.',
+          created_at: formatDateToYYYYMMDD(new Date()),
+          viewed_at: formatDateToYYYYMMDD(new Date()),
+        },
+        {
+          id: 'id-7',
+          content: 'Red apples are delicious.',
+          created_at: formatDateToYYYYMMDD(new Date()),
+          viewed_at: formatDateToYYYYMMDD(new Date()),
+        },
+      ];
+      const tool = new SearchStmTool();
+      const result = await tool.execute(
+        { query: 'color blue' },
+        new AbortController().signal,
+      );
+      const parsedResult = JSON.parse(result.llmContent as string);
+      expect(parsedResult).toHaveLength(1);
+      expect(parsedResult.map((entry: StmEntry) => entry.id)).toEqual(['id-5']);
+    });
   });
 
   describe('DeleteStmTool', () => {
