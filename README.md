@@ -1,21 +1,6 @@
 # Gemini Dev CLI
 
-[![Gemini CLI CI](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/npm/v/@google/gemini-cli)](https://www.npmjs.com/package/@google/gemini-cli)
-[![License](https://img.shields.io/github/license/google-gemini/gemini-cli)](https://github.com/google-gemini/gemini-cli/blob/main/LICENSE)
-
-██████╗ ███████╗███╗ ███╗██╗███╗ ██╗██╗
-██╔════╝ ██╔════╝████╗ ████║██║████╗ ██║██║
-██║ ███╗█████╗ ██╔████╔██║██║██╔██╗ ██║██║
-██║ ██║██╔══╝ ██║╚██╔╝██║██║██║╚██╗██║██║
-╚██████╔╝███████╗██║ ╚═╝ ██║██║██║ ╚████║██║
-╚═════╝ ╚══════╝╚═╝ ╚═╝╚═╝╚═╝ ╚═══╝╚═╝
-██████╗ ███████╗██╗ ██╗
-██╔══██╗██╔════╝╚██╗ ██╔╝
-██║ ██║█████╗ ╚██ ██╔╝
-██║ ██║██╔══╝ ╚██ ██╔╝
-██████╔╝███████╗ ███║  
- ╚═════╝ ╚══════╝ ╚══╝
+[![Gemini CLI CI](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml) ![Gemini CLI Screenshot](./docs/assets/gemini-screenshot.png)
 
 This repository contains the **Gemini Dev CLI**, a personal fork of the [official Gemini CLI](https://github.com/google-gemini/gemini-cli). Our goal is to extend and customize the tool for specific development workflows, while maintaining compatibility for future updates from the original project.
 
@@ -27,19 +12,26 @@ The Gemini CLI is a command-line AI workflow tool that connects to your tools, u
 - Use tools and MCP servers to connect new capabilities, including [media generation with Imagen, Veo, or Lyria](https://github.com/GoogleCloudPlatform/vertex-ai-creative-studio/tree/main/experiments/mcp-genmedia).
 - Ground your queries with the [Google Search](https://ai.google.dev/gemini-api/docs/grounding) tool, built into Gemini.
 
+## Custom Features
+
+This personal fork of the Gemini CLI includes the following custom features:
+
+- **Long-Term Memory (LTM):** A tool for permanent instructions and information storage, allowing the AI to retain key details across sessions.
+- **Short-Term Memory (STM):** Manages structured memories in a JSON file, providing session-specific context and enhancing interaction continuity.
+
 ### Quickstart
 
 1.  **Prerequisites:** Ensure you have [Node.js version 20](https://nodejs.org/en/download) or higher installed.
 2.  **Run the CLI:** Execute the following command in your terminal to install and use the Gemini Dev CLI:
 
     ```bash
-    npm install -g @hahnd/gemini-dev
+    npm install -g @hahnd/geminid
     ```
 
     Then, run the CLI from anywhere:
 
     ```bash
-    gemini-dev
+    geminid
     ```
 
 3.  **Pick a color theme**
@@ -84,7 +76,7 @@ You can start a project from a new directory:
 
 ```sh
 cd new-project/
-gemini-dev
+geminid
 > Write me a Gemini Discord bot that answers questions using a FAQ.md file I will provide
 ```
 
@@ -93,7 +85,7 @@ Or work with an an existing project:
 ```sh
 git clone https://github.com/hermannhahn/gemini-cli
 cd gemini-cli
-gemini-dev
+geminid
 > Give me a summary of all of the changes that went in yesterday
 ```
 
@@ -113,7 +105,7 @@ Head over to the [troubleshooting guide](docs/troubleshooting.md) if you're havi
 
 #### Explore a new codebase
 
-Start by `cd`ing into an existing or newly-cloned repository and running `gemini-dev`.
+Start by entering an existing or newly cloned repository and running `geminid`.
 
 ```text
 > Describe the main pieces of this system's architecture.
