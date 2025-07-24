@@ -16,6 +16,8 @@ on:
         type: string
         default: 'hermannhahn/main'
 
+run-name: Release ${{ inputs.version || github.ref_name }}
+
 jobs:
   release:
     runs-on: ubuntu-latest
