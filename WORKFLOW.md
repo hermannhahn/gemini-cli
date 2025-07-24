@@ -61,15 +61,9 @@ git merge username/develop --no-ff # Merges the development branch into the rele
 git push origin username/main # Updates your remote release branch
 ```
 
-3.  **Update Version:** Run `npm version <major|minor|patch>` on `username/main`. This updates `package.json`, creates a version commit.
+3.  **Update Version & Tag:** Run `npm version <major|minor|patch>` on `username/main`. This updates `package.json`, creates a version commit, and creates a Git tag. If a tag for the desired version already exists locally, delete it first: `git tag -d <tag_name>`.
 
-4.  **Create Tag:** Create the new version tag (e.g., `v0.0.3`) on the merge commit.
-
-```bash
-git tag v0.0.3 # Example for a patch release
-```
-
-5.  **Push Tag:** Push the newly created tag to your remote GitHub repository.
+4.  **Push Tag:** Push the newly created tag to your remote GitHub repository.
 
 ```bash
 git push origin username/main --tags
@@ -85,6 +79,15 @@ git push origin username/main --tags
 - Publish the package to npm.
 
 7. Go back to `username/develop` branch.
+
+8. **Synchronize Development Branch Version:** After a successful release, update the `package.json` version in `username/develop` to match the newly released version.
+
+```bash
+git checkout username/develop
+npm version <released_version> --no-git-tag-version
+git add package.json && git commit -m "chore: Update package.json to released version"
+git push origin username/develop
+```
 
 **Troubleshooting Release Issues:**
 
