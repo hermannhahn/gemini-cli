@@ -16,6 +16,8 @@ on:
         type: 'string'
         default: 'hermannhahn/main'
 
+run-name: Release ${{ inputs.version || github.ref_name }}
+
 jobs:
   release:
     if: startsWith(github.ref, 'refs/tags/v') # Only run if the ref is a tag starting with v
