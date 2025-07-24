@@ -61,7 +61,7 @@ git merge username/develop --no-ff # Merges the development branch into the rele
 git push origin username/main # Updates your remote release branch
 ```
 
-3.  **Update Version:** Run `npm version <major|minor|patch>` on `username/main`. This updates `package.json`, creates a version commit.
+3.  **Update Version:** If a tag for the desired version already exists locally, delete it first: `git tag -d <tag_name>`. Then, run `npm version <major|minor|patch>` on `username/main`. This updates `package.json`, creates a version commit.
 
 4.  **Create Tag:** Create the new version tag (e.g., `v0.0.3`) on the merge commit.
 
