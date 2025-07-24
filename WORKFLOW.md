@@ -62,11 +62,11 @@ git push origin username/main # Updates your remote release branch
 ```
 
 3.  **Update Version & Tag:**
-    *   Run the automated script to update versions and create the tag:
-        ```bash
-        npm run release:update-versions -- <new_version>
-        ```
-    *   If a tag for the desired version already exists locally, delete it first: `git tag -d <tag_name>`.
+    - Run the automated script to update versions and create the tag:
+      ```bash
+      npm run release:update-versions -- <new_version>
+      ```
+    - If a tag for the desired version already exists locally, delete it first: `git tag -d <tag_name>`.
 
 4.  **Push Tag:** Push the newly created tag to your remote GitHub repository.
 
