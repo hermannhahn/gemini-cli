@@ -75,11 +75,7 @@ git tag v0.0.3 # Example for a patch release
 git push origin username/main --tags
 ```
 
-6.  **Trigger Release Workflow:** Manually trigger the `Release` workflow in GitHub Actions. This can be done via the GitHub web interface or using the `gh` CLI.
-
-```bash
-gh workflow run release.yml --ref username/main -F version=v0.0.3 -F ref=username/main
-```
+6.  **Trigger Release Workflow:** The `Release` workflow in GitHub Actions is automatically triggered upon pushing to `username/main`.
 
 **Outcome:** The workflow will:
 
