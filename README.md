@@ -72,21 +72,12 @@ For other authentication methods, including Google Workspace accounts, see the [
 
 Once the CLI is running, you can start interacting with Gemini from your shell.
 
-You can start a project from a new directory:
+You can start from any directory:
 
 ```sh
 cd new-project/
 geminid
 > Write me a Gemini Discord bot that answers questions using a FAQ.md file I will provide
-```
-
-Or work with an an existing project:
-
-```sh
-git clone https://github.com/hermannhahn/gemini-cli
-cd gemini-cli
-geminid
-> Give me a summary of all of the changes that went in yesterday
 ```
 
 ### Next steps
@@ -95,7 +86,7 @@ geminid
 - If you encounter any issues, review the **[troubleshooting guide](./docs/troubleshooting.md)**.
 - For more comprehensive documentation, see the [full documentation](./docs/index.md).
 - Take a look at some [popular tasks](#popular-tasks) for more inspiration.
-- For details on the development workflow and contribution, consult the [WORKFLOW.md](./WORKFLOW.md).
+- For project development overview and details, consult the [DEVELOPMENT.md](./DEVELOPMENT.md).
 
 ### Troubleshooting
 
