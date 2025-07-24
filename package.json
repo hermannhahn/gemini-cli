@@ -9,7 +9,6 @@
   "workspaces": [
     "packages/*"
   ],
-  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hermannhahn/gemini-cli.git"
@@ -50,7 +49,7 @@
     "clean": "node scripts/clean.js"
   },
   "bin": {
-    "gemini": "bundle/gemini.js"
+    "geminid": "bundle/geminid.js"
   },
   "files": [
     "bundle/",
