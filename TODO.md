@@ -1,3 +1,3 @@
 ## TODO List
 
-- No pending tasks.
+- Implement Narrator feature as described in `docs/features/narrator.md`.
