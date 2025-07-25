@@ -42,7 +42,7 @@ try {
   try {
     execSync(`git tag -d v${newVersion}`);
     console.log(`Deleted existing local tag v${newVersion}.`);
-  } catch (tagError) {
+  } catch (_tagError) {
     // Ignore error if tag doesn't exist
   }
 
