@@ -18,6 +18,7 @@ This personal fork of the Gemini CLI includes the following custom features:
 
 - **Long-Term Memory (LTM):** A tool for permanent instructions and information storage, allowing the AI to retain key details across sessions.
 - **Short-Term Memory (STM):** Manages structured memories in a JSON file, providing session-specific context and enhancing interaction continuity.
+- **Narrator:** Provides audio feedback for the CLI, with modes for AI actions and response summaries.
 
 ### Quickstart
 
