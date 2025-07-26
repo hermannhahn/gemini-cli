@@ -631,7 +631,7 @@ Use '[AUDIO] 🗣️' at the end of your response to speech your next actions, c
           '',
         );
         if (textToPlay.trim().length > 0) {
-          void generateAndPlayTts(textToPlay);
+          await generateAndPlayTts(textToPlay);
         }
       }
       if (toolCallRequests.length > 0) {

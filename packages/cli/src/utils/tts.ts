@@ -13,6 +13,8 @@ import axios from 'axios';
 
 const execPromise = promisify(exec);
 
+let isAudioPlaying = false;
+
 /**
  * Generates and plays audio from text using Microsoft TTS API.
  * @param text The text to convert to speech.
@@ -24,7 +26,7 @@ export async function generateAndPlayTts(
   const ttsKey = process.env.MICROSOFT_TTS_KEY;
   const ttsRegion = process.env.MICROSOFT_TTS_REGION;
   const ttsVoice = options?.voiceName || process.env.MICROSOFT_TTS_VOICE || 'en-US-JennyNeural'; // Default voice
-  const ttsLanguage = options?.language || 'en-US';
+  const ttsLanguage = options?.language || process.env.MICROSOFT_TTS_LANGUAGE || 'en-US';
 
   if (!ttsKey || !ttsRegion) {
     console.warn(
@@ -35,6 +37,11 @@ export async function generateAndPlayTts(
 
   let tempFilePath: string | undefined;
   try {
+    if (isAudioPlaying) {
+      console.log('Audio already playing, skipping new TTS request.');
+      return;
+    }
+    isAudioPlaying = true;
     // 1. Make HTTP request to Microsoft TTS API
     const ssml = `<speak version='1.0' xml:lang='${ttsLanguage}'><voice name='${ttsVoice}'>${text}</voice></speak>`;
     const response = await axios.post(
@@ -86,5 +93,6 @@ export async function generateAndPlayTts(
       fs.unlinkSync(tempFilePath);
       console.log('Temporary TTS file cleaned up.');
     }
+    isAudioPlaying = false;
   }
 }
