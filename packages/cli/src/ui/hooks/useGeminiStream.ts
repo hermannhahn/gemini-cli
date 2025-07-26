@@ -55,6 +55,7 @@ import {
   TrackedCancelledToolCall,
 } from './useReactToolScheduler.js';
 import { useSessionStats } from '../contexts/SessionContext.js';
+import { generateAndPlayTts } from '../../utils/tts.js';
 
 export function mergePartListUnions(list: PartListUnion[]): PartListUnion {
   const resultParts: PartListUnion = [];
@@ -93,6 +94,7 @@ export const useGeminiStream = (
   onAuthError: () => void,
   performMemoryRefresh: () => Promise<void>,
   modelSwitchedFromQuotaError: boolean,
+  narratorMode: 'off' | 'acts' | 'response',
   setModelSwitchedFromQuotaError: React.Dispatch<React.SetStateAction<boolean>>,
 ) => {
   const [initError, setInitError] = useState<string | null>(null);
@@ -299,6 +301,11 @@ export const useGeminiStream = (
           );
           localQueryToSendToGemini = trimmedQuery;
         }
+        if (narratorMode === 'response') {
+          localQueryToSendToGemini = `${localQueryToSendToGemini}
+
+Use '[AUDIO] 🗣️' at the end of your response to speech your next actions, comments, warnings, alarms, joke, have fun, express a thought, or anything that helps illustrate your thoughts.`;
+        }
       } else {
         // It's a function response (PartListUnion that isn't a string)
         localQueryToSendToGemini = query;
@@ -314,13 +321,14 @@ export const useGeminiStream = (
     },
     [
       config,
-      addItem,
       onDebugMessage,
-      handleShellCommand,
-      handleSlashCommand,
       logger,
+      handleSlashCommand,
       shellModeActive,
+      handleShellCommand,
+      narratorMode,
       scheduleToolCalls,
+      addItem,
     ],
   );
 
@@ -337,6 +345,10 @@ export const useGeminiStream = (
         return '';
       }
       let newGeminiMessageBuffer = currentGeminiMessageBuffer + eventValue;
+
+      // Remove the audio marker from the displayed text
+      newGeminiMessageBuffer = newGeminiMessageBuffer.replace(/\s*\[AUDIO\]\s*🗣️/g, '');
+
       if (
         pendingHistoryItemRef.current?.type !== 'gemini' &&
         pendingHistoryItemRef.current?.type !== 'gemini_content'
@@ -345,7 +357,7 @@ export const useGeminiStream = (
           addItem(pendingHistoryItemRef.current, userMessageTimestamp);
         }
         setPendingHistoryItem({ type: 'gemini', text: '' });
-        newGeminiMessageBuffer = eventValue;
+        newGeminiMessageBuffer = eventValue.replace(/\s*\[AUDIO\]\s*🗣️/g, ''); // Also apply to initial eventValue
       }
       // Split large messages for better rendering performance. Ideally,
       // we should maximize the amount of output sent to <Static />.
@@ -535,6 +547,16 @@ export const useGeminiStream = (
         switch (event.type) {
           case ServerGeminiEventType.Thought:
             setThought(event.value);
+            if (narratorMode === 'acts' && event.value) {
+              let thoughtText = event.value.subject ?
+                `${event.value.subject}. ${event.value.description}` :
+                event.value.description;
+              // Remove the audio marker from the text before playing TTS
+              thoughtText = thoughtText.replace(/\s*\[AUDIO\]\s*🗣️/g, '');
+              if (thoughtText.trim().length > 0) {
+                void generateAndPlayTts(thoughtText, { language: 'en-US', voiceName: 'en-US-JennyNeural' });
+              }
+            }
             break;
           case ServerGeminiEventType.Content:
             geminiMessageBuffer = handleContentEvent(
@@ -580,6 +602,13 @@ export const useGeminiStream = (
           }
         }
       }
+      if (narratorMode === 'response' && geminiMessageBuffer) {
+        // Remove the audio marker from the text before playing TTS
+        const textToPlay = geminiMessageBuffer.replace(/\s*\[AUDIO\]\s*🗣️/g, '');
+        if (textToPlay.trim().length > 0) {
+          void generateAndPlayTts(textToPlay);
+        }
+      }
       if (toolCallRequests.length > 0) {
         scheduleToolCalls(toolCallRequests, signal);
       }
@@ -593,6 +622,7 @@ export const useGeminiStream = (
       handleChatCompressionEvent,
       handleFinishedEvent,
       handleMaxSessionTurnsEvent,
+      narratorMode,
     ],
   );
 
@@ -694,7 +724,6 @@ export const useGeminiStream = (
     [
       streamingState,
       setShowHelp,
-      setModelSwitchedFromQuotaError,
       prepareQueryForGemini,
       processGeminiStreamEvents,
       pendingHistoryItemRef,
@@ -707,6 +736,7 @@ export const useGeminiStream = (
       startNewPrompt,
       getPromptCount,
       handleLoopDetectedEvent,
+      setModelSwitchedFromQuotaError,
     ],
   );
 
