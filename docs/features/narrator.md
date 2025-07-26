@@ -26,24 +26,27 @@ Users can switch between these modes using a new `/narrator` CLI command (e.g., 
 
 - Create a new utility file: `packages/cli/src/utils/tts.ts`.
 - This file will contain an asynchronous function `generateAndPlayTts(text: string)`:
-  - **Environment Variables**: Check for `MICROSOFT_TTS_KEY`, `MICROSOFT_TTS_REGION`, and `MICROSOFT_TTS_VOICE`.
-  - **API Request**: Make an HTTP request to the Microsoft TTS API.
-  - **Audio Storage**: Save the returned audio data to a temporary file (using `node:fs` and `node:os` for temporary directories).
-  - **Audio Playback**: Use `node:child_process` to play the audio file (e.g., `aplay` on Linux, `afplay` on macOS, or a suitable media player on Windows).
-  - **Cleanup**: Delete the temporary audio file after playback.
-- Implement robust error handling for API calls and audio playback.
+  - **Environment Variables**: Checks for `MICROSOFT_TTS_KEY`, `MICROSOFT_TTS_REGION`, `MICROSOFT_TTS_VOICE`, and `MICROSOFT_TTS_LANGUAGE`.
+  - **Language and Voice Fallback**: If `MICROSOFT_TTS_VOICE` or `MICROSOFT_TTS_LANGUAGE` are not set, defaults to `en-US-JennyNeural` voice and `en-US` language.
+  - **API Request**: Makes an HTTP request to the Microsoft TTS API.
+  - **Audio Storage**: Saves the returned audio data to a temporary file (using `node:fs` and `node:os` for temporary directories).
+  - **Audio Playback**: Uses `node:child_process` to play the audio file (e.g., `aplay` on Linux, `afplay` on macOS, or a suitable media player on Windows).
+  - **Cleanup**: Deletes the temporary audio file after playback.
+- Implements robust error handling for API calls and audio playback.
 
 ### 4. Implement Action Narrator (`acts` mode)
 
-- In `packages/cli/src/ui/hooks/useGeminiStream.ts`, observe the `thought` variable.
-- If the Narrator mode is `acts` and `thought` is updated, call `generateAndPlayTts(thought)`.
+- In `packages/cli/src/ui/hooks/useGeminiStream.ts`, observes the `thought` variable.
+- If the Narrator mode is `acts` and `thought` is updated, calls `generateAndPlayTts(thought)`.
+- **Language and Voice**: Respects the `MICROSOFT_TTS_VOICE` and `MICROSOFT_TTS_LANGUAGE` environment variables, falling back to `en-US-JennyNeural` and `en-US` if not set.
 
 ### 5. Implement Response Narrator (`response` mode)
 
-- **Modify Model Prompt**: This is a critical step. The prompt sent to the Gemini model needs to be augmented.
-  - In `packages/cli/src/ui/hooks/useGeminiStream.ts` (or an earlier layer where the prompt is constructed), if the Narrator mode is `response`, append an instruction to the user's prompt. Example instruction: "Please provide a brief summary/observation of your response at the end, prefixed with 'NARRATOR_SUMMARY:'".
-- **Extract Summary from Response**: After receiving the model's response, parse the text to find the `NARRATOR_SUMMARY:` prefix and extract the content that follows.
-- Call `generateAndPlayTts(extractedSummary)`.
+- **Modify Model Prompt**: This is a critical step. The prompt sent to the Gemini model is augmented.
+  - In `packages/cli/src/ui/hooks/useGeminiStream.ts` (or an earlier layer where the prompt is constructed), if the Narrator mode is `response`, appends an instruction to the user's prompt. Example instruction: "Please provide a brief summary/observation of your response at the end, prefixed with '[AUDIO]'".
+- **Extract Summary from Response**: After receiving the model's response, parses the text to find the `[AUDIO]` prefix and extracts the content that follows.
+- Calls `generateAndPlayTts(extractedSummary)`.
+- **Language and Voice**: Respects the `MICROSOFT_TTS_VOICE` and `MICROSOFT_TTS_LANGUAGE` environment variables, falling back to `en-US-JennyNeural` and `en-US` if not set.
 
 ### 6. Temporary File Management
 

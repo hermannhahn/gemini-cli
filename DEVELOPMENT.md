@@ -15,7 +15,7 @@ This document provides essential context and instructions for the team assisting
 - **Keep Updated:**
   - `TODO.md`: Project tasks. (Keep Updated)
   - `CHANGELOG.md`: Project updates. (Keep Updated)
-  - `docs/`: Project documentation. (Keep Updated)
+  - `docs/`: Project documentation, especially feature-specific documentation (e.g., `docs/features/narrator.md`). (Keep Updated)
 
 ## Development Instructions
 
