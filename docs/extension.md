@@ -47,8 +47,8 @@ The `vscode-ide-companion` extension is a specialized extension for Visual Studi
 
 Upon activation, the `vscode-ide-companion` extension starts an HTTP server and makes its port available to the Gemini CLI via the `GEMINI_CLI_IDE_SERVER_PORT` environment variable. The Gemini CLI then uses this port to establish communication with the extension, allowing it to:
 
--   **Get Active File Information**: The CLI can request the path of the file currently open and active in the VS Code editor.
--   **Receive Editor Events**: The extension can notify the CLI about changes in the active editor, enabling dynamic responses from the CLI based on the user's current context in VS Code.
+- **Get Active File Information**: The CLI can request the path of the file currently open and active in the VS Code editor.
+- **Receive Editor Events**: The extension can notify the CLI about changes in the active editor, enabling dynamic responses from the CLI based on the user's current context in VS Code.
 
 ### Usage with Gemini CLI
 
@@ -59,8 +59,8 @@ To utilize the `vscode-ide-companion` extension with the Gemini CLI:
 
 Once connected, the Gemini CLI can leverage the functionalities provided by the extension to offer more context-aware assistance. For example, you might ask the CLI:
 
--   "What file am I editing now?"
--   "Analyze the code in the active file."
+- "What file am I editing now?"
+- "Analyze the code in the active file."
 
 This integration allows for a seamless workflow where the Gemini CLI can understand and react to your current development context within VS Code.
 
