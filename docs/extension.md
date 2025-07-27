@@ -59,8 +59,8 @@ To utilize the `vscode-ide-companion` extension with the Gemini CLI:
 
 Once connected, the Gemini CLI can leverage the functionalities provided by the extension to offer more context-aware assistance. For example, you might ask the CLI:
 
--   "Qual é o arquivo que estou editando agora?" (What file am I editing now?)
--   "Analise o código no arquivo ativo." (Analyze the code in the active file.)
+-   "What file am I editing now?"
+-   "Analyze the code in the active file."
 
 This integration allows for a seamless workflow where the Gemini CLI can understand and react to your current development context within VS Code.
 
