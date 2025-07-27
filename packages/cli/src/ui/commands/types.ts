@@ -58,6 +58,8 @@ export interface CommandContext {
     loadHistory: UseHistoryManagerReturn['loadHistory'];
     /** Toggles a special display mode. */
     toggleCorgiMode: () => void;
+    /** Sets the narrator mode. */
+    setNarratorMode: Promise<boolean>;
     toggleVimEnabled: () => Promise<boolean>;
   };
   // Session-specific data

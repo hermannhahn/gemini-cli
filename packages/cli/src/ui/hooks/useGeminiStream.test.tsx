@@ -264,12 +264,16 @@ describe('useGeminiStream', () => {
   let mockScheduleToolCalls: Mock;
   let mockCancelAllToolCalls: Mock;
   let mockMarkToolsAsSubmitted: Mock;
+  let mockSetModelSwitchedFromQuotaError: Mock;
+  let mockPerformMemoryRefresh: Mock;
 
   beforeEach(() => {
     vi.clearAllMocks(); // Clear mocks before each test
 
     mockAddItem = vi.fn();
     mockSetShowHelp = vi.fn();
+    mockSetModelSwitchedFromQuotaError = vi.fn();
+    mockPerformMemoryRefresh = vi.fn();
     // Define the mock for getGeminiClient
     const mockGetGeminiClient = vi.fn().mockImplementation(() => {
       // MockedGeminiClientClass is defined in the module scope by the previous change.
@@ -362,6 +366,8 @@ describe('useGeminiStream', () => {
   const renderTestHook = (
     initialToolCalls: TrackedToolCall[] = [],
     geminiClient?: any,
+    mockSetModelSwitchedFromQuotaError?: Mock,
+    mockPerformMemoryRefresh?: Mock,
   ) => {
     let currentToolCalls = initialToolCalls;
     const setToolCalls = (newToolCalls: TrackedToolCall[]) => {
@@ -406,10 +412,11 @@ describe('useGeminiStream', () => {
           props.handleSlashCommand,
           props.shellModeActive,
           () => 'vscode' as EditorType,
-          () => {},
-          () => Promise.resolve(),
-          false,
-          () => {},
+          props.onAuthError,
+          props.performMemoryRefresh,
+          props.modelSwitchedFromQuotaError,
+          props.narratorMode,
+          props.setModelSwitchedFromQuotaError,
         );
       },
       {
@@ -426,6 +433,10 @@ describe('useGeminiStream', () => {
           shellModeActive: false,
           loadedSettings: mockLoadedSettings,
           toolCalls: initialToolCalls,
+          modelSwitchedFromQuotaError: false,
+          narratorMode: 'off',
+          setModelSwitchedFromQuotaError: mockSetModelSwitchedFromQuotaError,
+          performMemoryRefresh: mockPerformMemoryRefresh,
         },
       },
     );
@@ -483,8 +494,12 @@ describe('useGeminiStream', () => {
       } as TrackedExecutingToolCall,
     ];
 
-    const { mockMarkToolsAsSubmitted, mockSendMessageStream } =
-      renderTestHook(toolCalls);
+    const { mockMarkToolsAsSubmitted, mockSendMessageStream } = renderTestHook(
+      toolCalls,
+      undefined,
+      mockSetModelSwitchedFromQuotaError,
+      mockPerformMemoryRefresh,
+    );
 
     // Effect for submitting tool responses depends on toolCalls and isResponding
     // isResponding is initially false, so the effect should run.
@@ -549,9 +564,10 @@ describe('useGeminiStream', () => {
         false,
         () => 'vscode' as EditorType,
         () => {},
-        () => Promise.resolve(),
-        false,
-        () => {},
+        mockPerformMemoryRefresh,
+        false, // modelSwitchedFromQuotaError
+        'off', // mock narratorMode
+        mockSetModelSwitchedFromQuotaError,
       ),
     );
 
@@ -618,8 +634,9 @@ describe('useGeminiStream', () => {
         () => 'vscode' as EditorType,
         () => {},
         () => Promise.resolve(),
-        false,
-        () => {},
+        false, // modelSwitchedFromQuotaError
+        'off', // mock narratorMode
+        mockSetModelSwitchedFromQuotaError,
       ),
     );
 
@@ -715,8 +732,9 @@ describe('useGeminiStream', () => {
         () => 'vscode' as EditorType,
         () => {},
         () => Promise.resolve(),
-        false,
-        () => {},
+        false, // modelSwitchedFromQuotaError
+        'off', // mock narratorMode
+        mockSetModelSwitchedFromQuotaError,
       ),
     );
 
@@ -818,8 +836,9 @@ describe('useGeminiStream', () => {
         () => 'vscode' as EditorType,
         () => {},
         () => Promise.resolve(),
-        false,
-        () => {},
+        false, // modelSwitchedFromQuotaError
+        'off', // mock narratorMode
+        mockSetModelSwitchedFromQuotaError,
       ),
     );
 
@@ -890,7 +909,12 @@ describe('useGeminiStream', () => {
       })();
       mockSendMessageStream.mockReturnValue(mockStream);
 
-      const { result } = renderTestHook();
+      const { result } = renderTestHook(
+        undefined,
+        undefined,
+        mockSetModelSwitchedFromQuotaError,
+        mockPerformMemoryRefresh,
+      );
 
       // Start a query
       await act(async () => {
@@ -921,7 +945,12 @@ describe('useGeminiStream', () => {
     });
 
     it('should not do anything if escape is pressed when not responding', () => {
-      const { result } = renderTestHook();
+      const { result } = renderTestHook(
+        undefined,
+        undefined,
+        mockSetModelSwitchedFromQuotaError,
+        mockPerformMemoryRefresh,
+      );
 
       expect(result.current.streamingState).toBe(StreamingState.Idle);
 
@@ -950,7 +979,12 @@ describe('useGeminiStream', () => {
       })();
       mockSendMessageStream.mockReturnValue(mockStream);
 
-      const { result } = renderTestHook();
+      const { result } = renderTestHook(
+        undefined,
+        undefined,
+        mockSetModelSwitchedFromQuotaError,
+        mockPerformMemoryRefresh,
+      );
 
       await act(async () => {
         result.current.submitQuery('long running query');
@@ -1020,7 +1054,12 @@ describe('useGeminiStream', () => {
       };
       mockHandleSlashCommand.mockResolvedValue(clientToolRequest);
 
-      const { result } = renderTestHook();
+      const { result } = renderTestHook(
+        undefined,
+        undefined,
+        mockSetModelSwitchedFromQuotaError,
+        mockPerformMemoryRefresh,
+      );
 
       await act(async () => {
         await result.current.submitQuery('/memory add "test instruction"');
@@ -1047,7 +1086,12 @@ describe('useGeminiStream', () => {
       };
       mockHandleSlashCommand.mockResolvedValue(uiOnlyCommandResult);
 
-      const { result } = renderTestHook();
+      const { result } = renderTestHook(
+        undefined,
+        undefined,
+        mockSetModelSwitchedFromQuotaError,
+        mockPerformMemoryRefresh,
+      );
 
       await act(async () => {
         await result.current.submitQuery('/help');
@@ -1169,8 +1213,9 @@ describe('useGeminiStream', () => {
           () => 'vscode' as EditorType,
           () => {},
           mockPerformMemoryRefresh,
-          false,
-          () => {},
+          false, // modelSwitchedFromQuotaError
+          'off', // narratorMode
+          mockSetModelSwitchedFromQuotaError,
         ),
       );
 
@@ -1221,8 +1266,9 @@ describe('useGeminiStream', () => {
           () => 'vscode' as EditorType,
           () => {},
           () => Promise.resolve(),
-          false,
-          () => {},
+          false, // modelSwitchedFromQuotaError
+          'off', // narratorMode
+          mockSetModelSwitchedFromQuotaError,
         ),
       );
 

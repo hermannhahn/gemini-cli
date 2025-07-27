@@ -50,6 +50,9 @@ export const useSlashCommandProcessor = (
   toggleCorgiMode: () => void,
   setQuittingMessages: (message: HistoryItem[]) => void,
   openPrivacyNotice: () => void,
+  setNarratorMode: React.Dispatch<
+    React.SetStateAction<'off' | 'acts' | 'response'>
+  >,
   toggleVimEnabled: () => Promise<boolean>,
   setIsProcessing: (isProcessing: boolean) => void,
 ) => {
@@ -160,6 +163,8 @@ export const useSlashCommandProcessor = (
         setPendingItem: setPendingCompressionItem,
         toggleCorgiMode,
         toggleVimEnabled,
+        refreshConfig,
+        setNarratorMode,
       },
       session: {
         stats: session.stats,
@@ -182,6 +187,8 @@ export const useSlashCommandProcessor = (
       toggleCorgiMode,
       toggleVimEnabled,
       sessionShellAllowlist,
+      refreshConfig,
+      setNarratorMode,
     ],
   );
 
