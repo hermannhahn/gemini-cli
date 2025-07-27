@@ -20,6 +20,7 @@ This document provides essential context and instructions for the team assisting
 ## Development Instructions
 
 - **Workflow:** [WORKFLOW.md](./WORKFLOW.md)
+- **Feature Development Status:** The IDE companion and Narrator features have been successfully implemented and tested.
 - **Development Environment:** Developers uses `npm start` for development. Code changes require recompilation, fix errors, commit, push, and CLI restart for testing.
 - **ToolResult Handling:**
   - `llmContent`: Always sent to the AI model for processing. Never suppressed.
