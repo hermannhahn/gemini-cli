@@ -39,4 +39,29 @@ The `gemini-extension.json` file contains the configuration for the extension. T
 - `contextFileName`: The name of the file that contains the context for the extension. This will be used to load the context from the workspace. If this property is not used but a `GEMINI.md` file is present in your extension directory, then that file will be loaded.
 - `excludeTools`: An array of tool names to exclude from the model. You can also specify command-specific restrictions for tools that support it, like the `run_shell_command` tool. For example, `"excludeTools": ["run_shell_command(rm -rf)"]` will block the `rm -rf` command.
 
+## VS Code IDE Companion Extension
+
+The `vscode-ide-companion` extension is a specialized extension for Visual Studio Code that acts as a server, enabling the Gemini CLI to interact with the VS Code environment. Unlike typical extensions, it does not provide direct user-facing commands within VS Code. Instead, it exposes functionalities that the Gemini CLI can call to enhance its operations, such as retrieving the currently active file in the editor.
+
+### How it Works
+
+Upon activation, the `vscode-ide-companion` extension starts an HTTP server and makes its port available to the Gemini CLI via the `GEMINI_CLI_IDE_SERVER_PORT` environment variable. The Gemini CLI then uses this port to establish communication with the extension, allowing it to:
+
+-   **Get Active File Information**: The CLI can request the path of the file currently open and active in the VS Code editor.
+-   **Receive Editor Events**: The extension can notify the CLI about changes in the active editor, enabling dynamic responses from the CLI based on the user's current context in VS Code.
+
+### Usage with Gemini CLI
+
+To utilize the `vscode-ide-companion` extension with the Gemini CLI:
+
+1.  **Install and Enable the Extension**: Ensure the `.vsix` file for the `vscode-ide-companion` extension is installed and enabled in your VS Code instance.
+2.  **Launch Gemini CLI**: Start the Gemini CLI from a terminal where the `GEMINI_CLI_IDE_SERVER_PORT` environment variable is correctly set by the VS Code extension. If you launch the CLI from the integrated terminal within VS Code, this variable should be automatically propagated.
+
+Once connected, the Gemini CLI can leverage the functionalities provided by the extension to offer more context-aware assistance. For example, you might ask the CLI:
+
+-   "Qual é o arquivo que estou editando agora?" (What file am I editing now?)
+-   "Analise o código no arquivo ativo." (Analyze the code in the active file.)
+
+This integration allows for a seamless workflow where the Gemini CLI can understand and react to your current development context within VS Code.
+
 When Gemini CLI starts, it loads all the extensions and merges their configurations. If there are any conflicts, the workspace configuration takes precedence.
