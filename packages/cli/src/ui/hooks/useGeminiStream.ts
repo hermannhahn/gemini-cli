@@ -557,7 +557,7 @@ Use '[AUDIO] 🗣️' at the end of your response to speech your next actions, c
               // Remove the audio marker from the text before playing TTS
               thoughtText = thoughtText.replace(/\s*\[AUDIO\]\s*🗣️/g, '');
               if (thoughtText.trim().length > 0) {
-                await generateAndPlayTts(thoughtText);
+                await generateAndPlayTts(thoughtText, 'acts');
               }
             }
             break;
@@ -612,7 +612,7 @@ Use '[AUDIO] 🗣️' at the end of your response to speech your next actions, c
           '',
         );
         if (textToPlay.trim().length > 0) {
-          await generateAndPlayTts(textToPlay);
+          await generateAndPlayTts(textToPlay, 'response');
         }
       }
       if (toolCallRequests.length > 0) {
