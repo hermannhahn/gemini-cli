@@ -49,6 +49,10 @@ export interface CommandContext {
     loadHistory: UseHistoryManagerReturn['loadHistory'];
     /** Toggles a special display mode. */
     toggleCorgiMode: () => void;
+    /** Sets the narrator mode. */
+    setNarratorMode: React.Dispatch<
+      React.SetStateAction<'off' | 'acts' | 'response'>
+    >;
   };
   // Session-specific data
   session: {

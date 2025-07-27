@@ -40,6 +40,9 @@ export const useSlashCommandProcessor = (
   toggleCorgiMode: () => void,
   setQuittingMessages: (message: HistoryItem[]) => void,
   openPrivacyNotice: () => void,
+  setNarratorMode: React.Dispatch<
+    React.SetStateAction<'off' | 'acts' | 'response'>
+  >,
 ) => {
   const session = useSessionStats();
   const [commands, setCommands] = useState<SlashCommand[]>([]);
@@ -136,6 +139,7 @@ export const useSlashCommandProcessor = (
         pendingItem: pendingCompressionItemRef.current,
         setPendingItem: setPendingCompressionItem,
         toggleCorgiMode,
+        setNarratorMode,
       },
       session: {
         stats: session.stats,
@@ -155,6 +159,7 @@ export const useSlashCommandProcessor = (
       pendingCompressionItemRef,
       setPendingCompressionItem,
       toggleCorgiMode,
+      setNarratorMode,
     ],
   );
 

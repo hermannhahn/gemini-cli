@@ -26,6 +26,7 @@ import { ideCommand } from '../ui/commands/ideCommand.js';
 import { bugCommand } from '../ui/commands/bugCommand.js';
 import { quitCommand } from '../ui/commands/quitCommand.js';
 import { restoreCommand } from '../ui/commands/restoreCommand.js';
+import { narratorCommand } from '../ui/commands/narratorCommand.js';
 
 const loadBuiltInCommands = async (
   config: Config | null,
@@ -51,6 +52,7 @@ const loadBuiltInCommands = async (
     statsCommand,
     themeCommand,
     toolsCommand,
+    narratorCommand,
   ];
 
   return allCommands.filter(
