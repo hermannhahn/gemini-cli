@@ -263,6 +263,8 @@ describe('useGeminiStream', () => {
   let mockScheduleToolCalls: Mock;
   let mockCancelAllToolCalls: Mock;
   let mockMarkToolsAsSubmitted: Mock;
+  let mockSetModelSwitchedFromQuotaError: Mock;
+  let mockPerformMemoryRefresh: Mock;
 
   beforeEach(() => {
     vi.clearAllMocks(); // Clear mocks before each test
@@ -360,6 +362,8 @@ describe('useGeminiStream', () => {
   const renderTestHook = (
     initialToolCalls: TrackedToolCall[] = [],
     geminiClient?: any,
+    mockSetModelSwitchedFromQuotaError?: Mock,
+    mockPerformMemoryRefresh?: Mock,
   ) => {
     let currentToolCalls = initialToolCalls;
     const setToolCalls = (newToolCalls: TrackedToolCall[]) => {
@@ -423,6 +427,10 @@ describe('useGeminiStream', () => {
           shellModeActive: false,
           loadedSettings: mockLoadedSettings,
           toolCalls: initialToolCalls,
+          modelSwitchedFromQuotaError: false,
+          narratorMode: 'off',
+          setModelSwitchedFromQuotaError: mockSetModelSwitchedFromQuotaError,
+          performMemoryRefresh: mockPerformMemoryRefresh,
         },
       },
     );
@@ -923,7 +931,12 @@ describe('useGeminiStream', () => {
       })();
       mockSendMessageStream.mockReturnValue(mockStream);
 
-      const { result } = renderTestHook();
+      const { result } = renderTestHook(
+        undefined,
+        undefined,
+        mockSetModelSwitchedFromQuotaError,
+        mockPerformMemoryRefresh,
+      );
 
       // Start a query
       await act(async () => {
@@ -992,7 +1005,12 @@ describe('useGeminiStream', () => {
     });
 
     it('should not do anything if escape is pressed when not responding', () => {
-      const { result } = renderTestHook();
+      const { result } = renderTestHook(
+        undefined,
+        undefined,
+        mockSetModelSwitchedFromQuotaError,
+        mockPerformMemoryRefresh,
+      );
 
       expect(result.current.streamingState).toBe(StreamingState.Idle);
 
@@ -1021,7 +1039,12 @@ describe('useGeminiStream', () => {
       })();
       mockSendMessageStream.mockReturnValue(mockStream);
 
-      const { result } = renderTestHook();
+      const { result } = renderTestHook(
+        undefined,
+        undefined,
+        mockSetModelSwitchedFromQuotaError,
+        mockPerformMemoryRefresh,
+      );
 
       await act(async () => {
         result.current.submitQuery('long running query');
@@ -1096,7 +1119,12 @@ describe('useGeminiStream', () => {
       };
       mockHandleSlashCommand.mockResolvedValue(clientToolRequest);
 
-      const { result } = renderTestHook();
+      const { result } = renderTestHook(
+        undefined,
+        undefined,
+        mockSetModelSwitchedFromQuotaError,
+        mockPerformMemoryRefresh,
+      );
 
       await act(async () => {
         await result.current.submitQuery('/memory add "test instruction"');
@@ -1123,7 +1151,12 @@ describe('useGeminiStream', () => {
       };
       mockHandleSlashCommand.mockResolvedValue(uiOnlyCommandResult);
 
-      const { result } = renderTestHook();
+      const { result } = renderTestHook(
+        undefined,
+        undefined,
+        mockSetModelSwitchedFromQuotaError,
+        mockPerformMemoryRefresh,
+      );
 
       await act(async () => {
         await result.current.submitQuery('/help');

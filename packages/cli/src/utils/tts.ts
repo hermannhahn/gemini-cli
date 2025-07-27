@@ -25,8 +25,12 @@ export async function generateAndPlayTts(
 ): Promise<void> {
   const ttsKey = process.env.MICROSOFT_TTS_KEY;
   const ttsRegion = process.env.MICROSOFT_TTS_REGION;
-  const ttsVoice = options?.voiceName || process.env.MICROSOFT_TTS_VOICE || 'en-US-JennyNeural'; // Default voice
-  const ttsLanguage = options?.language || process.env.MICROSOFT_TTS_LANGUAGE || 'en-US';
+  const ttsVoice =
+    options?.voiceName ||
+    process.env.MICROSOFT_TTS_VOICE ||
+    'en-US-JennyNeural'; // Default voice
+  const ttsLanguage =
+    options?.language || process.env.MICROSOFT_TTS_LANGUAGE || 'en-US';
 
   if (!ttsKey || !ttsRegion) {
     console.warn(

@@ -51,6 +51,9 @@ export const useSlashCommandProcessor = (
   setQuittingMessages: (message: HistoryItem[]) => void,
   openPrivacyNotice: () => void,
   openSettingsDialog: () => void,
+  setNarratorMode: React.Dispatch<
+    React.SetStateAction<'off' | 'acts' | 'response'>
+  >,
   toggleVimEnabled: () => Promise<boolean>,
   setIsProcessing: (isProcessing: boolean) => void,
   setGeminiMdFileCount: (count: number) => void,
@@ -172,6 +175,8 @@ export const useSlashCommandProcessor = (
         toggleCorgiMode,
         toggleVimEnabled,
         setGeminiMdFileCount,
+        refreshConfig,
+        setNarratorMode,
       },
       session: {
         stats: session.stats,
@@ -195,6 +200,8 @@ export const useSlashCommandProcessor = (
       toggleVimEnabled,
       sessionShellAllowlist,
       setGeminiMdFileCount,
+      refreshConfig,
+      setNarratorMode,
     ],
   );
 
