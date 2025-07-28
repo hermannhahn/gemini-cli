@@ -58,22 +58,22 @@ The `TODO.md` file is the primary, detailed source of task progress, including s
 ## Technical and Importation Conclusions for Gemini CLI Project:
 
 1.  **Internal Module Imports (`.js` instead of `.ts`):**
-    *   When importing TypeScript modules (`.ts`) within the project (especially in test files or where the bundler has already processed the files), it is **mandatory to use the `.js` extension** in the import path, even if the original file is `.ts`. This is due to the compilation process and how modules are resolved at runtime.
-    *   **Example:** Instead of `import { someFunction } from '../utils/myModule.ts';`, use `import { someFunction } from '../utils/myModule.js';`.
+    - When importing TypeScript modules (`.ts`) within the project (especially in test files or where the bundler has already processed the files), it is **mandatory to use the `.js` extension** in the import path, even if the original file is `.ts`. This is due to the compilation process and how modules are resolved at runtime.
+    - **Example:** Instead of `import { someFunction } from '../utils/myModule.ts';`, use `import { someFunction } from '../utils/myModule.js';`.
 
 2.  **`@google/gemini-cli-core` Package Imports:**
-    *   Modules and functionalities from the `@google/gemini-cli-core` package must be imported directly from the package, not via relative paths that attempt to access the internal structure of the `core`.
-    *   **Example:** Instead of `import { Config } from '../../../core/src/config/config.js';`, use `import { Config } from '@google/gemini-cli-core';`.
+    - Modules and functionalities from the `@google/gemini-cli-core` package must be imported directly from the package, not via relative paths that attempt to access the internal structure of the `core`.
+    - **Example:** Instead of `import { Config } from '../../../core/src/config/config.js';`, use `import { Config } from '@google/gemini-cli-core';`.
 
 3.  **Mocking Context Functions (`commandContext.ui`):**
-    *   When testing CLI commands that interact with the UI (e.g., `commandContext.ui.setNarratorMode`), it is necessary to mock these functions to isolate the test and avoid dependencies on the actual UI.
-    *   Use `vi.spyOn` or similar mocks to simulate the behavior of these functions and verify that they were called correctly.
+    - When testing CLI commands that interact with the UI (e.g., `commandContext.ui.setNarratorMode`), it is necessary to mock these functions to isolate the test and avoid dependencies on the actual UI.
+    - Use `vi.spyOn` or similar mocks to simulate the behavior of these functions and verify that they were called correctly.
 
 4.  **Command Structure (`.action` vs. `.handler`):**
-    *   The main function of a CLI command (like `/narrator`) is exposed through the `.action` property of the command object, not `.handler`. This is crucial for correctly invoking the command's logic in tests.
+    - The main function of a CLI command (like `/narrator`) is exposed through the `.action` property of the command object, not `.handler`. This is crucial for correctly invoking the command's logic in tests.
 
 5.  **Argument Passing for Commands:**
-    *   When testing commands that expect arguments (e.g., `/narrator [mode]`), ensure that the arguments are passed in the format and type expected by the command's `action` function. In the case of `narratorCommand.action`, `args` is a string.
+    - When testing commands that expect arguments (e.g., `/narrator [mode]`), ensure that the arguments are passed in the format and type expected by the command's `action` function. In the case of `narratorCommand.action`, `args` is a string.
 
 6.  **Argument Order in Tests:**
-    *   Pay attention to the order of arguments passed to test functions and mocks. Small inconsistencies in the order can lead to type errors or unexpected behavior.
+    - Pay attention to the order of arguments passed to test functions and mocks. Small inconsistencies in the order can lead to type errors or unexpected behavior.
