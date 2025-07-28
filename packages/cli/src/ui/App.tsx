@@ -98,7 +98,7 @@ interface AppProps {
   settings: LoadedSettings;
   startupWarnings?: string[];
   version: string;
-  initialNarratorMode?: 'off' | 'acts' | 'response';
+  initialNarratorMode?: 'off' | 'thinking' | 'response';
 }
 
 export const AppWrapper = (props: AppProps) => (
@@ -158,9 +158,9 @@ const App = (props: AppProps) => {
   const [editorError, setEditorError] = useState<string | null>(null);
   const [footerHeight, setFooterHeight] = useState<number>(0);
   const [corgiMode, setCorgiMode] = useState(false);
-  const [narratorMode, setNarratorMode] = useState<'off' | 'acts' | 'response'>(
-    initialNarratorMode || 'off',
-  );
+  const [narratorMode, setNarratorMode] = useState<
+    'off' | 'thinking' | 'response'
+  >(initialNarratorMode || 'off');
   const [currentModel, setCurrentModel] = useState(config.getModel());
   const [shellModeActive, setShellModeActive] = useState(false);
   const [showErrorDetails, setShowErrorDetails] = useState<boolean>(false);

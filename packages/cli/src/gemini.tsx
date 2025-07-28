@@ -244,7 +244,7 @@ export async function main() {
           startupWarnings={startupWarnings}
           version={version}
           initialNarratorMode={
-            argv.narrator === 'thinking' ? 'acts' : argv.narrator
+            argv.narrator === 'thinking' ? 'thinking' : argv.narrator
           }
         />
       </React.StrictMode>,

@@ -9,11 +9,11 @@ import { CommandKind, SlashCommand } from './types.js';
 export const narratorCommand: SlashCommand = {
   name: 'narrator',
   description:
-    'Toggles narrator mode (off, acts, response). Usage: /narrator [off|acts|response]',
+    'Toggles narrator mode (off,`thinking`, response). Usage: /narrator [off|thinking|response]',
   kind: CommandKind.BUILT_IN,
   action: async (commandContext, args) => {
     const mode = args.toLowerCase();
-    if (mode === 'off' || mode === 'acts' || mode === 'response') {
+    if (mode === 'off' || mode === 'thinking' || mode === 'response') {
       commandContext.ui.setNarratorMode(mode);
       return {
         type: 'message',
