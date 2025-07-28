@@ -93,7 +93,7 @@ export const useGeminiStream = (
   onAuthError: () => void,
   performMemoryRefresh: () => Promise<void>,
   modelSwitchedFromQuotaError: boolean,
-  narratorMode: 'off' | 'thinking' | 'response',
+  narratorMode: 'off' | 'acts' | 'response',
   setModelSwitchedFromQuotaError: React.Dispatch<React.SetStateAction<boolean>>,
   onEditorClose: () => void,
   onCancelSubmit: () => void,
@@ -566,7 +566,7 @@ Use '[AUDIO] 🗣️' at the end of your response to speech your next actions, c
         switch (event.type) {
           case ServerGeminiEventType.Thought:
             setThought(event.value);
-            if (narratorMode === 'thinking' && event.value) {
+            if (narratorMode === 'acts' && event.value) {
               let thoughtText = event.value.subject
                 ? `${event.value.subject}. ${event.value.description}`
                 : event.value.description;

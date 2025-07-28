@@ -6,14 +6,11 @@
 
 import { promises as fs } from 'fs';
 import path from 'path';
+import os from 'os';
 import toml from '@iarna/toml';
 import { glob } from 'glob';
 import { z } from 'zod';
-import {
-  Config,
-  getProjectCommandsDir,
-  getUserCommandsDir,
-} from '@google/gemini-cli-core';
+import { Config } from '@google/gemini-cli-core';
 import { ICommandLoader } from './types.js';
 import {
   CommandContext,

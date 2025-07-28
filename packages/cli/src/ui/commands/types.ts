@@ -60,7 +60,7 @@ export interface CommandContext {
     /** Toggles a special display mode. */
     toggleCorgiMode: () => void;
     /** Sets the narrator mode. */
-    setNarratorMode:     setNarratorMode: React.Dispatch<
+    setNarratorMode: React.Dispatch<
       React.SetStateAction<'off' | 'acts' | 'response'>
     >;
     toggleVimEnabled: () => Promise<boolean>;
