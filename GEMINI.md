@@ -1,7 +1,7 @@
 # Project Instructions for Development
 
 Project Name: Gemini Dev CLI.
-Description: This project is a modified Gemini CLI fork. The user uses this project to interact with me. All code changes must be compiled, tested, and require the user to restart the CLI. Only after the user confirms the restart can we check and test my modifications in this CLI.
+Description: This project is a public fork of the Gemini CLI. The user uses this project to interact with me. All code changes must be compiled, tested, and require the user to restart the CLI. Only after the user confirms the restart can we check and test my modifications in this CLI.
 
 ## Documentation
 
