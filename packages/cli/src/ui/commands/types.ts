@@ -51,7 +51,7 @@ export interface CommandContext {
     toggleCorgiMode: () => void;
     /** Sets the narrator mode. */
     setNarratorMode: React.Dispatch<
-      React.SetStateAction<'off' | 'acts' | 'response'>
+      React.SetStateAction<'off' | 'thinking' | 'response'>
     >;
   };
   // Session-specific data

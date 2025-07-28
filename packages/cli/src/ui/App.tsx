@@ -92,6 +92,7 @@ interface AppProps {
   settings: LoadedSettings;
   startupWarnings?: string[];
   version: string;
+  initialNarratorMode?: 'off' | 'thinking' | 'response';
 }
 
 export const AppWrapper = (props: AppProps) => (
@@ -100,7 +101,13 @@ export const AppWrapper = (props: AppProps) => (
   </SessionStatsProvider>
 );
 
-const App = ({ config, settings, startupWarnings = [], version }: AppProps) => {
+const App = ({
+  config,
+  settings,
+  startupWarnings = [],
+  version,
+  initialNarratorMode,
+}: AppProps) => {
   const isFocused = useFocus();
   useBracketedPaste();
   const [updateMessage, setUpdateMessage] = useState<string | null>(null);
@@ -143,9 +150,9 @@ const App = ({ config, settings, startupWarnings = [], version }: AppProps) => {
   const [editorError, setEditorError] = useState<string | null>(null);
   const [footerHeight, setFooterHeight] = useState<number>(0);
   const [corgiMode, setCorgiMode] = useState(false);
-  const [narratorMode, setNarratorMode] = useState<'off' | 'acts' | 'response'>(
-    'off',
-  );
+  const [narratorMode, setNarratorMode] = useState<
+    'off' | 'thinking' | 'response'
+  >(initialNarratorMode || 'off');
   const [currentModel, setCurrentModel] = useState(config.getModel());
   const [shellModeActive, setShellModeActive] = useState(false);
   const [showErrorDetails, setShowErrorDetails] = useState<boolean>(false);

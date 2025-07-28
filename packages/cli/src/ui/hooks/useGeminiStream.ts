@@ -93,7 +93,7 @@ export const useGeminiStream = (
   onAuthError: () => void,
   performMemoryRefresh: () => Promise<void>,
   modelSwitchedFromQuotaError: boolean,
-  narratorMode: 'off' | 'acts' | 'response',
+  narratorMode: 'off' | 'thinking' | 'response',
   setModelSwitchedFromQuotaError: React.Dispatch<React.SetStateAction<boolean>>,
 ) => {
   const [initError, setInitError] = useState<string | null>(null);
@@ -489,14 +489,14 @@ Use '[AUDIO] 🗣️' at the end of your response to speech your next actions, c
         switch (event.type) {
           case ServerGeminiEventType.Thought:
             setThought(event.value);
-            if (narratorMode === 'acts' && event.value) {
+            if (narratorMode === 'thinking' && event.value) {
               let thoughtText = event.value.subject
                 ? `${event.value.subject}. ${event.value.description}`
                 : event.value.description;
               // Remove the audio marker from the text before playing TTS
               thoughtText = thoughtText.replace(/\s*\[AUDIO\]\s*🗣️/g, '');
               if (thoughtText.trim().length > 0) {
-                await generateAndPlayTts(thoughtText, 'acts');
+                await generateAndPlayTts(thoughtText, 'thinking');
               }
             }
             break;

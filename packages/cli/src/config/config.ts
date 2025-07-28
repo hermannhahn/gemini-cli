@@ -40,6 +40,7 @@ const logger = {
 
 export interface CliArgs {
   model: string | undefined;
+  narrator: 'off' | 'thinking' | 'response' | undefined;
   sandbox: boolean | string | undefined;
   sandboxImage: string | undefined;
   debug: boolean | undefined;
@@ -75,6 +76,11 @@ export async function parseArguments(): Promise<CliArgs> {
       type: 'string',
       description: `Model`,
       default: process.env.GEMINI_MODEL || DEFAULT_GEMINI_MODEL,
+    })
+    .option('narrator', {
+      type: 'string',
+      description: 'Set narrator mode (off, thinking, response).',
+      choices: ['off', 'thinking', 'response'],
     })
     .option('prompt', {
       alias: 'p',
@@ -210,7 +216,7 @@ export async function parseArguments(): Promise<CliArgs> {
     });
 
   yargsInstance.wrap(yargsInstance.terminalWidth());
-  return yargsInstance.argv;
+  return yargsInstance.argv as CliArgs;
 }
 
 // This function is now a thin wrapper around the server's implementation.

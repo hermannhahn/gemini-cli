@@ -218,6 +218,7 @@ export async function main() {
           settings={settings}
           startupWarnings={startupWarnings}
           version={version}
+          initialNarratorMode={argv.narrator}
         />
       </React.StrictMode>,
       { exitOnCtrlC: false },
