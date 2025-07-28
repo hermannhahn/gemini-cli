@@ -14,12 +14,12 @@ Users can switch between these modes using a new `/narrator` CLI command (e.g., 
 
 ### 1. Define Narrator State
 
-- A new `useState` will be added to `packages/cli/src/ui/App.tsx` to manage the current Narrator mode (`off`, `acts`, `response`).
+- A new `useState` will be added to `packages/cli/src/ui/App.tsx` to manage the current Narrator mode (`off`, `thinking`, `response`).
 
 ### 2. Implement `/narrator` Command
 
 - Modify `packages/cli/src/ui/hooks/slashCommandProcessor.ts` to recognize and process the `/narrator` command.
-- The command logic will update the Narrator state based on the provided argument (`off`, `acts`, `response`).
+- The command logic will update the Narrator state based on the provided argument (`off`, `thinking`, `response`).
 - Display informative messages in the CLI history about the Narrator mode change.
 
 ### 3. Microsoft TTS API Integration
@@ -34,10 +34,10 @@ Users can switch between these modes using a new `/narrator` CLI command (e.g., 
   - **Cleanup**: Deletes the temporary audio file after playback.
 - Implements robust error handling for API calls and audio playback.
 
-### 4. Implement Action Narrator (`acts` mode)
+### 4. Implement Action Narrator (`thinking` mode)
 
 - In `packages/cli/src/ui/hooks/useGeminiStream.ts`, observes the `thought` variable.
-- If the Narrator mode is `acts` and `thought` is updated, calls `generateAndPlayTts(thought)`.
+- If the Narrator mode is `thinking` and `thought` is updated, calls `generateAndPlayTts(thought)`.
 - **Language and Voice**: Respects the `MICROSOFT_TTS_VOICE` and `MICROSOFT_TTS_LANGUAGE` environment variables, falling back to `en-US-JennyNeural` and `en-US` if not set.
 
 ### 5. Implement Response Narrator (`response` mode)

@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Narrator feature documentation reviewed and finalized.
 
+### Fixed
+
+- Resolved preflight errors and ensured all tests pass.
+
 ## [0.0.3] - 2025-07-25
 
 ### Added

@@ -29,7 +29,7 @@ This personal fork of the Gemini CLI includes the following custom features:
     npm install -g @hahnd/geminid
     ```
 
-    Then, run the CLI from anywhere:
+    Em seguida, execute o CLI de qualquer lugar:
 
     ```bash
     geminid
@@ -293,7 +293,7 @@ Você pode iniciar um projeto a partir de um novo diretório:
 
 ```sh
 cd new-project/
-gemini-dev
+geminid
 > Write me a Gemini Discord bot that answers questions using a FAQ.md file I will provide
 ```
 
@@ -302,7 +302,7 @@ Ou trabalhar com um projeto existente:
 ```sh
 git clone https://github.com/hermannhahn/gemini-cli
 cd gemini-cli
-gemini-dev
+geminid
 > Give me a summary of all of the changes that went in yesterday
 ```
 

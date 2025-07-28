@@ -52,7 +52,7 @@ export const useSlashCommandProcessor = (
   openPrivacyNotice: () => void,
   openSettingsDialog: () => void,
   setNarratorMode: React.Dispatch<
-    React.SetStateAction<'off' | 'acts' | 'response'>
+    React.SetStateAction<'off' | 'thinking' | 'response'>
   >,
   toggleVimEnabled: () => Promise<boolean>,
   setIsProcessing: (isProcessing: boolean) => void,
