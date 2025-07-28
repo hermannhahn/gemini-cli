@@ -5,10 +5,10 @@
 The Narrator feature provides audio feedback for the Gemini CLI, with three distinct modes of operation:
 
 1.  **Off**: No audio narration.
-2.  **Acts**: Narrates the AI model's actions (tool calls, thoughts) as they occur.
+2.  **Thinking**: Narrates the AI model's actions (tool calls, thoughts) as they occur.
 3.  **Response**: Narrates a summary, observation, or important warning about the AI model's response, provided by the model itself.
 
-Users can switch between these modes using a new `/narrator` CLI command (e.g., `/narrator off`, `/narrator acts`, `/narrator response`).
+Users can switch between these modes using a new `/narrator` CLI command (e.g., `/narrator off`, `/narrator thinking`, `/narrator response`).
 
 ## Technical Details
 
@@ -51,3 +51,9 @@ Users can switch between these modes using a new `/narrator` CLI command (e.g., 
 ### 6. Temporary File Management
 
 - Ensure the `generateAndPlayTts` function reliably deletes temporary audio files after they have been played.
+
+## Command Line Arguments
+
+The Narrator mode can also be set at CLI startup using the `--narrator` flag:
+
+- `--narrator [off|thinking|response]`: Sets the initial narrator mode. For example, `--narrator thinking` will start the CLI with the AI's thoughts narrated.

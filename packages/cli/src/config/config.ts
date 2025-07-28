@@ -47,6 +47,7 @@ const logger = {
 
 export interface CliArgs {
   model: string | undefined;
+  narrator: 'off' | 'thinking' | 'response' | undefined;
   sandbox: boolean | string | undefined;
   sandboxImage: string | undefined;
   debug: boolean | undefined;
@@ -85,6 +86,11 @@ export async function parseArguments(): Promise<CliArgs> {
           type: 'string',
           description: `Model`,
           default: process.env.GEMINI_MODEL,
+        })
+        .option('narrator', {
+          type: 'string',
+          description: 'Set narrator mode (off, thinking, response).',
+          choices: ['off', 'thinking', 'response'],
         })
         .option('prompt', {
           alias: 'p',

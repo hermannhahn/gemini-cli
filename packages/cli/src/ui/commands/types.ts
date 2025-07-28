@@ -60,7 +60,9 @@ export interface CommandContext {
     /** Toggles a special display mode. */
     toggleCorgiMode: () => void;
     /** Sets the narrator mode. */
-    setNarratorMode: Promise<boolean>;
+    setNarratorMode:     setNarratorMode: React.Dispatch<
+      React.SetStateAction<'off' | 'acts' | 'response'>
+    >;
     toggleVimEnabled: () => Promise<boolean>;
     setGeminiMdFileCount: (count: number) => void;
   };

@@ -9,10 +9,10 @@ import { SlashCommand } from './types.js';
 export const narratorCommand: SlashCommand = {
   name: 'narrator',
   description:
-    'Toggles narrator mode (off, acts, response). Usage: /narrator [off|acts|response]',
+    'Toggles narrator mode (off, thinking, response). Usage: /narrator [off|thinking|response]',
   action: async (commandContext, args) => {
     const mode = args.toLowerCase();
-    if (mode === 'off' || mode === 'acts' || mode === 'response') {
+    if (mode === 'off' || mode === 'thinking' || mode === 'response') {
       commandContext.ui.setNarratorMode(mode);
       return {
         type: 'message',
@@ -23,7 +23,7 @@ export const narratorCommand: SlashCommand = {
       return {
         type: 'message',
         messageType: 'error',
-        content: 'Invalid narrator mode. Use /narrator [off|acts|response]',
+        content: 'Invalid narrator mode. Use /narrator [off|thinking|response]',
       };
     }
   },
