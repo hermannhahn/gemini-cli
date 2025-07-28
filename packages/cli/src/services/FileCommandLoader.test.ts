@@ -23,6 +23,8 @@ import {
   ShellProcessor,
 } from './prompt-processors/shellProcessor.js';
 import { ShorthandArgumentProcessor } from './prompt-processors/argumentProcessor.js';
+import path from 'path';
+import os from 'os';
 
 const mockShellProcess = vi.hoisted(() => vi.fn());
 vi.mock('./prompt-processors/shellProcessor.js', () => ({
@@ -79,7 +81,7 @@ describe('FileCommandLoader', () => {
   });
 
   it('loads a single command from a file', async () => {
-    const userCommandsDir = getUserCommandsDir();
+    const userCommandsDir = path.join(os.homedir(), '.gemini', 'commands');
     mock({
       [userCommandsDir]: {
         'test.toml': 'prompt = "This is a test prompt"',
@@ -120,7 +122,7 @@ describe('FileCommandLoader', () => {
   itif(process.platform !== 'win32')(
     'loads commands from a symlinked directory',
     async () => {
-      const userCommandsDir = getUserCommandsDir();
+      const userCommandsDir = path.join(os.homedir(), '.gemini', 'commands');
       const realCommandsDir = '/real/commands';
       mock({
         [realCommandsDir]: {
@@ -145,7 +147,7 @@ describe('FileCommandLoader', () => {
   itif(process.platform !== 'win32')(
     'loads commands from a symlinked subdirectory',
     async () => {
-      const userCommandsDir = getUserCommandsDir();
+      const userCommandsDir = path.join(os.homedir(), '.gemini', 'commands');
       const realNamespacedDir = '/real/namespaced-commands';
       mock({
         [userCommandsDir]: {
@@ -169,7 +171,7 @@ describe('FileCommandLoader', () => {
   );
 
   it('loads multiple commands', async () => {
-    const userCommandsDir = getUserCommandsDir();
+    const userCommandsDir = path.join(os.homedir(), '.gemini', 'commands');
     mock({
       [userCommandsDir]: {
         'test1.toml': 'prompt = "Prompt 1"',
@@ -184,7 +186,7 @@ describe('FileCommandLoader', () => {
   });
 
   it('creates deeply nested namespaces correctly', async () => {
-    const userCommandsDir = getUserCommandsDir();
+    const userCommandsDir = path.join(os.homedir(), '.gemini', 'commands');
 
     mock({
       [userCommandsDir]: {
@@ -206,7 +208,7 @@ describe('FileCommandLoader', () => {
   });
 
   it('creates namespaces from nested directories', async () => {
-    const userCommandsDir = getUserCommandsDir();
+    const userCommandsDir = path.join(os.homedir(), '.gemini', 'commands');
     mock({
       [userCommandsDir]: {
         git: {
@@ -277,7 +279,7 @@ describe('FileCommandLoader', () => {
   });
 
   it('ignores files with TOML syntax errors', async () => {
-    const userCommandsDir = getUserCommandsDir();
+    const userCommandsDir = path.join(os.homedir(), '.gemini', 'commands');
     mock({
       [userCommandsDir]: {
         'invalid.toml': 'this is not valid toml',
@@ -293,7 +295,7 @@ describe('FileCommandLoader', () => {
   });
 
   it('ignores files that are semantically invalid (missing prompt)', async () => {
-    const userCommandsDir = getUserCommandsDir();
+    const userCommandsDir = path.join(os.homedir(), '.gemini', 'commands');
     mock({
       [userCommandsDir]: {
         'no_prompt.toml': 'description = "This file is missing a prompt"',
@@ -309,7 +311,7 @@ describe('FileCommandLoader', () => {
   });
 
   it('handles filename edge cases correctly', async () => {
-    const userCommandsDir = getUserCommandsDir();
+    const userCommandsDir = path.join(os.homedir(), '.gemini', 'commands');
     mock({
       [userCommandsDir]: {
         'test.v1.toml': 'prompt = "Test prompt"',
@@ -331,7 +333,7 @@ describe('FileCommandLoader', () => {
   });
 
   it('uses a default description if not provided', async () => {
-    const userCommandsDir = getUserCommandsDir();
+    const userCommandsDir = path.join(os.homedir(), '.gemini', 'commands');
     mock({
       [userCommandsDir]: {
         'test.toml': 'prompt = "Test prompt"',
@@ -346,7 +348,7 @@ describe('FileCommandLoader', () => {
   });
 
   it('uses the provided description', async () => {
-    const userCommandsDir = getUserCommandsDir();
+    const userCommandsDir = path.join(os.homedir(), '.gemini', 'commands');
     mock({
       [userCommandsDir]: {
         'test.toml': 'prompt = "Test prompt"\ndescription = "My test command"',
@@ -361,7 +363,7 @@ describe('FileCommandLoader', () => {
   });
 
   it('should sanitize colons in filenames to prevent namespace conflicts', async () => {
-    const userCommandsDir = getUserCommandsDir();
+    const userCommandsDir = path.join(os.homedir(), '.gemini', 'commands');
     mock({
       [userCommandsDir]: {
         'legacy:command.toml': 'prompt = "This is a legacy command"',
@@ -673,7 +675,7 @@ describe('FileCommandLoader', () => {
 
   describe('Shorthand Argument Processor Integration', () => {
     it('correctly processes a command with {{args}}', async () => {
-      const userCommandsDir = getUserCommandsDir();
+      const userCommandsDir = path.join(os.homedir(), '.gemini', 'commands');
       mock({
         [userCommandsDir]: {
           'shorthand.toml':
@@ -705,7 +707,7 @@ describe('FileCommandLoader', () => {
 
   describe('Default Argument Processor Integration', () => {
     it('correctly processes a command without {{args}}', async () => {
-      const userCommandsDir = getUserCommandsDir();
+      const userCommandsDir = path.join(os.homedir(), '.gemini', 'commands');
       mock({
         [userCommandsDir]: {
           'model_led.toml':
@@ -739,7 +741,7 @@ describe('FileCommandLoader', () => {
 
   describe('Shell Processor Integration', () => {
     it('instantiates ShellProcessor if the trigger is present', async () => {
-      const userCommandsDir = getUserCommandsDir();
+      const userCommandsDir = path.join(os.homedir(), '.gemini', 'commands');
       mock({
         [userCommandsDir]: {
           'shell.toml': `prompt = "Run this: ${SHELL_INJECTION_TRIGGER}echo hello}"`,
@@ -753,7 +755,7 @@ describe('FileCommandLoader', () => {
     });
 
     it('does not instantiate ShellProcessor if trigger is missing', async () => {
-      const userCommandsDir = getUserCommandsDir();
+      const userCommandsDir = path.join(os.homedir(), '.gemini', 'commands');
       mock({
         [userCommandsDir]: {
           'regular.toml': `prompt = "Just a regular prompt"`,
@@ -767,7 +769,7 @@ describe('FileCommandLoader', () => {
     });
 
     it('returns a "submit_prompt" action if shell processing succeeds', async () => {
-      const userCommandsDir = getUserCommandsDir();
+      const userCommandsDir = path.join(os.homedir(), '.gemini', 'commands');
       mock({
         [userCommandsDir]: {
           'shell.toml': `prompt = "Run !{echo 'hello'}"`,
@@ -794,7 +796,7 @@ describe('FileCommandLoader', () => {
     });
 
     it('returns a "confirm_shell_commands" action if shell processing requires it', async () => {
-      const userCommandsDir = getUserCommandsDir();
+      const userCommandsDir = path.join(os.homedir(), '.gemini', 'commands');
       const rawInvocation = '/shell rm -rf /';
       mock({
         [userCommandsDir]: {
@@ -828,7 +830,7 @@ describe('FileCommandLoader', () => {
     });
 
     it('re-throws other errors from the processor', async () => {
-      const userCommandsDir = getUserCommandsDir();
+      const userCommandsDir = path.join(os.homedir(), '.gemini', 'commands');
       mock({
         [userCommandsDir]: {
           'shell.toml': `prompt = "Run !{something}"`,
@@ -854,7 +856,7 @@ describe('FileCommandLoader', () => {
     });
 
     it('assembles the processor pipeline in the correct order (Shell -> Argument)', async () => {
-      const userCommandsDir = getUserCommandsDir();
+      const userCommandsDir = path.join(os.homedir(), '.gemini', 'commands');
       mock({
         [userCommandsDir]: {
           'pipeline.toml': `

@@ -1112,7 +1112,12 @@ describe('useGeminiStream', () => {
       mockHandleSlashCommand.mockResolvedValue(customCommandResult);
 
       const { result, mockSendMessageStream: localMockSendMessageStream } =
-        renderTestHook();
+        renderTestHook(
+          undefined,
+          undefined,
+          mockSetModelSwitchedFromQuotaError,
+          mockPerformMemoryRefresh,
+        );
 
       await act(async () => {
         await result.current.submitQuery('/my-custom-command');
@@ -1147,7 +1152,12 @@ describe('useGeminiStream', () => {
       mockHandleSlashCommand.mockResolvedValue(emptyPromptResult);
 
       const { result, mockSendMessageStream: localMockSendMessageStream } =
-        renderTestHook();
+        renderTestHook(
+          undefined,
+          undefined,
+          mockSetModelSwitchedFromQuotaError,
+          mockPerformMemoryRefresh,
+        );
 
       await act(async () => {
         await result.current.submitQuery('/emptycmd');
@@ -1315,9 +1325,10 @@ describe('useGeminiStream', () => {
           false,
           () => 'vscode' as EditorType,
           () => {},
-          () => Promise.resolve(),
-          false,
-          () => {},
+          mockPerformMemoryRefresh,
+          false, // modelSwitchedFromQuotaError
+          'off', // mock narratorMode
+          mockSetModelSwitchedFromQuotaError,
         ),
       );
 
@@ -1362,9 +1373,10 @@ describe('useGeminiStream', () => {
           false,
           () => 'vscode' as EditorType,
           () => {},
-          () => Promise.resolve(),
-          false,
-          () => {},
+          mockPerformMemoryRefresh,
+          false, // modelSwitchedFromQuotaError
+          'off', // mock narratorMode
+          mockSetModelSwitchedFromQuotaError,
         ),
       );
 
@@ -1410,9 +1422,10 @@ describe('useGeminiStream', () => {
           false,
           () => 'vscode' as EditorType,
           () => {},
-          () => Promise.resolve(),
-          false,
-          () => {},
+          mockPerformMemoryRefresh,
+          false, // modelSwitchedFromQuotaError
+          'off', // mock narratorMode
+          mockSetModelSwitchedFromQuotaError,
         ),
       );
 
@@ -1498,9 +1511,10 @@ describe('useGeminiStream', () => {
             false,
             () => 'vscode' as EditorType,
             () => {},
-            () => Promise.resolve(),
-            false,
-            () => {},
+            mockPerformMemoryRefresh,
+            false, // modelSwitchedFromQuotaError
+            'off', // mock narratorMode
+            mockSetModelSwitchedFromQuotaError,
           ),
         );
 

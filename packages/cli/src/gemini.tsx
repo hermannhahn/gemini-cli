@@ -243,7 +243,9 @@ export async function main() {
           settings={settings}
           startupWarnings={startupWarnings}
           version={version}
-          initialNarratorMode={argv.narrator}
+          initialNarratorMode={
+            argv.narrator === 'thinking' ? 'acts' : argv.narrator
+          }
         />
       </React.StrictMode>,
       { exitOnCtrlC: false },
