@@ -51,7 +51,7 @@ export const useSlashCommandProcessor = (
   setQuittingMessages: (message: HistoryItem[]) => void,
   openPrivacyNotice: () => void,
   setNarratorMode: React.Dispatch<
-    React.SetStateAction<'off' | 'acts' | 'response'>
+    React.SetStateAction<'off' | 'thinking' | 'response'>
   >,
   toggleVimEnabled: () => Promise<boolean>,
   setIsProcessing: (isProcessing: boolean) => void,

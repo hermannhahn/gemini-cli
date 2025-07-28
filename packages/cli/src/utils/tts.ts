@@ -21,13 +21,13 @@ let isAudioPlaying = false;
  */
 export async function generateAndPlayTts(
   text: string,
-  mode: 'acts' | 'response',
+  mode: 'thinking' | 'response',
   options?: { language?: string; voiceName?: string },
 ): Promise<void> {
   const ttsKey = process.env.MICROSOFT_TTS_KEY;
   const ttsRegion = process.env.MICROSOFT_TTS_REGION;
   let ttsVoice: string;
-  if (mode === 'acts') {
+  if (mode === 'thinking') {
     ttsVoice = process.env.MICROSOFT_TTS_THINKING || 'en-US-JennyNeural';
   } else {
     ttsVoice = process.env.MICROSOFT_TTS_VOICE || 'en-US-JennyNeural';
