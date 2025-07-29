@@ -146,7 +146,7 @@ const App = ({
   const { stats: sessionStats } = useSessionStats();
   const [staticNeedsRefresh, setStaticNeedsRefresh] = useState(false);
   const [staticKey, setStaticKey] = useState(0);
-  const refreshStatic = useCallback(() => {
+  const refreshConfig = useCallback(() => {
     stdout.write(ansiEscapes.clearTerminal);
     setStaticKey((prev) => prev + 1);
   }, [setStaticKey, stdout]);
@@ -476,7 +476,7 @@ const App = ({
     addItem,
     clearItems,
     loadHistory,
-    refreshStatic,
+    refreshConfig,
     setShowHelp,
     setDebugMessage,
     openThemeDialog,
@@ -657,8 +657,8 @@ const App = ({
     clearItems();
     clearConsoleMessagesState();
     console.clear();
-    refreshStatic();
-  }, [clearItems, clearConsoleMessagesState, refreshStatic]);
+    refreshConfig();
+  }, [clearItems, clearConsoleMessagesState, refreshConfig]);
 
   const mainControlsRef = useRef<DOMElement>(null);
   const pendingHistoryItemRef = useRef<DOMElement>(null);
@@ -686,20 +686,20 @@ const App = ({
     // debounce so it doesn't fire up too often during resize
     const handler = setTimeout(() => {
       setStaticNeedsRefresh(false);
-      refreshStatic();
+      refreshConfig();
     }, 300);
 
     return () => {
       clearTimeout(handler);
     };
-  }, [terminalWidth, terminalHeight, refreshStatic]);
+  }, [terminalWidth, terminalHeight, refreshConfig]);
 
   useEffect(() => {
     if (streamingState === StreamingState.Idle && staticNeedsRefresh) {
       setStaticNeedsRefresh(false);
-      refreshStatic();
+      refreshConfig();
     }
-  }, [streamingState, refreshStatic, staticNeedsRefresh]);
+  }, [streamingState, refreshConfig, staticNeedsRefresh]);
 
   const filteredConsoleMessages = useMemo(() => {
     if (config.getDebugMode()) {

@@ -5,27 +5,31 @@
  */
 
 import { CommandKind, SlashCommand } from './types.js';
+import { MessageType } from '../types.js';
 
 export const narratorCommand: SlashCommand = {
   name: 'narrator',
-  description:
-    'Toggles narrator mode (off,`thinking`, response). Usage: /narrator [off|thinking|response]',
+  description: 'Sets the narrator mode (off, thinking, response).',
   kind: CommandKind.BUILT_IN,
-  action: async (commandContext, args) => {
-    const mode = args.toLowerCase();
+  action: async (context, args) => {
+    const mode = args.trim().toLowerCase();
     if (mode === 'off' || mode === 'thinking' || mode === 'response') {
-      commandContext.ui.setNarratorMode(mode);
-      return {
-        type: 'message',
-        messageType: 'info',
-        content: `Narrator mode set to: ${mode}`,
-      };
+      context.ui.setNarratorMode(mode);
+      context.ui.addItem(
+        {
+          type: MessageType.INFO,
+          text: `Narrator mode set to: ${mode}.`,
+        },
+        Date.now(),
+      );
     } else {
-      return {
-        type: 'message',
-        messageType: 'error',
-        content: 'Invalid narrator mode. Use /narrator [off|thinking|response]',
-      };
+      context.ui.addItem(
+        {
+          type: MessageType.ERROR,
+          text: `Invalid narrator mode. Use 'off', 'thinking', or 'response'.`,
+        },
+        Date.now(),
+      );
     }
   },
 };
