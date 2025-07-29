@@ -166,7 +166,7 @@ export const useSlashCommandProcessor = (
         clear: () => {
           clearItems();
           console.clear();
-          refreshStatic();
+          refreshConfig();
         },
         loadHistory,
         setDebugMessage: onDebugMessage,
@@ -191,7 +191,7 @@ export const useSlashCommandProcessor = (
       loadHistory,
       addItem,
       clearItems,
-      refreshStatic,
+      refreshConfig,
       session.stats,
       onDebugMessage,
       pendingCompressionItemRef,

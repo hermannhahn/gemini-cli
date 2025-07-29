@@ -117,12 +117,13 @@ export const AppWrapper = (props: AppProps) => (
   </SessionStatsProvider>
 );
 
-const App = (props: AppProps) => {
-  const [config, setConfig] = useState<Config>(props.config);
-  const [settings, setSettings] = useState<LoadedSettings>(props.settings);
-  const initialNarratorMode = props.initialNarratorMode;
-  const startupWarnings = props.startupWarnings || [];
-  const version = props.version;
+const App = ({
+  config,
+  settings,
+  startupWarnings = [],
+  version,
+  initialNarratorMode,
+}: AppProps) => {
   const isFocused = useFocus();
   useBracketedPaste();
   const [updateInfo, setUpdateInfo] = useState<UpdateObject | null>(null);
