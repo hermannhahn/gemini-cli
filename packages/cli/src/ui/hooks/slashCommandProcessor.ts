@@ -41,7 +41,7 @@ export const useSlashCommandProcessor = (
   addItem: UseHistoryManagerReturn['addItem'],
   clearItems: UseHistoryManagerReturn['clearItems'],
   loadHistory: UseHistoryManagerReturn['loadHistory'],
-  refreshStatic: () => void,
+  refreshConfig: () => void,
   setShowHelp: React.Dispatch<React.SetStateAction<boolean>>,
   onDebugMessage: (message: string) => void,
   openThemeDialog: () => void,
@@ -155,7 +155,7 @@ export const useSlashCommandProcessor = (
         clear: () => {
           clearItems();
           console.clear();
-          refreshStatic();
+          refreshConfig();
         },
         loadHistory,
         setDebugMessage: onDebugMessage,
@@ -179,7 +179,7 @@ export const useSlashCommandProcessor = (
       loadHistory,
       addItem,
       clearItems,
-      refreshStatic,
+      refreshConfig,
       session.stats,
       onDebugMessage,
       pendingCompressionItemRef,
@@ -187,7 +187,6 @@ export const useSlashCommandProcessor = (
       toggleCorgiMode,
       toggleVimEnabled,
       sessionShellAllowlist,
-      refreshConfig,
       setNarratorMode,
     ],
   );

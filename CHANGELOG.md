@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed [Unreleased]
 
+- Integrated latest upstream changes, resolved compilation and test failures.
 - Narrator command flag changed from 'acts' to 'thinking'.
 - Added upstream updates.
 

@@ -62,6 +62,7 @@ export interface CommandContext {
     setNarratorMode: React.Dispatch<
       React.SetStateAction<'off' | 'thinking' | 'response'>
     >;
+    refreshConfig: () => void;
     toggleVimEnabled: () => Promise<boolean>;
   };
   // Session-specific data

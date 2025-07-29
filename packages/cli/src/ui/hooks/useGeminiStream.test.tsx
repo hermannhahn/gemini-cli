@@ -1555,22 +1555,11 @@ describe('useGeminiStream', () => {
         })(),
       );
 
-      const { result } = renderHook(() =>
-        useGeminiStream(
-          new MockedGeminiClientClass(mockConfig),
-          [],
-          mockAddItem,
-          mockSetShowHelp,
-          mockConfig,
-          mockOnDebugMessage,
-          mockHandleSlashCommand,
-          false,
-          () => 'vscode' as EditorType,
-          () => {},
-          () => Promise.resolve(),
-          false,
-          () => {},
-        ),
+      const { result } = renderTestHook(
+        undefined,
+        undefined,
+        mockSetModelSwitchedFromQuotaError,
+        mockPerformMemoryRefresh,
       );
 
       // Submit first query to set a thought
@@ -1632,22 +1621,11 @@ describe('useGeminiStream', () => {
         })(),
       );
 
-      const { result } = renderHook(() =>
-        useGeminiStream(
-          new MockedGeminiClientClass(mockConfig),
-          [],
-          mockAddItem,
-          mockSetShowHelp,
-          mockConfig,
-          mockOnDebugMessage,
-          mockHandleSlashCommand,
-          false,
-          () => 'vscode' as EditorType,
-          () => {},
-          () => Promise.resolve(),
-          false,
-          () => {},
-        ),
+      const { result } = renderTestHook(
+        undefined,
+        undefined,
+        mockSetModelSwitchedFromQuotaError,
+        mockPerformMemoryRefresh,
       );
 
       // Submit query
@@ -1685,22 +1663,11 @@ describe('useGeminiStream', () => {
         })(),
       );
 
-      const { result } = renderHook(() =>
-        useGeminiStream(
-          new MockedGeminiClientClass(mockConfig),
-          [],
-          mockAddItem,
-          mockSetShowHelp,
-          mockConfig,
-          mockOnDebugMessage,
-          mockHandleSlashCommand,
-          false,
-          () => 'vscode' as EditorType,
-          () => {},
-          () => Promise.resolve(),
-          false,
-          () => {},
-        ),
+      const { result } = renderTestHook(
+        undefined,
+        undefined,
+        mockSetModelSwitchedFromQuotaError,
+        mockPerformMemoryRefresh,
       );
 
       // Submit query
