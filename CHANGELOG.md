@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] - 2025-07-29
 
+### Fixed [Unreleased]
+
+- Resolved issue with `/narrator` command not working and re-integrated upstream React state/config updates.
+
 ### Added [Unreleased]
 
 - Narrator feature documentation reviewed and finalized.
