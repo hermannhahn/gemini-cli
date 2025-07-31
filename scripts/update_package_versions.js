@@ -50,6 +50,10 @@ try {
   execSync(`git tag v${newVersion}`);
   console.log(`Created tag v${newVersion}.`);
 
+  // Push the tag to remote
+  execSync(`git push origin v${newVersion}`);
+  console.log(`Pushed tag v${newVersion} to remote.`);
+
   console.log('Version update and tagging complete.');
 } catch (error) {
   console.error('Error during version update:', error.message);

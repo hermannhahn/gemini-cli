@@ -327,7 +327,7 @@ ${INSTRUCTION_SECTION_HEADER}
     });
 
     it('should return confirmation details when memory file is not allowlisted', async () => {
-      const params = { fact: 'Test fact' };
+      const params = { instruction: 'Test instruction' };
       const result = await memoryTool.shouldConfirmExecute(
         params,
         mockAbortSignal,
@@ -342,16 +342,16 @@ ${INSTRUCTION_SECTION_HEADER}
         expect(result.fileName).toContain(path.join('mock', 'home', '.gemini'));
         expect(result.fileName).toContain('GEMINI.md');
         expect(result.fileDiff).toContain('Index: GEMINI.md');
-        expect(result.fileDiff).toContain('+## Gemini Added Memories');
-        expect(result.fileDiff).toContain('+- Test fact');
+        expect(result.fileDiff).toContain('+## Gemini Added Instructions');
+        expect(result.fileDiff).toContain('+- Test instruction');
         expect(result.originalContent).toBe('');
-        expect(result.newContent).toContain('## Gemini Added Memories');
-        expect(result.newContent).toContain('- Test fact');
+        expect(result.newContent).toContain('## Gemini Added Instructions');
+        expect(result.newContent).toContain('- Test instruction');
       }
     });
 
     it('should return false when memory file is already allowlisted', async () => {
-      const params = { fact: 'Test fact' };
+      const params = { instruction: 'Test instruction' };
       const memoryFilePath = path.join(
         os.homedir(),
         '.gemini',
@@ -372,7 +372,7 @@ ${INSTRUCTION_SECTION_HEADER}
     });
 
     it('should add memory file to allowlist when ProceedAlways is confirmed', async () => {
-      const params = { fact: 'Test fact' };
+      const params = { instruction: 'Test instruction' };
       const memoryFilePath = path.join(
         os.homedir(),
         '.gemini',
@@ -401,7 +401,7 @@ ${INSTRUCTION_SECTION_HEADER}
     });
 
     it('should not add memory file to allowlist when other outcomes are confirmed', async () => {
-      const params = { fact: 'Test fact' };
+      const params = { instruction: 'Test instruction' };
       const memoryFilePath = path.join(
         os.homedir(),
         '.gemini',
@@ -435,9 +435,9 @@ ${INSTRUCTION_SECTION_HEADER}
     });
 
     it('should handle existing memory file with content', async () => {
-      const params = { fact: 'New fact' };
+      const params = { instruction: 'New instruction' };
       const existingContent =
-        'Some existing content.\n\n## Gemini Added Memories\n- Old fact\n';
+        'Some existing content.\n\n## Gemini Added Instructions\n- Old instruction\n';
 
       // Mock fs.readFile to return existing content
       vi.mocked(fs.readFile).mockResolvedValue(existingContent);
@@ -454,10 +454,10 @@ ${INSTRUCTION_SECTION_HEADER}
         const expectedPath = path.join('~', '.gemini', 'GEMINI.md');
         expect(result.title).toBe(`Confirm Memory Save: ${expectedPath}`);
         expect(result.fileDiff).toContain('Index: GEMINI.md');
-        expect(result.fileDiff).toContain('+- New fact');
+        expect(result.fileDiff).toContain('+- New instruction');
         expect(result.originalContent).toBe(existingContent);
-        expect(result.newContent).toContain('- Old fact');
-        expect(result.newContent).toContain('- New fact');
+        expect(result.newContent).toContain('- Old instruction');
+        expect(result.newContent).toContain('- New instruction');
       }
     });
   });

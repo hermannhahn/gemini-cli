@@ -60,6 +60,8 @@ export const GEMINI_CONFIG_DIR = '.gemini';
 export const DEFAULT_CONTEXT_FILENAME = 'GEMINI.md';
 export const INSTRUCTION_SECTION_HEADER = '## Gemini Added Instructions';
 
+const MEMORY_SECTION_HEADER = INSTRUCTION_SECTION_HEADER;
+
 // This variable will hold the currently configured filename for GEMINI.md context files.
 // It defaults to DEFAULT_CONTEXT_FILENAME but can be overridden by setGeminiMdFilename.
 let currentGeminiMdFilename: string | string[] = DEFAULT_CONTEXT_FILENAME;
@@ -148,8 +150,11 @@ export class MemoryTool
   /**
    * Computes the new content that would result from adding a memory entry
    */
-  private computeNewContent(currentContent: string, fact: string): string {
-    let processedText = fact.trim();
+  private computeNewContent(
+    currentContent: string,
+    instruction: string,
+  ): string {
+    let processedText = instruction.trim();
     processedText = processedText.replace(/^(-+\s*)+/, '').trim();
     const newMemoryItem = `- ${processedText}`;
 
@@ -348,9 +353,7 @@ export class MemoryTool
         // Use the normal memory entry logic
         await MemoryTool.performAddMemoryEntry(
           instruction,
-
           getGlobalMemoryFilePath(),
-
           {
             readFile: fs.readFile,
             writeFile: fs.writeFile,

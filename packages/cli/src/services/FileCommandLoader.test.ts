@@ -59,12 +59,16 @@ vi.mock('./prompt-processors/argumentProcessor.js', async (importOriginal) => {
 vi.mock('@google/gemini-cli-core', async (importOriginal) => {
   const original =
     await importOriginal<typeof import('@google/gemini-cli-core')>();
+  const paths = await import('../utils/paths.js'); // Import the actual paths module
   return {
     ...original,
     isCommandAllowed: vi.fn(),
     ShellExecutionService: {
       execute: vi.fn(),
     },
+    // Add the actual functions from the paths module
+    getUserCommandsDir: paths.getUserCommandsDir,
+    getProjectCommandsDir: paths.getProjectCommandsDir,
   };
 });
 
