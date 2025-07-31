@@ -1,7 +1,7 @@
 {
   "name": "@hahnd/geminid",
-  "version": "0.0.3",
-  "description": "Gemini Dev CLI - A personal command-line interface for developers, based on Google's Gemini CLI",
+  "version": "0.1.0",
+  "description": "Gemini Dev CLI - A personal fork from Google's Gemini CLI",
   "engines": {
     "node": ">=20.0.0"
   },
@@ -17,7 +17,7 @@
     "sandboxImageUri": "us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox:0.1.15"
   },
   "scripts": {
-    "start": "node scripts/start.js --narrator thinking",
+    "start": "node scripts/start.js --narrator response",
     "debug": "cross-env DEBUG=1 node --inspect-brk scripts/start.js",
     "auth:npm": "npx google-artifactregistry-auth",
     "auth:docker": "gcloud auth configure-docker us-west1-docker.pkg.dev",
