@@ -50,6 +50,7 @@ export * from './ide/ide-client.js';
 export * from './ide/ideContext.js';
 export * from './ide/ide-installer.js';
 export { getIdeDisplayName, DetectedIde } from './ide/detect-ide.js';
+export { getIdeInstaller } from './ide/ide-installer.js';
 
 // Export Shell Execution Service
 export * from './services/shellExecutionService.js';

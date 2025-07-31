@@ -60,6 +60,8 @@ export const GEMINI_CONFIG_DIR = '.gemini';
 export const DEFAULT_CONTEXT_FILENAME = 'GEMINI.md';
 export const INSTRUCTION_SECTION_HEADER = '## Gemini Added Instructions';
 
+const MEMORY_SECTION_HEADER = INSTRUCTION_SECTION_HEADER;
+
 // This variable will hold the currently configured filename for GEMINI.md context files.
 // It defaults to DEFAULT_CONTEXT_FILENAME but can be overridden by setGeminiMdFilename.
 let currentGeminiMdFilename: string | string[] = DEFAULT_CONTEXT_FILENAME;
@@ -148,8 +150,11 @@ export class MemoryTool
   /**
    * Computes the new content that would result from adding a memory entry
    */
-  private computeNewContent(currentContent: string, fact: string): string {
-    let processedText = fact.trim();
+  private computeNewContent(
+    currentContent: string,
+    instruction: string,
+  ): string {
+    let processedText = instruction.trim();
     processedText = processedText.replace(/^(-+\s*)+/, '').trim();
     const newMemoryItem = `- ${processedText}`;
 
@@ -204,7 +209,10 @@ export class MemoryTool
     const currentContent = await this.readMemoryFileContent();
 
     // Calculate the new content that will be written to the memory file
-    const newContent = this.computeNewContent(currentContent, params.fact);
+    const newContent = this.computeNewContent(
+      currentContent,
+      params.instruction,
+    );
 
     const fileName = path.basename(memoryFilePath);
     const fileDiff = Diff.createPatch(
@@ -343,17 +351,13 @@ export class MemoryTool
       } else {
         // Use the normal memory entry logic
         await MemoryTool.performAddMemoryEntry(
-          
-        instruction,
-       
+          instruction,
           getGlobalMemoryFilePath(),
-       
           {
-              readFile: fs.readFile,
-              writeFile: fs.writeFile,
-              mkdir: fs.mkdir,
-            },
-      ,
+            readFile: fs.readFile,
+            writeFile: fs.writeFile,
+            mkdir: fs.mkdir,
+          },
         );
         const successMessage = `Okay, I've remembered that: "${instruction}"`;
         return {
@@ -387,7 +391,7 @@ export class MemoryTool
         this.readMemoryFileContent(),
       getProposedContent: async (params: SaveMemoryParams): Promise<string> => {
         const currentContent = await this.readMemoryFileContent();
-        return this.computeNewContent(currentContent, params.fact);
+        return this.computeNewContent(currentContent, params.instruction);
       },
       createUpdatedParams: (
         _oldContent: string,

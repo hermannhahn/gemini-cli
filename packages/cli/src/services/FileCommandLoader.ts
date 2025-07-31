@@ -6,7 +6,6 @@
 
 import { promises as fs } from 'fs';
 import path from 'path';
-import os from 'os';
 import toml from '@iarna/toml';
 import { glob } from 'glob';
 import { z } from 'zod';
@@ -31,6 +30,7 @@ import {
   ConfirmationRequiredError,
   ShellProcessor,
 } from './prompt-processors/shellProcessor.js';
+import { getUserCommandsDir, getProjectCommandsDir } from '../utils/paths.js';
 
 interface CommandDirectory {
   path: string;
