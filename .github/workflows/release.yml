@@ -52,7 +52,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create ${{ inputs.version }} bundle/geminid.js
+          gh release create ${{ github.ref_name }} bundle/geminid.js
 
       - name: Configure npm for publishing
         uses: actions/setup-node@v4
