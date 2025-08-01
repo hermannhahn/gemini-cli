@@ -4,9 +4,9 @@ name: Gemini CLI CI
 
 on:
   push:
-    branches: [hermannhahn/release]
+    branches: []
   pull_request:
-    branches: [hermannhahn/release]
+    branches: []
   merge_group:
 
 jobs:
