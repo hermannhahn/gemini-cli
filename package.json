@@ -1,6 +1,6 @@
 {
   "name": "@hahnd/geminid",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "Gemini Dev CLI - A personal fork from Google's Gemini CLI",
   "engines": {
     "node": ">=20.0.0"
@@ -52,10 +52,10 @@
     "clean": "node scripts/clean.js"
   },
   "bin": {
-    "geminid": "bundle/geminid.js"
+    "geminid": "dist/index.js"
   },
   "files": [
-    "bundle/",
+    "dist/",
     "README.md",
     "LICENSE"
   ],
