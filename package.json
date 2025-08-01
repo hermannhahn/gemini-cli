@@ -1,6 +1,6 @@
 {
   "name": "@hahnd/geminid",
-  "version": "0.1.18",
+  "version": "0.1.19",
   "description": "Gemini Dev CLI - A personal fork from Google's Gemini CLI",
   "engines": {
     "node": ">=20.0.0"
