@@ -1,15 +1,17 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - 'v*' # Trigger on tags starting with v
+  workflow_run:
+    workflows: ["Gemini CLI CI", "E2E Tests"] # Name of the workflows to monitor
+    types:
+      - completed
+    branches:
+      - hermannhahn/main # Only trigger if the workflow ran on this branch
 
 run-name: Release ${{ inputs.version || github.ref_name }}
 
 jobs:
   release:
-    if: startsWith(github.ref, 'refs/tags/v') # Only run if the ref is a tag starting with v
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -22,7 +24,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref }}
+          ref: ${{ github.event.workflow_run.head_sha }} # Checkout the commit that triggered the CI/E2E
           fetch-depth: 0
 
       - name: Setup Node.js
@@ -30,6 +32,27 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
+
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Get version from package.json and create tag
+        id: get_version_and_tag
+        run: |
+          PACKAGE_VERSION=$(jq -r .version package.json)
+          RELEASE_TAG="v${PACKAGE_VERSION}"
+          echo "RELEASE_TAG=${RELEASE_TAG}" >> $GITHUB_OUTPUT
+
+          # Create the tag
+          git tag "${RELEASE_TAG}"
+
+          # Push the tag to remote
+          git push origin "${RELEASE_TAG}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed for git push
 
       - name: Install Dependencies
         run: npm ci
@@ -52,7 +75,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create ${{ github.ref_name }} bundle/geminid.js
+          gh release create ${{ steps.get_version_and_tag.outputs.RELEASE_TAG }} bundle/geminid.js
 
       - name: Configure npm for publishing
         uses: actions/setup-node@v4
