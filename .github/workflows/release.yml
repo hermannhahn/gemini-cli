@@ -64,4 +64,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create ${{ inputs.version }} bundle/geminid.js --clobber
+          gh release create ${{ inputs.version }} bundle/geminid.js
