@@ -1,1 +1,0 @@
-Este é um arquivo de teste para acionar os workflows de CI/E2E.
