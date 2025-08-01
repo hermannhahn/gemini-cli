@@ -9,7 +9,7 @@
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "geminid": "bundle/geminid.js"
+    "geminid": "dist/index.js"
   },
   "scripts": {
     "build": "node ../../scripts/build_package.js",
