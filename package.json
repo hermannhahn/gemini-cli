@@ -51,10 +51,10 @@
     "clean": "node scripts/clean.js"
   },
   "bin": {
-    "geminid": "dist/index.js"
+    "geminid": "bundle/geminid.js"
   },
   "files": [
-    "dist/",
+    "bundle/",
     "README.md",
     "LICENSE"
   ],
