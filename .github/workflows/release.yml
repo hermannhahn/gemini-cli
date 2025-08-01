@@ -3,42 +3,26 @@ name: 'Release'
 on:
   push:
     branches:
-      - hermannhahn/main
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'The version to release (e.g., v0.1.11).'
-        required: true
-        type: string
-      ref:
-        description: 'The branch or ref (full git sha) to release from.'
-        required: true
-        type: 'string'
-        default: 'hermannhahn/main'
+      - hermannhahn/main # Only trigger if the workflow ran on this branch
 
 run-name: Release ${{ inputs.version || github.ref_name }}
 
 jobs:
   release:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-      id-token: write # Add this for OIDC permissions
+      contents: write # Needed to create tags and releases
       packages: write # Add this for package publishing permissions
 
     steps:
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: '${{ github.sha }}'
-          fetch-depth: 0
+          ref: ${{ github.event.workflow_run.head_sha }} # Checkout the commit that triggered the CI/E2E
+          fetch-depth: 0 # Required for notes generation
 
-      - name: Setup Node.js
+      - name: Setup Node.js and npm
         uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
@@ -53,16 +37,7 @@ jobs:
           npm run build:packages
           npm run prepare:package
 
-      - name: List bundle directory contents
-        run: ls -l bundle/
-
-      - name: Check gh CLI version
-        run: gh --version
-
-      - name: Update gh CLI
-        run: sudo apt-get update && sudo apt-get install -y gh
-
-      - name: Create GitHub Release and Tag
+      - name: Create Release and Publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
