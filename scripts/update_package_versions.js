@@ -38,22 +38,6 @@ try {
   execSync(`git commit -m "chore: Release ${newVersion}"`);
   console.log(`Created commit for version ${newVersion}.`);
 
-  // Check if tag already exists and delete it if it does
-  try {
-    execSync(`git tag -d v${newVersion}`);
-    console.log(`Deleted existing local tag v${newVersion}.`);
-  } catch (_tagError) {
-    // Ignore error if tag doesn't exist
-  }
-
-  // Create the tag
-  execSync(`git tag v${newVersion}`);
-  console.log(`Created tag v${newVersion}.`);
-
-  // Push the tag to remote
-  execSync(`git push origin v${newVersion}`);
-  console.log(`Pushed tag v${newVersion} to remote.`);
-
   console.log('Version update and tagging complete.');
 } catch (error) {
   console.error('Error during version update:', error.message);
