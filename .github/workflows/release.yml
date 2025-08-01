@@ -2,7 +2,7 @@ name: Release
 
 on:
   workflow_run:
-    workflows: ["Gemini CLI CI", "E2E Tests"] # Name of the workflows to monitor
+    workflows: ['Gemini CLI CI', 'E2E Tests'] # Name of the workflows to monitor
     types:
       - completed
     branches:
@@ -32,9 +32,6 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-
-      - name: Install jq
-        run: sudo apt-get update && sudo apt-get install -y jq
 
       - name: Install jq
         run: sudo apt-get update && sudo apt-get install -y jq
