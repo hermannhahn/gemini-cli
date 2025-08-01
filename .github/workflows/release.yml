@@ -2,59 +2,35 @@ name: Release
 
 on:
   workflow_run:
-    workflows: ['Gemini CLI CI', 'E2E Tests'] # Name of the workflows to monitor
-    types:
-      - completed
-    conclusions:
-      - success
+    workflows: ['Gemini CLI CI', 'E2E Tests']
+    types: [completed]
     branches:
       - hermannhahn/main # Only trigger if the workflow ran on this branch
 
-run-name: Release ${{ inputs.version || github.ref_name }}
+run-name: Release from commit ${{ github.event.workflow_run.head_sha }}
 
 jobs:
   release:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-      id-token: write # Add this for OIDC permissions
+      contents: write # Needed to create tags and releases
       packages: write # Add this for package publishing permissions
 
     steps:
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.workflow_run.head_sha }} # Checkout the commit that triggered the CI/E2E
-          fetch-depth: 0
+          fetch-depth: 0 # Required for notes generation
 
-      - name: Setup Node.js
+      - name: Setup Node.js and npm
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-
-      - name: Install jq
-        run: sudo apt-get update && sudo apt-get install -y jq
-
-      - name: Get version from package.json and create tag
-        id: get_version_and_tag
-        run: |
-          PACKAGE_VERSION=$(jq -r .version package.json)
-          RELEASE_TAG="v${PACKAGE_VERSION}"
-          echo "RELEASE_TAG=${RELEASE_TAG}" >> $GITHUB_OUTPUT
-
-          # Create the tag
-          git tag "${RELEASE_TAG}"
-
-          # Push the tag to remote
-          git push origin "${RELEASE_TAG}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed for git push
+          registry-url: 'https://registry.npmjs.org/'
+          scope: '@hahnd'
 
       - name: Install Dependencies
         run: npm ci
@@ -64,29 +40,23 @@ jobs:
           npm run build:packages
           npm run prepare:package
 
-      - name: List bundle directory contents
-        run: ls -l bundle/
-
-      - name: Check gh CLI version
-        run: gh --version
-
-      - name: Update gh CLI
-        run: sudo apt-get update && sudo apt-get install -y gh
-
-      - name: Create GitHub Release and Tag
+      - name: Create Release and Publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release create ${{ steps.get_version_and_tag.outputs.RELEASE_TAG }} bundle/geminid.js
-
-      - name: Configure npm for publishing
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          registry-url: 'https://registry.npmjs.org/'
-          scope: '@hahnd'
-
-      - name: Publish @hahnd/geminid
-        run: npm publish --workspace=@hahnd/geminid --access public
-        env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          # Extract version from package.json
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          RELEASE_TAG="v${PACKAGE_VERSION}"
+
+          # Publish to npm first to ensure the version is available before creating the release.
+          # The --workspace flag was incorrect for publishing the root package.
+          npm publish --access public
+
+          # If npm publish succeeds, create the GitHub Release.
+          # This command also creates and pushes the git tag to the correct commit.
+          gh release create "$RELEASE_TAG" \
+            --target "${{ github.event.workflow_run.head_sha }}" \
+            --generate-notes \
+            --title "Release $RELEASE_TAG" \
+            bundle/*
