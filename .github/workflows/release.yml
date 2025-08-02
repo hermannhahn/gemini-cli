@@ -60,4 +60,3 @@ jobs:
             --generate-notes \
             --title "Release $RELEASE_TAG" \
             bundle/*
-
