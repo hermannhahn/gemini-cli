@@ -1,9 +1,9 @@
 name: 'Release'
 
 on:
-  push:
-    branches:
-      - hermannhahn/main # Only trigger if the workflow ran on this branch
+  repository_dispatch:
+    types: [run-release]
+  workflow_dispatch: # Keep for manual triggering
 
 run-name: Release ${{ inputs.version || github.ref_name }}
 
