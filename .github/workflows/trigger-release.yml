@@ -1,5 +1,5 @@
 name: Trigger Release
-run-name: Release Test v${{ needs.get_package_version.outputs.package_version }}
+run-name: Trigger Release Workflow
 
 on:
   pull_request:
