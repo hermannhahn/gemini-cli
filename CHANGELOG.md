@@ -21,6 +21,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Narrator command flag changed from 'acts' to 'thinking'.
 - Added upstream updates.
 
+## [0.1.26] - 2025-08-02
+
+### Added [0.1.26]
+
+- Automated release workflow via GitHub Actions, triggered after successful CI and E2E tests.
+- Custom run-names for release and trigger workflows, including package version.
+
+### Changed [0.1.26]
+
+- Renamed `@google/gemini-cli-core` to `@hahnd/gemini-cli-core` and updated CLI dependency.
+- Adjusted release workflow to publish both `@hahnd/geminid` and `@hahnd/gemini-cli-core`.
+
+### Fixed [0.1.26]
+
+- Resolved `EEXIST` error in `list_directory.test.js` by adding `recursive: true` to `mkdir` in `TestRig`.
+- Fixed various linting issues in GitHub Actions workflow files (`release.yml`, `trigger-release.yml`).
+- Corrected `repository_dispatch` parameters (`owner`, `repo`, `repository`) in `trigger-release.yml`.
+- Removed debug `echo` step from `release.yml`.
+
 ## [0.1.0] - 2025-07-27
 
 ### Added [0.1.0]
