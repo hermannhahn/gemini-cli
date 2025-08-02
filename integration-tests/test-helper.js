@@ -5,7 +5,7 @@
  */
 
 import { execSync } from 'child_process';
-import { mkdirSync, writeFileSync, readFileSync } from 'fs';
+import { mkdirSync, writeFileSync, readFileSync, rmSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { env } from 'process';
@@ -97,5 +97,11 @@ export class TestRig {
       console.log(`--- END FILE: ${testId}/${fileName} ---`);
     }
     return content;
+  }
+
+  teardown() {
+    if (this.testDir && env.KEEP_OUTPUT !== 'true') {
+      rmSync(this.testDir, { recursive: true, force: true });
+    }
   }
 }

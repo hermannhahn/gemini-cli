@@ -5,11 +5,17 @@
  */
 
 import { strict as assert } from 'assert';
-import { test } from 'node:test';
+import { test, afterEach } from 'node:test';
 import { TestRig } from './test-helper.js';
 
+let rig;
+
+afterEach(() => {
+  rig.teardown();
+});
+
 test('reads a file', (t) => {
-  const rig = new TestRig();
+  rig = new TestRig();
   rig.setup(t.name);
   rig.createFile('test.txt', 'hello world');
 
@@ -19,7 +25,7 @@ test('reads a file', (t) => {
 });
 
 test('writes a file', (t) => {
-  const rig = new TestRig();
+  rig = new TestRig();
   rig.setup(t.name);
   rig.createFile('test.txt', '');
 
