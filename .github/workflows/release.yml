@@ -9,7 +9,7 @@ run-name: Release from commit ${{ github.event.client_payload.sha }}
 
 jobs:
   release:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
     runs-on: ubuntu-latest
     permissions:
       contents: write # Needed to create tags and releases
@@ -19,7 +19,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_sha }} # Checkout the commit that triggered the CI/E2E
+          ref: ${{ github.event.client_payload.sha }} # Checkout the commit that triggered the CI/E2E
           fetch-depth: 0 # Required for notes generation
 
       - name: Setup Node.js and npm
@@ -54,7 +54,7 @@ jobs:
           # If npm publish succeeds, create the GitHub Release.
           # This command also creates and pushes the git tag to the correct commit.
           gh release create "$RELEASE_TAG" \
-            --target "${{ github.event.workflow_run.head_sha }}" \
+            --target "${{ github.event.client_payload.sha }}" \
             --generate-notes \
             --title "Release $RELEASE_TAG" \
             bundle/*
