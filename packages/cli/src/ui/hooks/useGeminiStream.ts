@@ -555,7 +555,7 @@ Use '[AUDIO] 🗣️' at the end of your response to speech your next actions, c
                 ? `${event.value.subject}. ${event.value.description}`
                 : event.value.description;
               // Remove the audio marker from the text before playing TTS
-              thoughtText = thoughtText.replace(/\s*\[AUDIO\]\s*🗣️/g, '');
+              thoughtText = thoughtText.replace(/\s*🗣️/g, '');
               if (thoughtText.trim().length > 0) {
                 await generateAndPlayTts(thoughtText, 'thinking');
               }
@@ -607,10 +607,7 @@ Use '[AUDIO] 🗣️' at the end of your response to speech your next actions, c
       }
       if (narratorMode === 'response' && geminiMessageBuffer) {
         // Remove the audio marker from the text before playing TTS
-        const textToPlay = geminiMessageBuffer.replace(
-          /\s*\[AUDIO\]\s*🗣️/g,
-          '',
-        );
+        const textToPlay = geminiMessageBuffer.replace(/\s*🗣️/g, '');
         if (textToPlay.trim().length > 0) {
           await generateAndPlayTts(textToPlay, 'response');
         }
