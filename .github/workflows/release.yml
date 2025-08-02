@@ -1,13 +1,11 @@
 name: Release
 
 on:
-  workflow_run:
-    workflows: ['Gemini CLI CI', 'E2E Tests']
-    types: [completed]
-    branches:
-      - hermannhahn/main # Only trigger if the workflow ran on this branch
+  repository_dispatch:
+    types: [run-release]
+  workflow_dispatch: # Keep for manual triggering
 
-run-name: Release from commit ${{ github.event.workflow_run.head_sha }}
+run-name: Release from commit ${{ github.event.client_payload.sha }}
 
 jobs:
   release:
