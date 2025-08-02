@@ -15,9 +15,6 @@ jobs:
       packages: write # Add this for package publishing permissions
 
     steps:
-      - name: Check if release job is running
-        run: echo "Release job is running!"
-
       - name: Checkout code
         uses: actions/checkout@v4
         with:
