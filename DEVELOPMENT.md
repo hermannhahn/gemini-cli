@@ -49,14 +49,15 @@ This document provides essential context and instructions for the team assisting
 
 ## Release Process (Automated via GitHub Actions)
 
-When a feature/fix is merged into `username/main` and a new release is desired:
+When a feature/fix is merged into `hermannhahn/main` and a new release is desired:
 
 1. **Decide New Version:** Determine `MAJOR.MINOR.PATCH` based on changes.
-2. **Update Version & Tag:** Run `npm version <major|minor|patch>` on `username/main`. This updates `package.json`, creates a version commit, and a Git tag.
-3. **Push Tag:** Execute `git push origin username/main --tags` to push the new tag to GitHub.
-4. **Trigger Workflow:** Manually trigger the `Release` workflow in GitHub Actions (via UI or `gh workflow run`).
-   - **Inputs:** `version` (e.g., `v0.0.1`), `ref` (`username/main`).
-   - **Outcome:** The workflow builds the CLI, creates the GitHub Release, attaches the executable, and publishes the `@hahnd/geminid` package to npm.
+2. **Update Version:** Update the `version` field in `package.json`, `packages/cli/package.json`, and `packages/core/package.json` to the new version.
+3. **Commit and Push:** Commit the version update and push to `hermannhahn/main`.
+4. **Automated Trigger:** A push to `hermannhahn/main` automatically triggers the `Trigger Release` workflow.
+   - This workflow waits for the successful completion of both `Gemini CLI CI` and `E2E Tests`.
+   - Upon success, it dispatches a `run-release` event to trigger the `Release` workflow.
+   - **Outcome:** The `Release` workflow builds the CLI and core packages, creates the GitHub Release, attaches the executable, and publishes both `@hahnd/geminid` and `@hahnd/gemini-cli-core` packages to npm.
 
 At the end, merge back into `username/develop` to continue development.
 
@@ -252,5 +253,6 @@ npm run clean
 npm install
 npm run auth
 npm run prerelease:dev
-npm publish --workspaces
+npm publish --workspace @hahnd/geminid
+npm publish --workspace @hahnd/gemini-cli-core
 ```
