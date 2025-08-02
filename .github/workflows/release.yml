@@ -9,7 +9,6 @@ run-name: Release from commit ${{ github.event.client_payload.sha }}
 
 jobs:
   release:
-    
     runs-on: ubuntu-latest
     permissions:
       contents: write # Needed to create tags and releases
