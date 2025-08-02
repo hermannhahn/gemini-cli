@@ -59,4 +59,3 @@ jobs:
             --title "Release $RELEASE_TAG" \
             bundle/*
 
-
