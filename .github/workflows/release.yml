@@ -48,7 +48,8 @@ jobs:
 
           # Publish to npm first to ensure the version is available before creating the release.
           # The --workspace flag was incorrect for publishing the root package.
-          npm publish --access public
+          npm publish --workspace @hahnd/geminid --access public
+          npm publish --workspace @hahnd/gemini-cli-core --access public
 
           # If npm publish succeeds, create the GitHub Release.
           # This command also creates and pushes the git tag to the correct commit.
