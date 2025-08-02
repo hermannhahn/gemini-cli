@@ -12,6 +12,7 @@ jobs:
         uses: convictional/trigger-workflow-and-wait@v1.3.0
         with:
           workflow_file_name: 'ci.yml'
+          owner: ${{ github.repository_owner }}
           ref: hermannhahn/main
           github_token: ${{ secrets.GITHUB_TOKEN }}
           propagate_failure: true
@@ -23,6 +24,7 @@ jobs:
         uses: convictional/trigger-workflow-and-wait@v1.3.0
         with:
           workflow_file_name: 'e2e.yml'
+          owner: ${{ github.repository_owner }}
           ref: hermannhahn/main
           github_token: ${{ secrets.GITHUB_TOKEN }}
           propagate_failure: true
@@ -36,5 +38,6 @@ jobs:
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          owner: ${{ github.repository_owner }}
           event-type: run-release
           client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
