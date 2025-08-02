@@ -348,7 +348,7 @@ Use '[AUDIO] 🗣️' at the end of your response to speech your next actions, c
 
       // Remove the audio marker from the displayed text
       newGeminiMessageBuffer = newGeminiMessageBuffer.replace(
-        /\s*\[AUDIO\]\s*🗣️/g,
+        /\s*\[AUDIO\]/g,
         '',
       );
 
@@ -360,7 +360,7 @@ Use '[AUDIO] 🗣️' at the end of your response to speech your next actions, c
           addItem(pendingHistoryItemRef.current, userMessageTimestamp);
         }
         setPendingHistoryItem({ type: 'gemini', text: '' });
-        newGeminiMessageBuffer = eventValue.replace(/\s*\[AUDIO\]\s*🗣️/g, ''); // Also apply to initial eventValue
+        newGeminiMessageBuffer = eventValue.replace(/\s*\[AUDIO\]/g, ''); // Also apply to initial eventValue
       }
       // Split large messages for better rendering performance. Ideally,
       // we should maximize the amount of output sent to <Static />.
