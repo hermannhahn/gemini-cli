@@ -13,6 +13,7 @@ jobs:
         with:
           workflow_file_name: 'ci.yml'
           owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
           ref: hermannhahn/main
           github_token: ${{ secrets.GITHUB_TOKEN }}
           propagate_failure: true
@@ -25,6 +26,7 @@ jobs:
         with:
           workflow_file_name: 'e2e.yml'
           owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
           ref: hermannhahn/main
           github_token: ${{ secrets.GITHUB_TOKEN }}
           propagate_failure: true
@@ -39,5 +41,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
           event-type: run-release
           client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
