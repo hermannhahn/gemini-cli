@@ -13,7 +13,7 @@ import { glob } from 'glob';
 async function main() {
   const __dirname = dirname(fileURLToPath(import.meta.url));
   const rootDir = join(__dirname, '..');
-  const integrationTestsDir = join(rootDir, '.integration-tests');
+  const integrationTestsDir = join(rootDir, 'integration-tests');
 
   if (process.env.GEMINI_SANDBOX === 'docker' && !process.env.IS_DOCKER) {
     console.log('Building sandbox for Docker...');
