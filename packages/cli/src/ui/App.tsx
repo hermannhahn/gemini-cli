@@ -61,7 +61,7 @@ import {
   AuthType,
   type IdeContext,
   ideContext,
-} from '@google/gemini-cli-core';
+} from '@hahnd/gemini-cli-core';
 import {
   IdeIntegrationNudge,
   IdeIntegrationNudgeResult,
@@ -87,7 +87,7 @@ import {
   isProQuotaExceededError,
   isGenericQuotaExceededError,
   UserTierId,
-} from '@google/gemini-cli-core';
+} from '@hahnd/gemini-cli-core';
 import { UpdateObject } from './utils/updateCheck.js';
 import ansiEscapes from 'ansi-escapes';
 import { OverflowProvider } from './contexts/OverflowContext.js';

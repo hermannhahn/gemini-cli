@@ -17,7 +17,7 @@ import {
   uiTelemetryService,
   SessionMetrics,
   ModelMetrics,
-} from '@google/gemini-cli-core';
+} from '@hahnd/gemini-cli-core';
 
 // --- Interface Definitions ---
 

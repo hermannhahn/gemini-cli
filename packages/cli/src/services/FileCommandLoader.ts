@@ -9,7 +9,7 @@ import path from 'path';
 import toml from '@iarna/toml';
 import { glob } from 'glob';
 import { z } from 'zod';
-import { Config } from '@google/gemini-cli-core';
+import { Config } from '@hahnd/gemini-cli-core';
 import { ICommandLoader } from './types.js';
 import {
   CommandContext,

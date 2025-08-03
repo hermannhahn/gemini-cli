@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed [0.1.26]
 
-- Renamed `@google/gemini-cli-core` to `@hahnd/gemini-cli-core` and updated CLI dependency.
+- Renamed `@hahnd/gemini-cli-core` to `@hahnd/gemini-cli-core` and updated CLI dependency.
 - Adjusted release workflow to publish both `@hahnd/geminid` and `@hahnd/gemini-cli-core`.
 
 ### Fixed [0.1.26]
