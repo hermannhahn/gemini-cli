@@ -11,7 +11,7 @@ import { TestRig } from './test-helper.js';
 test('should be able to run a shell command', async (t) => {
   const rig = new TestRig();
   rig.setup(t.name);
-  const prompt = `echo "some content" > blah.txt && Can you use ls to list the contexts of the current folder`;
+  const prompt = `echo "some content" > blah.txt && ls -F`;
   const result = rig.run(prompt);
 
   assert.ok(result.includes('blah.txt'));
@@ -20,7 +20,7 @@ test('should be able to run a shell command', async (t) => {
 test('should be able to run a shell command via stdin', async (t) => {
   const rig = new TestRig();
   rig.setup(t.name);
-  const prompt = `echo "some content" > blah.txt && Can you use ls to list the contexts of the current folder`;
+  const prompt = `echo "some content" > blah.txt && ls -F`;
   const result = rig.run({ stdin: prompt });
 
   assert.ok(result.includes('blah.txt'));
