@@ -61,9 +61,9 @@ The `TODO.md` file is the primary, detailed source of task progress, including s
     - When importing TypeScript modules (`.ts`) within the project (especially in test files or where the bundler has already processed the files), it is **mandatory to use the `.js` extension** in the import path, even if the original file is `.ts`. This is due to the compilation process and how modules are resolved at runtime.
     - **Example:** Instead of `import { someFunction } from '../utils/myModule.ts';`, use `import { someFunction } from '../utils/myModule.js';`.
 
-2.  **`@google/gemini-cli-core` Package Imports:**
-    - Modules and functionalities from the `@google/gemini-cli-core` package must be imported directly from the package, not via relative paths that attempt to access the internal structure of the `core`.
-    - **Example:** Instead of `import { Config } from '../../../core/src/config/config.js';`, use `import { Config } from '@google/gemini-cli-core';`.
+2.  **`@hahnd/gemini-cli-core` Package Imports:**
+    - Modules and functionalities from the `@hahnd/gemini-cli-core` package must be imported directly from the package, not via relative paths that attempt to access the internal structure of the `core`.
+    - **Example:** Instead of `import { Config } from '../../../core/src/config/config.js';`, use `import { Config } from '@hahnd/gemini-cli-core';`.
 
 3.  **Mocking Context Functions (`commandContext.ui`):**
     - When testing CLI commands that interact with the UI (e.g., `commandContext.ui.setNarratorMode`), it is necessary to mock these functions to isolate the test and avoid dependencies on the actual UI.

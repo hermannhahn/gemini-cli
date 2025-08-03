@@ -9,7 +9,7 @@ import {
   IDEConnectionStatus,
   getIdeDisplayName,
   getIdeInstaller,
-} from '@google/gemini-cli-core';
+} from '@hahnd/gemini-cli-core';
 import {
   CommandContext,
   SlashCommand,
