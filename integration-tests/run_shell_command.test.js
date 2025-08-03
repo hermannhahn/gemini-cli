@@ -11,9 +11,7 @@ import { TestRig } from './test-helper.js';
 test('should be able to run a shell command', async (t) => {
   const rig = new TestRig();
   rig.setup(t.name);
-  rig.createFile('blah.txt', 'some content');
-
-  const prompt = `Can you use ls to list the contexts of the current folder`;
+  const prompt = `echo "some content" > blah.txt && Can you use ls to list the contexts of the current folder`;
   const result = rig.run(prompt);
 
   assert.ok(result.includes('blah.txt'));

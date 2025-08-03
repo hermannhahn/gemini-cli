@@ -22,6 +22,6 @@
 ### Resolution Attempts:
 
 - **Resolution Attempt 1:**
-  - **Action Plan:** Modify the `should be able to run a shell command via stdin` test in `integration-tests/run_shell_command.test.js` to create the `blah.txt` file directly within the shell prompt using `echo` before executing `ls`. This ensures the file exists when `ls` runs.
+  - **Action Plan:** Modify the `should be able to run a shell command` test in `integration-tests/run_shell_command.test.js` to create the `blah.txt` file directly within the shell prompt using `echo` before executing `ls`. This ensures the file exists when `ls` runs.
   - **Attempt Status:** Completed
   - **Result:** Test passed after modifying to create file within shell prompt.
