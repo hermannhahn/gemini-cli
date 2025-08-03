@@ -5,20 +5,23 @@ on:
     types: [run-release]
   workflow_dispatch: # Keep for manual triggering
 
-run-name: Release v${{ github.event.client_payload.version }}
+run-name: Release v${{ inputs.version || github.ref_name }}
 
 jobs:
   release:
     runs-on: ubuntu-latest
     permissions:
       contents: write # Needed to create tags and releases
+      id-token: write # Add this for OIDC permissions
       packages: write # Add this for package publishing permissions
+    outputs:
+      RELEASE_TAG: ${{ steps.version.outputs.RELEASE_TAG }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.client_payload.sha }} # Checkout the commit that triggered the CI/E2E
+          ref: ${{ github.sha }} # Checkout a specific commit
           fetch-depth: 0 # Required for notes generation
 
       - name: Setup Node.js and npm
@@ -26,33 +29,97 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
+          registry-url: 'https://registry.npmjs.org/'
+          scope: '@hahnd'
 
-      - name: 'Install Dependencies'
-        run: |-
-          npm ci
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Get the version
+        id: version
+        run: |
+          VERSION_JSON=$(node scripts/get-release-version.js)
+          echo "RELEASE_TAG=$(echo $VERSION_JSON | jq -r .releaseTag)" >> $GITHUB_OUTPUT
+          echo "RELEASE_VERSION=$(echo $VERSION_JSON | jq -r .releaseVersion)" >> $GITHUB_OUTPUT
+          echo "NPM_TAG=$(echo $VERSION_JSON | jq -r .npmTag)" >> $GITHUB_OUTPUT
+        env:
+          MANUAL_VERSION: ${{ inputs.version }}
+
+      - name: Run Tests
+        if: github.event.inputs.force_skip_tests != 'true'
+        run: |
+          npm run preflight
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+      - name: Configure Git User
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create and switch to a release branch
+        id: release_branch
+        run: |
+          BRANCH_NAME="release/${{ steps.version.outputs.RELEASE_TAG }}"
+          git switch -c $BRANCH_NAME
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_OUTPUT
+
+      - name: Update package versions
+        if: github.event.inputs.force_skip_version != 'true'
+        run: |
+          npm run release:version ${{ steps.version.outputs.RELEASE_VERSION }}
+
+      - name: Commit and Conditionally Push package versions
+        run: |
+          git add package.json package-lock.json packages/*/package.json
+          git commit -m "chore(release): ${{ steps.version.outputs.RELEASE_TAG }}"
+          echo "Pushing release branch to remote..."
+          git push --set-upstream origin ${{ steps.release_branch.outputs.BRANCH_NAME }} --follow-tags
+
+      - name: Update gh CLI
+        run: sudo apt-get update && sudo apt-get install -y gh
 
       - name: Build and Prepare Packages
         run: |
           npm run build:packages
           npm run prepare:package
 
-      - name: Create Release and Publish
+      - name: Publish @hahnd/gemini-cli-core
+        run: npm publish --workspace=@hahnd/gemini-cli-core --tag=${{ steps.version.outputs.NPM_TAG }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Install latest core package
+        run: npm install @hahnd/gemini-cli-core@${{ steps.version.outputs.RELEASE_VERSION }} --workspace=@hahnd/geminid --save-exact
+
+      - name: Publish @hahnd/geminid
+        run: npm publish --workspace=@hahnd/geminid --tag=${{ steps.version.outputs.NPM_TAG }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create Release, Tag and Publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_BRANCH: ${{ steps.release_branch.outputs.BRANCH_NAME }}
         run: |
-          # Extract version from package.json
-          PACKAGE_VERSION=$(node -p "require('./package.json').version")
-          RELEASE_TAG="v${PACKAGE_VERSION}"
-
           # Publish to npm first to ensure the version is available before creating the release.
           # The --workspace flag was incorrect for publishing the root package.
-          npm publish --workspace @hahnd/geminid --access public
-          npm publish --workspace @hahnd/gemini-cli-core --access public
+          # npm publish --workspace @hahnd/geminid --access public
+          # npm publish --workspace @hahnd/gemini-cli-core --access public
 
           # If npm publish succeeds, create the GitHub Release.
           # This command also creates and pushes the git tag to the correct commit.
           gh release create "$RELEASE_TAG" \
-            --target "${{ github.event.client_payload.sha }}" \
-            --generate-notes \
-            --title "Release $RELEASE_TAG" \
-            bundle/*
+            --target "$RELEASE_BRANCH" \
+            --title "Release ${{ steps.version.outputs.RELEASE_TAG }}" \
+            --generate-notes
+
+      - name: Create Issue on Failure
+        if: failure()
+        run: |
+          gh issue create \
+            --title "Release Failed for ${{ steps.version.outputs.RELEASE_TAG || 'N/A' }} on $(date +'%Y-%m-%d')" \
+            --body "The release workflow failed. See the full run for details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --label "kind/bug,release-failure"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
