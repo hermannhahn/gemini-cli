@@ -11,7 +11,9 @@ import { TestRig } from './test-helper.js';
 test('should be able to run a shell command', async (t) => {
   const rig = new TestRig();
   rig.setup(t.name);
-  const prompt = `echo "some content" > blah.txt && ls -F`;
+  rig.createFile('blah.txt', 'some content');
+
+  const prompt = `ls -F`;
   const result = rig.run(prompt);
 
   assert.ok(result.includes('blah.txt'));
