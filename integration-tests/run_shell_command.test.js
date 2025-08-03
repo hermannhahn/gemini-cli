@@ -27,5 +27,8 @@ test('should be able to run a shell command via stdin', async (t) => {
   const prompt = `Can you use ls to list the contexts of the current folder`;
   const result = rig.run({ stdin: prompt });
 
+  // Add a small delay to mitigate potential timing issues on macOS.
+  await new Promise((resolve) => setTimeout(resolve, 100));
+
   assert.ok(result.includes('blah.txt'));
 });
