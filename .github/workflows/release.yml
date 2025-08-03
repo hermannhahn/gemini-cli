@@ -5,7 +5,7 @@ on:
     types: [run-release]
   workflow_dispatch: # Keep for manual triggering
 
-run-name: Release v${{ inputs.version || 'latest' }}
+run-name: Release v${{ steps.version.outputs.RELEASE_TAG }}
 
 jobs:
   release:
@@ -118,13 +118,3 @@ jobs:
             --target "$RELEASE_BRANCH" \
             --title "Release ${{ steps.version.outputs.RELEASE_TAG }}" \
             --generate-notes
-
-      - name: Create Issue on Failure
-        if: failure()
-        run: |
-          gh issue create \
-            --title "Release Failed for ${{ steps.version.outputs.RELEASE_TAG || 'N/A' }} on $(date +'%Y-%m-%d')" \
-            --body "The release workflow failed. See the full run for details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
-            --label "kind/bug,release-failure"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
