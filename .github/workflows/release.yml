@@ -5,15 +5,20 @@ on:
     types: [run-release]
   workflow_dispatch: # Keep for manual triggering
 
-run-name: Release v${{ inputs.version || github.ref_name }}
+run-name: Release v${{ inputs.version || 'latest' }}
 
 jobs:
   release:
     runs-on: ubuntu-latest
+    environment:
+      name: production-release
+      url: ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ steps.version.outputs.RELEASE_TAG }}
+    if: github.repository == 'hermannhahn/gemini-cli'
     permissions:
-      contents: write # Needed to create tags and releases
-      id-token: write # Add this for OIDC permissions
-      packages: write # Add this for package publishing permissions
+      contents: write
+      packages: write
+      id-token: write
+      issues: write # For creating issues on failure
     outputs:
       RELEASE_TAG: ${{ steps.version.outputs.RELEASE_TAG }}
 
