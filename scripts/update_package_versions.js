@@ -38,26 +38,19 @@ try {
   updatePackageJson(rootPackageJsonPath, newVersion);
   updatePackageJson(cliPackageJsonPath, newVersion);
 
-  // install and compile
-  console.log('Installing...');
-  execSync('npm install');
-  console.log('Compiling...');
-  execSync('npm run build');
-  console.log('Succefully installed and compiled Geminid CLI v' + newVersion);
-
   // Add changes to git
   execSync('git add .');
   console.log('Added package.json files to git staging area.');
 
   // Commit the version update
-  execSync(`git commit -m 'chore: Release v${newVersion}'`);
+  execSync(`git commit -m 'chore(release): Release v${newVersion}'`);
   console.log(`Created commit for version ${newVersion}.`);
 
   console.log('Version update and tagging complete.');
 
   // Pushing
   console.log('Publishing...');
-  execSync('git push');
+  execSync('git push origin hermannhahn/main');
   console.log(`Version ${newVersion} successfully published.`);
 } catch (error) {
   console.error('Error during version update:', error.message);
