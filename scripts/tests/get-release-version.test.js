@@ -104,15 +104,14 @@ describe('get-release-version script', () => {
       releaseVersion: '0.1.0',
       npmTag: 'latest',
     };
-    // Mock execSync to return the expected JSON when the script is run
-    vi.mock('child_process', () => ({
-      execSync: vi.fn((command) => {
-        if (command.includes('get-release-version.js')) {
-          return JSON.stringify(expectedJson);
-        }
-        return '';
-      }),
-    }));
+
+    // Set up the mock for execSync specifically for this test
+    vi.mocked(execSync).mockImplementation((command) => {
+      if (command.includes('get-release-version.js')) {
+        return JSON.stringify(expectedJson);
+      }
+      return '';
+    });
 
     const result = execSync('node scripts/get-release-version.js').toString();
     expect(JSON.parse(result)).toEqual(expectedJson);
