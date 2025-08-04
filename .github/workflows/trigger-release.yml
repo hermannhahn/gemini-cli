@@ -38,10 +38,19 @@ jobs:
     needs: [wait_for_ci, wait_for_e2e]
     if: ${{ always() && needs.wait_for_ci.result == 'success' && needs.wait_for_e2e.result == 'success' }}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Get package version
+        id: get_version
+        run: echo "PACKAGE_VERSION=$(node -p \"require('./package.json').version\")" >> $GITHUB_OUTPUT
+
       - name: Dispatch Release Workflow
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.repository }}
           event-type: run-release
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "${{ steps.get_version.outputs.PACKAGE_VERSION }}"}'

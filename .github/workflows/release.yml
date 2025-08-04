@@ -5,7 +5,7 @@ on:
     types: [run-release]
   workflow_dispatch: # Keep for manual triggering
 
-run-name: Release v${{ steps.version.outputs.RELEASE_VERSION }}
+run-name: Release v${{ github.event.client_payload.version }}
 
 jobs:
   release:
