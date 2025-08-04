@@ -50,7 +50,7 @@
     "release:update-versions": "node scripts/update_package_versions.js",
     "telemetry": "node scripts/telemetry.js",
     "clean": "node scripts/clean.js",
-    "publish": "node scripts/set-version.js"
+    "publish": "node scripts/update_package_versions.js"
   },
   "bin": {
     "geminid": "bundle/geminid.js"
