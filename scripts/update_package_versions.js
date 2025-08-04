@@ -116,10 +116,12 @@ try {
 
   try {
     // Merge with hermannhahn/release branch
+    execSync('git checkout hermannhahn/release');
+    console.log('Switched to hermannhahn/release branch.');
     execSync(
-      'git merge origin/hermannhahn/release -X theirs --allow-unrelated-histories -m "Merge hermannhahn/release into hermannhahn/main"',
+      `git merge origin/hermannhahn/main --no-ff -m "chore(release): Release v${newVersion}"`,
     );
-    console.log('Merged hermannhahn/release into hermannhahn/main.');
+    execSync('git checkout hermannhahn/main');
   } catch (error) {
     console.log(error);
     // re-create
