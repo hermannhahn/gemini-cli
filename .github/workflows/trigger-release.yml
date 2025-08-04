@@ -45,7 +45,7 @@ jobs:
 
       - name: Get package version
         id: get_version
-        run: echo "PACKAGE_VERSION=$(node -p \"require('./package.json').version\")" >> $GITHUB_OUTPUT
+        run: echo "PACKAGE_VERSION=$(jq -r .version package.json)" >> $GITHUB_OUTPUT
 
       - name: Dispatch Release Workflow
         uses: peter-evans/repository-dispatch@v2
