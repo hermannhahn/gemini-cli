@@ -106,5 +106,5 @@ jobs:
           # This command also creates and pushes the git tag to the correct commit.
           gh release create "$RELEASE_TAG" \
             --target "$RELEASE_BRANCH" \
-            --title "Release ${{ steps.version.outputs.RELEASE_TAG }}" \
+            --title "Release v${{ steps.version.outputs.RELEASE_TAG }}" \
             --generate-notes

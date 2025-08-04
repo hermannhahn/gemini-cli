@@ -26,32 +26,80 @@ if (!newVersion) {
   process.exit(1);
 }
 
-function updatePackageJson(filePath, version) {
-  const packageJson = JSON.parse(readFileSync(filePath, 'utf8'));
-  packageJson.version = version;
-  writeFileSync(filePath, JSON.stringify(packageJson, null, 2) + '\n');
-  console.log(`Updated ${filePath} to version ${version}`);
-}
-
 try {
-  // Update versions in package.json files
-  updatePackageJson(rootPackageJsonPath, newVersion);
-  updatePackageJson(cliPackageJsonPath, newVersion);
+  // Configure Git User for the commit
+  execSync('git config user.name "github-actions[bot]"');
+  execSync(
+    'git config user.email "github-actions[bot]@users.noreply.github.com"',
+  );
 
-  // Add changes to git
-  execSync('git add .');
-  console.log('Added package.json files to git staging area.');
+  // Check and update root package.json
+  const rootPackageJsonContent = readFileSync(rootPackageJsonPath, 'utf8');
+  const rootPackageJson = JSON.parse(rootPackageJsonContent);
+  if (rootPackageJson.version !== newVersion) {
+    rootPackageJson.version = newVersion;
+    writeFileSync(
+      rootPackageJsonPath,
+      JSON.stringify(rootPackageJson, null, 2) + '\n',
+    );
+    console.log(`Updated ${rootPackageJsonPath} to version ${newVersion}`);
+  } else {
+    console.log(`${rootPackageJsonPath} already at version ${newVersion}.`);
+  }
 
-  // Commit the version update
-  execSync(`git commit -m 'chore(release): Release v${newVersion}'`);
+  // Check and update packages/cli/package.json
+  const cliPackageJsonContent = readFileSync(cliPackageJsonPath, 'utf8');
+  const cliPackageJson = JSON.parse(cliPackageJsonContent);
+  if (cliPackageJson.version !== newVersion) {
+    cliPackageJson.version = newVersion;
+    writeFileSync(
+      cliPackageJsonPath,
+      JSON.stringify(cliPackageJson, null, 2) + '\n',
+    );
+    console.log(`Updated ${cliPackageJsonPath} to version ${newVersion}`);
+  } else {
+    console.log(`${cliPackageJsonPath} already at version ${newVersion}.`);
+  }
+
+  // Check if any other files were modified
+  const modifiedFiles = execSync('git status --porcelain').toString().trim();
+  // List of file (Ignore M char, the first file is not a file);
+  const modifiedFilesToAdd = modifiedFiles
+    .split('\n')
+    .map((line) => line.substring(2))
+    .join(' ');
+
+  if (modifiedFiles) {
+    console.log('Files were modified since the last commit:');
+    console.log(modifiedFiles);
+    console.log('Installing dependencies and updating packages...');
+    // Install
+    execSync('npm install', { stdio: 'inherit' });
+    console.log('npm install completed.');
+    execSync('npm run build', { stdio: 'inherit' });
+    console.log('npm run build completed.');
+    // Get all modified files names
+
+    // Add changes to git
+    execSync(`git add ${modifiedFilesToAdd}`); // Be specific about files
+    console.log('Added all changes to git staging area.');
+    // Commit
+    execSync(`git commit -m 'chore(release): Release v${newVersion}'`);
+  } else {
+    execSync(
+      `git commit --allow-empty -m 'chore(release): Release v${newVersion}'`,
+    );
+    console.log(`Re-triggering release workflow for version ${newVersion}.`);
+  }
+
+  // Pushing (always push, even if no new commit was made, to trigger CI/CD for other changes)
   console.log(`Created commit for version ${newVersion}.`);
-
-  console.log('Version update and tagging complete.');
-
-  // Pushing
-  console.log('Publishing...');
+  console.log('Version update process complete.');
+  console.log('Publishing and triggering release workflow...');
   execSync('git push origin hermannhahn/main');
-  console.log(`Version ${newVersion} successfully published.`);
+  console.log(
+    `Version ${newVersion} successfully published and triggered release workflow.`,
+  );
 } catch (error) {
   console.error('Error during version update:', error.message);
   process.exit(1);
