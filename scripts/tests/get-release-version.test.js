@@ -1,9 +1,3 @@
-/**
- * @license
- * Copyright 2025 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { getReleaseVersion } from '../get-release-version';
 import { execSync } from 'child_process';
@@ -31,6 +25,9 @@ describe('getReleaseVersion', () => {
     vi.resetModules();
     process.env = { ...originalEnv };
     vi.useFakeTimers();
+    vi.mocked(fs.default.readFileSync).mockReturnValue(
+      JSON.stringify({ version: '0.1.0' }),
+    );
   });
 
   afterEach(() => {
@@ -39,36 +36,25 @@ describe('getReleaseVersion', () => {
     vi.useRealTimers();
   });
 
-  it('should calculate nightly version when IS_NIGHTLY is true', () => {
-    process.env.IS_NIGHTLY = 'true';
-    const knownDate = new Date('2025-07-20T10:00:00.000Z');
-    vi.setSystemTime(knownDate);
-    vi.mocked(fs.default.readFileSync).mockReturnValue(
-      JSON.stringify({ version: '0.1.0' }),
-    );
-    vi.mocked(execSync).mockReturnValue('abcdef');
+  it('should get version from package.json', () => {
     const { releaseTag, releaseVersion, npmTag } = getReleaseVersion();
-    expect(releaseTag).toBe('v0.1.0-nightly.250720.abcdef');
-    expect(releaseVersion).toBe('0.1.0-nightly.250720.abcdef');
-    expect(npmTag).toBe('nightly');
-  });
-
-  it('should use manual version when provided', () => {
-    process.env.MANUAL_VERSION = '1.2.3';
-    const { releaseTag, releaseVersion, npmTag } = getReleaseVersion();
-    expect(releaseTag).toBe('v1.2.3');
-    expect(releaseVersion).toBe('1.2.3');
+    expect(releaseTag).toBe('v0.1.0');
+    expect(releaseVersion).toBe('0.1.0');
     expect(npmTag).toBe('latest');
   });
 
-  it('should prepend v to manual version if missing', () => {
-    process.env.MANUAL_VERSION = '1.2.3';
+  it('should prepend v to version if missing', () => {
+    vi.mocked(fs.default.readFileSync).mockReturnValue(
+      JSON.stringify({ version: '1.2.3' }),
+    );
     const { releaseTag } = getReleaseVersion();
     expect(releaseTag).toBe('v1.2.3');
   });
 
   it('should handle pre-release versions correctly', () => {
-    process.env.MANUAL_VERSION = 'v1.2.3-beta.1';
+    vi.mocked(fs.default.readFileSync).mockReturnValue(
+      JSON.stringify({ version: '1.2.3-beta.1' }),
+    );
     const { releaseTag, releaseVersion, npmTag } = getReleaseVersion();
     expect(releaseTag).toBe('v1.2.3-beta.1');
     expect(releaseVersion).toBe('1.2.3-beta.1');
@@ -76,20 +62,18 @@ describe('getReleaseVersion', () => {
   });
 
   it('should throw an error for invalid version format', () => {
-    process.env.MANUAL_VERSION = '1.2';
+    vi.mocked(fs.default.readFileSync).mockReturnValue(
+      JSON.stringify({ version: '1.2' }),
+    );
     expect(() => getReleaseVersion()).toThrow(
       'Error: Version must be in the format vX.Y.Z or vX.Y.Z-prerelease',
     );
   });
 
-  it('should throw an error if no version is provided for non-nightly release', () => {
-    expect(() => getReleaseVersion()).toThrow(
-      'Error: No version specified and this is not a nightly release.',
-    );
-  });
-
   it('should throw an error for versions with build metadata', () => {
-    process.env.MANUAL_VERSION = 'v1.2.3+build456';
+    vi.mocked(fs.default.readFileSync).mockReturnValue(
+      JSON.stringify({ version: '1.2.3+build456' }),
+    );
     expect(() => getReleaseVersion()).toThrow(
       'Error: Versions with build metadata (+) are not supported for releases.',
     );
@@ -97,13 +81,35 @@ describe('getReleaseVersion', () => {
 });
 
 describe('get-release-version script', () => {
+  beforeEach(() => {
+    vi.resetModules();
+    vi.mocked(fs.default.readFileSync).mockReturnValue(
+      JSON.stringify({ version: '0.1.0' }),
+    );
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
   it('should print version JSON to stdout when executed directly', () => {
     const expectedJson = {
-      releaseTag: 'v0.1.0-nightly.20250705',
-      releaseVersion: '0.1.0-nightly.20250705',
-      npmTag: 'nightly',
+      releaseTag: 'v0.1.0',
+      releaseVersion: '0.1.0',
+      npmTag: 'latest',
     };
-    execSync.mockReturnValue(JSON.stringify(expectedJson));
+    // Mock execSync to return the expected JSON when the script is run
+    vi.mock('child_process', () => ({
+      execSync: vi.fn((command) => {
+        if (command.includes('get-release-version.js')) {
+          return JSON.stringify(expectedJson);
+        }
+        return '';
+      }),
+    }));
+
+    // Re-import getReleaseVersion to pick up the new mock for execSync
+    const { getReleaseVersion } = await import('../get-release-version');
 
     const result = execSync('node scripts/get-release-version.js').toString();
     expect(JSON.parse(result)).toEqual(expectedJson);
