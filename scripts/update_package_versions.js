@@ -50,7 +50,7 @@ try {
   console.log('Added package.json files to git staging area.');
 
   // Commit the version update
-  execSync(`git commit -m 'chore: Release v${newVersion}'`);
+  execSync(`git commit -m "chore: Release v${newVersion}"`);
   console.log(`Created commit for version ${newVersion}.`);
 
   console.log('Version update and tagging complete.');
