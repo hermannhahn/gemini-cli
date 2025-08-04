@@ -50,13 +50,10 @@ try {
   console.log('Added package.json files to git staging area.');
 
   // Commit the version update
-  execSync(`git commit -m "chore: Release v${newVersion}"`);
+  execSync(`git commit -m 'chore: Release v${newVersion}'`);
   console.log(`Created commit for version ${newVersion}.`);
 
   console.log('Version update and tagging complete.');
-  console.log('Publishing...');
-  execSync('git push');
-  console.log('Published successfully.');
 } catch (error) {
   console.error('Error during version update:', error.message);
   process.exit(1);
