@@ -5,6 +5,8 @@ on:
     types: [run-release]
   workflow_dispatch: # Keep for manual triggering
 
+run-name: Release v${{ github.event.client_payload.version }}
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -66,8 +68,6 @@ jobs:
 
       - name: Commit and Conditionally Push package versions
         run: |
-          git add package.json package-lock.json packages/cli/package.json
-          git commit -m 'chore(release): Prepare for version ${{ steps.version.outputs.RELEASE_TAG }}'
           echo "Pushing release branch to remote..."
           git push --set-upstream origin ${{ steps.release_branch.outputs.BRANCH_NAME }} --follow-tags
 
