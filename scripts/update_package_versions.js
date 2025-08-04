@@ -121,7 +121,8 @@ try {
     execSync(
       `git merge origin/hermannhahn/main --no-ff -m "chore(release): Release v${newVersion}"`,
     );
-    execSync('git checkout hermannhahn/main');
+    execSync('git push origin hermannhahn/release');
+    console.log('Succefully triggered release workflow.');
   } catch (error) {
     console.log(error);
     // re-create
@@ -130,18 +131,14 @@ try {
       console.log('Deleted hermannhahn/release branch.');
       execSync('git checkout -b hermannhahn/release');
       console.log('Created hermannhahn/release branch.');
-      execSync('git checkout hermannhahn/main');
+      execSync('git push --set-upstream origin hermannhahn/release');
+      console.log('Succefully triggered release workflow.');
     } catch (error) {
       console.log(error);
     }
   }
-
-  try {
-    execSync('git push origin hermannhahn/release');
-    console.log('Succefully triggered release workflow.');
-  } catch (error) {
-    console.log(error);
-  }
+  execSync('git checkout hermannhahn/main');
+  console.log('Switched back to hermannhahn/main branch.');
 } catch (error) {
   console.error('Error during version update:', error.message);
   process.exit(1);
