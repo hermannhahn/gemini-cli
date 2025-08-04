@@ -16,7 +16,7 @@ const currentBranch = execSync('git rev-parse --abbrev-ref HEAD')
 
 if (currentBranch !== 'hermannhahn/main' && currentBranch !== 'main') {
   console.error(
-    'This script can only be run on the hermannhahn/main branch. Please, send a PR.',
+    'This script can only be run on the main branch. Please, send a PR.',
   );
   process.exit(1);
 }
