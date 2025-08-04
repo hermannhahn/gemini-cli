@@ -4,9 +4,9 @@ name: E2E Tests
 
 on:
   push:
-    branches: [hermannhahn/main]
+    branches: [hermannhahn/develop, hermannhahn/release]
   pull_request:
-    branches: [hermannhahn/main]
+    branches: [hermannhahn/develop, hermannhahn/release]
   merge_group:
 
 jobs:
