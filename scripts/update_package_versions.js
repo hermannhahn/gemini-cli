@@ -103,15 +103,26 @@ try {
     `Version ${newVersion} successfully published, triggering release workflow...`,
   );
 
-  // Merge with hermannhahn/release branch
+  // Fetch
   try {
     execSync('git fetch origin hermannhahn/release');
+  } catch (error) {
+    // if error is fatal: couldn't find remote ref hermannhahn/release
+    if (error.message.includes("couldn't find remote ref")) {
+      // fetch -u
+      execSync('git fetch -u origin hermannhahn/release');
+    }
+  }
+
+  try {
+    // Merge with hermannhahn/release branch
     execSync(
       'git merge origin/hermannhahn/release -X theirs --allow-unrelated-histories -m "Merge hermannhahn/release into hermannhahn/main"',
     );
+    console.log('Merged hermannhahn/release into hermannhahn/main.');
   } catch (error) {
     console.log(error);
-    // delete release branch
+    // re-create
     try {
       execSync('git branch -D hermannhahn/release');
       console.log('Deleted hermannhahn/release branch.');
