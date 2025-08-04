@@ -80,7 +80,7 @@ jobs:
           npm run prepare:package
 
       - name: Publish @hahnd/gemini-cli-core
-        run: npm publish --workspace=@hahnd/gemini-cli-core --tag=${{ steps.version.outputs.NPM_TAG }}
+        run: npm publish --workspace=@hahnd/gemini-cli-core --tag=${{ steps.version.outputs.NPM_TAG }} --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -88,7 +88,7 @@ jobs:
         run: npm install @hahnd/gemini-cli-core@${{ steps.version.outputs.RELEASE_VERSION }} --workspace=@hahnd/geminid --save-exact
 
       - name: Publish @hahnd/geminid
-        run: npm publish --workspace=@hahnd/geminid --tag=${{ steps.version.outputs.NPM_TAG }}
+        run: npm publish --workspace=@hahnd/geminid --tag=${{ steps.version.outputs.NPM_TAG }} --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -97,13 +97,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_BRANCH: ${{ steps.release_branch.outputs.BRANCH_NAME }}
         run: |
-          # Publish to npm first to ensure the version is available before creating the release.
-          # The --workspace flag was incorrect for publishing the root package.
-          # npm publish --workspace @hahnd/geminid --access public
-          # npm publish --workspace @hahnd/gemini-cli-core --access public
-
-          # If npm publish succeeds, create the GitHub Release.
-          # This command also creates and pushes the git tag to the correct commit.
           gh release create "$RELEASE_TAG" \
             --target "$RELEASE_BRANCH" \
             --title "Release v${{ steps.version.outputs.RELEASE_TAG }}" \

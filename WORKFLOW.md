@@ -61,10 +61,11 @@ git merge username/develop --no-ff # Merges the development branch into the rele
 git push origin username/main # Updates your remote release branch
 ```
 
-3.  **Update Version & Tag:**
-    - Run the automated script to update versions and create the tag:
+3.  **Update Version & Tag Manually:**
+    - Manually update the `version` field in `package.json`, `packages/cli/package.json`, and `packages/core/package.json` to the new version.
+    - Create a new Git tag for the release (e.g., `v1.0.0`).
       ```bash
-      npm run release:update-versions -- <new_version>
+      git tag v<new_version>
       ```
     - If a tag for the desired version already exists locally, delete it first: `git tag -d <tag_name>`.
 
@@ -74,7 +75,7 @@ git push origin username/main # Updates your remote release branch
 git push origin username/main --tags
 ```
 
-6.  **Trigger Release Workflow:** The `Release` workflow in GitHub Actions is automatically triggered upon pushing to `username/main`.
+5.  **Trigger Release Workflow:** The `Release` workflow in GitHub Actions is automatically triggered upon pushing to `username/main`.
 
 **Outcome:** The workflow will:
 
@@ -93,6 +94,10 @@ npm version <released_version> --no-git-tag-version
 git add package.json && git commit -m "chore: Update package.json to released version"
 git push origin username/develop
 ```
+
+### Nightly Releases
+
+Para detalhes sobre o processo de lançamentos `nightly` automatizados, incluindo gatilhos, verificações e publicação, consulte a seção "Nightly Releases" em [DEVELOPMENT.md](./DEVELOPMENT.md).
 
 **Troubleshooting Release Issues:**
 
