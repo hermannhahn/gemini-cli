@@ -108,9 +108,6 @@ describe('get-release-version script', () => {
       }),
     }));
 
-    // Re-import getReleaseVersion to pick up the new mock for execSync
-    const { getReleaseVersion } = await import('../get-release-version');
-
     const result = execSync('node scripts/get-release-version.js').toString();
     expect(JSON.parse(result)).toEqual(expectedJson);
   });
