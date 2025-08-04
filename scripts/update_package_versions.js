@@ -46,7 +46,7 @@ try {
   console.log('Succefully installed and compiled Geminid CLI v' + newVersion);
 
   // Add changes to git
-  execSync('git add package.json package-lock.json');
+  execSync('git add .');
   console.log('Added package.json files to git staging area.');
 
   // Commit the version update

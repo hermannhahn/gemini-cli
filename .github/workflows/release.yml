@@ -66,11 +66,9 @@ jobs:
           git switch -c $BRANCH_NAME
           echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_OUTPUT
 
-      
-
       - name: Commit and Conditionally Push package versions
         run: |
-          git add package.json package-lock.json
+          git add .
           git commit -m "chore(release): Prepare for version ${{ steps.version.outputs.RELEASE_TAG }}"
           echo "Pushing release branch to remote..."
           git push --set-upstream origin ${{ steps.release_branch.outputs.BRANCH_NAME }} --follow-tags
