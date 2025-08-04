@@ -31,26 +31,8 @@ export function getNightlyTagName() {
 }
 
 export function getReleaseVersion() {
-  const isNightly = process.env.IS_NIGHTLY === 'true';
-  const manualVersion = process.env.MANUAL_VERSION;
-
-  let releaseTag;
-
-  if (isNightly) {
-    console.error('Calculating next nightly version...');
-    releaseTag = getNightlyTagName();
-  } else if (manualVersion) {
-    console.error(`Using manual version: ${manualVersion}`);
-    releaseTag = manualVersion;
-  } else {
-    throw new Error(
-      'Error: No version specified and this is not a nightly release.',
-    );
-  }
-
-  if (!releaseTag) {
-    throw new Error('Error: Version could not be determined.');
-  }
+  const version = getPackageVersion();
+  let releaseTag = `v${version}`;
 
   if (!releaseTag.startsWith('v')) {
     console.error("Version is missing 'v' prefix. Prepending it.");

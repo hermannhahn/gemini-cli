@@ -5,7 +5,7 @@ on:
     types: [run-release]
   workflow_dispatch: # Keep for manual triggering
 
-run-name: Release v${{ github.event.inputs.version }}
+run-name: Release v${{ steps.version.outputs.RELEASE_VERSION }}
 
 jobs:
   release:
@@ -46,8 +46,6 @@ jobs:
           echo "RELEASE_TAG=$(echo $VERSION_JSON | jq -r .releaseTag)" >> $GITHUB_OUTPUT
           echo "RELEASE_VERSION=$(echo $VERSION_JSON | jq -r .releaseVersion)" >> $GITHUB_OUTPUT
           echo "NPM_TAG=$(echo $VERSION_JSON | jq -r .npmTag)" >> $GITHUB_OUTPUT
-        env:
-          MANUAL_VERSION: ${{ github.event.inputs.version }}
 
       - name: Run Tests
         if: github.event.inputs.force_skip_tests != 'true'
@@ -68,15 +66,12 @@ jobs:
           git switch -c $BRANCH_NAME
           echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_OUTPUT
 
-      - name: Update package versions
-        if: github.event.inputs.force_skip_version != 'true'
-        run: |
-          npm run release:version ${{ steps.version.outputs.RELEASE_VERSION }}
+      
 
       - name: Commit and Conditionally Push package versions
         run: |
-          git add package.json package-lock.json packages/*/package.json
-          git commit -m "chore(release): ${{ steps.version.outputs.RELEASE_TAG }}"
+          git add package.json package-lock.json
+          git commit -m "chore(release): Prepare for version ${{ steps.version.outputs.RELEASE_TAG }}"
           echo "Pushing release branch to remote..."
           git push --set-upstream origin ${{ steps.release_branch.outputs.BRANCH_NAME }} --follow-tags
 
