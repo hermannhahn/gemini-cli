@@ -68,8 +68,8 @@ jobs:
 
       - name: Commit and Conditionally Push package versions
         run: |
-          git add .
-          git commit -m "chore(release): Prepare for version ${{ steps.version.outputs.RELEASE_TAG }}"
+          git add package.json package-lock.json
+          git commit -m 'chore(release): Prepare for version ${{ steps.version.outputs.RELEASE_TAG }}'
           echo "Pushing release branch to remote..."
           git push --set-upstream origin ${{ steps.release_branch.outputs.BRANCH_NAME }} --follow-tags
 
