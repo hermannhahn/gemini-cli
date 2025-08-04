@@ -15,7 +15,9 @@ const currentBranch = execSync('git rev-parse --abbrev-ref HEAD')
   .trim();
 
 if (currentBranch !== 'hermannhahn/main' && currentBranch !== 'main') {
-  console.error('This script can only be run on the main branch.');
+  console.error(
+    'This script can only be run on the hermannhahn/main branch. Please, send a PR.',
+  );
   process.exit(1);
 }
 
@@ -92,15 +94,44 @@ try {
     console.log(`Re-triggering release workflow for version ${newVersion}.`);
   }
 
-  // Pushing (always push, even if no new commit was made, to trigger CI/CD for other changes)
+  // Pushing
   console.log(`Created commit for version ${newVersion}.`);
   console.log('Version update process complete.');
-  console.log('Publishing and triggering release workflow...');
+  console.log('Publishing files to GitHub...');
   execSync('git push origin hermannhahn/main');
   console.log(
-    `Version ${newVersion} successfully published and triggered release workflow.`,
+    `Version ${newVersion} successfully published, triggering release workflow...`,
   );
+
+  // Merge with hermannhahn/release branch
+  try {
+    execSync('git fetch origin hermannhahn/release');
+    execSync(
+      'git merge origin/hermannhahn/release -X theirs --allow-unrelated-histories -m "Merge hermannhahn/release into hermannhahn/main"',
+    );
+  } catch (error) {
+    console.log(error);
+    // delete release branch
+    try {
+      execSync('git branch -D hermannhahn/release');
+      console.log('Deleted hermannhahn/release branch.');
+      execSync('git checkout -b hermannhahn/release');
+      console.log('Created hermannhahn/release branch.');
+      execSync('git checkout hermannhahn/main');
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  try {
+    execSync('git push origin hermannhahn/release');
+    console.log('Succefully triggered release workflow.');
+  } catch (error) {
+    console.log(error);
+  }
 } catch (error) {
   console.error('Error during version update:', error.message);
   process.exit(1);
 }
+
+process.exit(0);

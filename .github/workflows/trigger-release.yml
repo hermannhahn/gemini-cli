@@ -2,9 +2,9 @@ name: Trigger Release
 
 on:
   pull_request:
-    branches: [hermannhahn/main]
+    branches: [hermannhahn/release]
   push:
-    branches: [hermannhahn/main]
+    branches: [hermannhahn/release]
 
 jobs:
   wait_for_ci:
@@ -16,7 +16,7 @@ jobs:
           workflow_file_name: 'ci.yml'
           owner: ${{ github.repository_owner }}
           repo: ${{ github.event.repository.name }}
-          ref: hermannhahn/main
+          ref: hermannhahn/release
           github_token: ${{ secrets.GITHUB_TOKEN }}
           propagate_failure: true
 
@@ -29,7 +29,7 @@ jobs:
           workflow_file_name: 'e2e.yml'
           owner: ${{ github.repository_owner }}
           repo: ${{ github.event.repository.name }}
-          ref: hermannhahn/main
+          ref: hermannhahn/release
           github_token: ${{ secrets.GITHUB_TOKEN }}
           propagate_failure: true
 
