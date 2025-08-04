@@ -1,6 +1,6 @@
 {
   "name": "@hahnd/geminid",
-  "version": "0.1.26",
+  "version": "0.1.27",
   "description": "Gemini Dev CLI - A personal fork from Google's Gemini CLI repository.",
   "engines": {
     "node": ">=20.0.0"
@@ -49,7 +49,8 @@
     "release:version": "node scripts/version.js",
     "release:update-versions": "node scripts/update_package_versions.js",
     "telemetry": "node scripts/telemetry.js",
-    "clean": "node scripts/clean.js"
+    "clean": "node scripts/clean.js",
+    "publish": "node scripts/set-version.js"
   },
   "bin": {
     "geminid": "bundle/geminid.js"
