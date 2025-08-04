@@ -54,6 +54,11 @@ try {
   console.log(`Created commit for version ${newVersion}.`);
 
   console.log('Version update and tagging complete.');
+
+  // Pushing
+  console.log('Publishing...');
+  execSync('git push');
+  console.log(`Version ${newVersion} successfully published.`);
 } catch (error) {
   console.error('Error during version update:', error.message);
   process.exit(1);
