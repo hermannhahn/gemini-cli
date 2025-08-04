@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2025 Google LLC
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { getReleaseVersion } from '../get-release-version';
 import { execSync } from 'child_process';
