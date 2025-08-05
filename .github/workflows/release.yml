@@ -84,8 +84,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      
-
       - name: Publish @hahnd/geminid
         run: npm publish --workspace=@hahnd/geminid --tag=${{ steps.version.outputs.NPM_TAG }} --access public
         env:

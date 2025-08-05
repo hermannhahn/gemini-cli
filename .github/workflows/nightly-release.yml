@@ -68,8 +68,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      
-
       - name: Publish @hahnd/geminid nightly
         run: npm publish --workspace=@hahnd/geminid --tag=nightly --access public
         env:
