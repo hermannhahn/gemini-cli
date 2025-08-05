@@ -1,5 +1,18 @@
 # TODO
 
+## Error: Nightly Release Non-Fast-Forward Issue
+
+**General Status:** Resolved
+
+**Main Objective:** Fix the "non-fast-forward" error during the nightly release workflow.
+
+### Resolution Attempts:
+
+- **Resolution Attempt 1:**
+  - **Action Plan:** Added a `git pull origin hermannhahn/main` step before the `Create GitHub Release` action in `.github/workflows/nightly-release.yml` to ensure the local branch is up-to-date.
+  - **Attempt Status:** Completed
+  - **Result:** The `nightly-release.yml` workflow was updated to include a `git pull` before the release creation.
+
 ## Error: Snapshot Mismatches in App.test.tsx
 
 **General Status:** Resolved
