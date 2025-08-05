@@ -21,16 +21,6 @@ if (currentBranch !== 'hermannhahn/develop' && currentBranch !== 'develop') {
 
 let newVersion = process.argv[2];
 
-if (!newVersion) {
-  // get the current version in package.json
-  const rootPackageJsonContent = readFileSync(rootPackageJsonPath, 'utf8');
-  const rootPackageJson = JSON.parse(rootPackageJsonContent);
-  newVersion = rootPackageJson.version;
-  console.log(
-    `No new version provided. Using current version from package.json: ${newVersion}`,
-  );
-}
-
 try {
   // Configure Git User for the commit
   execSync('git config user.name "github-actions[bot]"');
@@ -66,6 +56,13 @@ try {
     console.log(`${cliPackageJsonPath} already at version ${newVersion}.`);
   }
 
+  if (!newVersion) {
+    newVersion = rootPackageJson.version;
+    console.log(
+      `No new version provided. Using current version from package.json: ${newVersion}`,
+    );
+  }
+
   // Check if any other files were modified
   const modifiedFiles = execSync('git status --porcelain').toString().trim();
 
@@ -94,18 +91,16 @@ try {
     execSync(`git add .`); // Be specific about files
     console.log('Added all changes to git staging area.');
     // Commit updates
-    execSync(`git commit -m 'chore(develop): Release v${newVersion}'`);
+    execSync(`git commit -m 'chore(release): Develop Release v${newVersion}'`);
   } else {
     execSync(
-      `git commit --allow-empty -m 'chore(develop): Release v${newVersion}'`,
+      `git commit --allow-empty -m 'chore(release): Develop Release v${newVersion}'`,
     );
   }
 
   // Pushing
   execSync('git push origin hermannhahn/develop');
-  console.log(
-    `Develop update to version ${newVersion} pushed to GitHub successfully.`,
-  );
+  console.log(`Develop branch v${newVersion} successfully pushed.`);
 } catch (error) {
   console.error('Error during version update:', error.message);
   process.exit(1);
