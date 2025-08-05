@@ -27,12 +27,6 @@ if (!newVersion) {
 }
 
 try {
-  // Configure Git User for the commit
-  execSync('git config user.name "github-actions[bot]"');
-  execSync(
-    'git config user.email "github-actions[bot]@users.noreply.github.com"',
-  );
-
   // Check and update root package.json
   const rootPackageJsonContent = readFileSync(rootPackageJsonPath, 'utf8');
   const rootPackageJson = JSON.parse(rootPackageJsonContent);

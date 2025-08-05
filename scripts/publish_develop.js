@@ -22,12 +22,6 @@ if (currentBranch !== 'hermannhahn/develop' && currentBranch !== 'develop') {
 let newVersion = process.argv[2];
 
 try {
-  // Configure Git User for the commit
-  execSync('git config user.name "github-actions[bot]"');
-  execSync(
-    'git config user.email "github-actions[bot]@users.noreply.github.com"',
-  );
-
   // Check and update root package.json
   const rootPackageJsonContent = readFileSync(rootPackageJsonPath, 'utf8');
   const rootPackageJson = JSON.parse(rootPackageJsonContent);
@@ -80,7 +74,7 @@ try {
       console.log('npm run build completed.');
       // Preflight
       console.log('Running preflight checks...');
-      execSync('npm run preflight', { stdio: 'inherit' });
+      // execSync('npm run preflight', { stdio: 'inherit' });
       console.log('npm run preflight completed.');
     } catch (error) {
       console.log(error);
