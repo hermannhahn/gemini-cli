@@ -62,16 +62,6 @@ jobs:
           npm run build:packages
           npm run prepare:package
 
-      - name: Publish @hahnd/gemini-cli-core nightly
-        run: npm publish --workspace=@hahnd/gemini-cli-core --tag=nightly --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish @hahnd/geminid nightly
-        run: npm publish --workspace=@hahnd/geminid --tag=nightly --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
       - name: Create GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
