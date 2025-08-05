@@ -55,6 +55,21 @@ try {
     console.log(`${cliPackageJsonPath} already at version ${newVersion}.`);
   }
 
+  // Check and update packages/core/package.json
+  const corePackageJsonPath = join(process.cwd(), 'packages/core/package.json');
+  const corePackageJsonContent = readFileSync(corePackageJsonPath, 'utf8');
+  const corePackageJson = JSON.parse(corePackageJsonContent);
+  if (corePackageJson.version !== newVersion) {
+    corePackageJson.version = newVersion;
+    writeFileSync(
+      corePackageJsonPath,
+      JSON.stringify(corePackageJson, null, 2) + '\n',
+    );
+    console.log(`Updated ${corePackageJsonPath} to version ${newVersion}`);
+  } else {
+    console.log(`${corePackageJsonPath} already at version ${newVersion}.`);
+  }
+
   // Fetch
   try {
     execSync('git fetch origin hermannhahn/release');
