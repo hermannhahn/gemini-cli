@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed [Unreleased]
 
 - Resolved issue with `/narrator` command not working and re-integrated upstream React state/config updates.
+- Fixed release and nightly release workflows to use the local `gemini-cli-core` package instead of the published npm version.
 
 ### Added [Unreleased]
 
