@@ -49,10 +49,12 @@ This document provides essential context and instructions for the team assisting
 
 ## Release Process (Automated via GitHub Actions)
 
+### Standard Releases
+
 When a feature/fix is merged into `hermannhahn/main` and a new release is desired:
 
 1. **Decide New Version:** Determine `MAJOR.MINOR.PATCH` based on changes.
-2. **Update Version:** Update the `version` field in `package.json`, `packages/cli/package.json`, and `packages/core/package.json` to the new version.
+2. **Update Version Manually:** Update the `version` field in `package.json`, `packages/cli/package.json`, and `packages/core/package.json` to the new version.
 3. **Commit and Push:** Commit the version update and push to `hermannhahn/main`.
 4. **Automated Trigger:** A push to `hermannhahn/main` automatically triggers the `Trigger Release` workflow.
    - This workflow waits for the successful completion of both `Gemini CLI CI` and `E2E Tests`.
@@ -61,30 +63,21 @@ When a feature/fix is merged into `hermannhahn/main` and a new release is desire
 
 At the end, merge back into `username/develop` to continue development.
 
+### Nightly Releases
+
+To ensure continuous verification and provide early access to the latest changes, `nightly` releases are automatically generated daily.
+
+- **Gatilho:** O workflow `nightly-release.yml` é executado diariamente à meia-noite UTC. Também pode ser disparado manualmente via GitHub Actions.
+- **Branch de Origem:** O workflow faz o checkout da branch `main`.
+- **Verificações:** Antes do lançamento, o workflow executa `npm run preflight` para garantir que o código esteja formatado, sem erros de lint, com tipos corretos e que todos os testes unitários e de integração passem.
+- **Geração da Versão:** A versão `nightly` é gerada automaticamente usando o script `scripts/get-release-version.js` (função `getNightlyTagName()`), resultando em um formato como `vX.Y.Z-nightly.YYYYMMDD.sha`.
+- **Publicação NPM:** Os pacotes `@hahnd/gemini-cli-core` e `@hahnd/geminid` são publicados no npm com a tag `nightly`.
+- **Release GitHub:** Um novo release e tag são criados no GitHub com o nome da versão `nightly`, facilitando o acompanhamento das compilações diárias.
+- **Requisitos de Segredos:** Para que este workflow funcione, os seguintes segredos devem estar configurados no repositório GitHub: `GEMINI_API_KEY`, `NPM_TOKEN` e `GITHUB_TOKEN`.
+
 ## Development Setup and Workflow
 
 This section guides contributors on how to build, modify, and understand the development setup of this project.
-
-### Setting Up the Development Environment
-
-**Prerequisites:**
-
-1.  **Node.js**:
-    - **Development:** Please use Node.js `~20.19.0`. This specific version is required due to an upstream development dependency issue. You can use a tool like [nvm](https://github.com/nvm-sh/nvm) to manage Node.js versions.
-    - **Production:** For running the CLI in a production environment, any version of Node.js `>=20` is acceptable.
-2.  **Git**
-
-### Enabling Sandboxing
-
-[Sandboxing](#sandboxing) is highly recommended and requires, at a minimum, setting `GEMINI_SANDBOX=true` in your `~/.env` and ensuring a sandboxing provider (e.g. `macOS Seatbelt`, `docker`, or `podman`) is available. See [Sandboxing](#sandboxing) for details.
-
-To build both the `gemini` CLI utility and the sandbox container, run `build:all` from the root directory:
-
-```bash
-npm run build:all
-```
-
-To skip building the sandbox container, you can use `npm run build` instead.
 
 ### Running
 
@@ -98,30 +91,6 @@ If you'd like to run the source build outside of the gemini-cli folder you can u
 
 ### Running Tests
 
-This project contains two types of tests: unit tests and integration tests.
-
-#### Unit Tests
-
-To execute the unit test suite for the project:
-
-```bash
-npm run test
-```
-
-This will run tests located in the `packages/core` and `packages/cli` directories. Ensure tests pass before submitting any changes. For a more comprehensive check, it is recommended to run `npm run preflight`.
-
-#### Integration Tests
-
-The integration tests are designed to validate the end-to-end functionality of the Gemini CLI. They are not run as part of the default `npm run test` command.
-
-To run the integration tests, use the following command:
-
-```bash
-npm run test:e2e
-```
-
-For more detailed information on the integration testing framework, please see the [Integration Tests documentation](./docs/integration-tests.md).
-
 ### Linting and Preflight Checks
 
 To ensure code quality and formatting consistency, run the preflight check:
@@ -131,38 +100,6 @@ npm run preflight
 ```
 
 This command will run ESLint, Prettier, all tests, and other checks as defined in the project's `package.json`.
-
-_ProTip_
-
-after cloning create a git precommit hook file to ensure your commits are always clean.
-
-```bash
-echo "
-# Run npm build and check for errors
-if ! npm run preflight; then
-  echo "npm build failed. Commit aborted."
-  exit 1
-fi
-" > .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
-```
-
-#### Formatting
-
-To separately format the code in this project by running the following command from the root directory:
-
-```bash
-npm run format
-```
-
-This command uses Prettier to format the code according to the project's style guidelines.
-
-#### Linting
-
-To separately lint the code in this project, run the following command from the root directory:
-
-```bash
-npm run lint
-```
 
 ### Coding Conventions
 
@@ -210,40 +147,6 @@ To debug the CLI's React-based UI, you can use React DevTools. Ink, the library 
     DEV=true npm start
     ```
 
-2.  **Install and run React DevTools version 4.28.5 (or the latest compatible 4.x version):**
-
-    You can either install it globally:
-
-    ```bash
-    npm install -g react-devtools@4.28.5
-    react-devtools
-    ```
-
-    Or run it directly using npx:
-
-    ```bash
-    npx react-devtools@4.28.5
-    ```
-
-    Your running CLI application should then connect to React DevTools.
-    ![](/docs/assets/connected_devtools.png)
-
-## Sandboxing
-
-### MacOS Seatbelt
-
-On MacOS, `gemini` uses Seatbelt (`sandbox-exec`) under a `permissive-open` profile (see `packages/cli/src/utils/sandbox-macos-permissive-open.sb`) that restricts writes to the project folder but otherwise allows all other operations and outbound network traffic ("open") by default. You can switch to a `restrictive-closed` profile (see `packages/cli/src/utils/sandbox-macos-restrictive-closed.sb`) that declines all operations and outbound network traffic ("closed") by default by setting `SEATBELT_PROFILE=restrictive-closed` in your environment or `.env` file. Available built-in profiles are `{permissive,restrictive}-{open,closed,proxied}` (see below for proxied networking). You can also switch to a custom profile `SEATBELT_PROFILE=<profile>` if you also create a file `.gemini/sandbox-macos-<profile>.sb` under your project settings directory `.gemini`.
-
-### Container-based Sandboxing (All Platforms)
-
-For stronger container-based sandboxing on MacOS or other platforms, you can set `GEMINI_SANDBOX=true|docker|podman|<command>` in your environment or `.env` file. The specified command (or if `true` then either `docker` or `podman`) must be installed on the host machine. Once enabled, `npm run build:all` will build a minimal container ("sandbox") image and `npm start` will launch inside a fresh instance of that container. The first build can take 20-30s (mostly due to downloading of the base image) but after that both build and start overhead should be minimal. Default builds (`npm run build`) will not rebuild the sandbox.
-
-Container-based sandboxing mounts the project directory (and system temp directory) with read-write access and is started/stopped/removed automatically as you start/stop Gemini CLI. Files created within the sandbox should be automatically mapped to your user/group on host machine. You can easily specify additional mounts, ports, or environment variables by setting `SANDBOX_{MOUNTS,PORTS,ENV}` as needed. You can also fully customize the sandbox for your projects by creating the files `.gemini/sandbox.Dockerfile` and/or `.gemini/sandbox.bashrc` under your project settings directory (`.gemini`) and running `gemini` with `BUILD_SANDBOX=1` to trigger building of your custom sandbox.
-
-#### Proxied Networking
-
-All sandboxing methods, including MacOS Seatbelt using `*-proxied` profiles, support restricting outbound network traffic through a custom proxy server that can be specified as `GEMINI_SANDBOX_PROXY_COMMAND=<command>`, where `<command>` must start a proxy server that listens on `:::8877` for relevant requests. See `docs/examples/proxy-script.md` for a minimal proxy that only allows `HTTPS` connections to `example.com:443` (e.g. `curl https://example.com`) and declines all other requests. The proxy is started and stopped automatically alongside the sandbox.
-
 ## Manual Publish
 
 We publish an artifact for each commit to our internal registry. But if you need to manually cut a local build, then run the following commands:
@@ -256,3 +159,49 @@ npm run prerelease:dev
 npm publish --workspace @hahnd/geminid
 npm publish --workspace @hahnd/gemini-cli-core
 ```
+
+## Error Management Instruction
+
+**Error Resolution Flow: When resolving an error in the user's project code, I must strictly follow this sequence of steps, ensuring that `TODO.md` is updated at each point**:
+
+1.  **Analyze `TODO.md`**: I will read the error section in `TODO.md`, focusing on the 'General Status' and 'Resolution Attempts' to understand the progress and previous results.
+2.  **Register New Error**: If the error is not in `TODO.md`, I will create a new section for it, including 'General Status' as 'In Progress', 'Main Objective', and the first 'Resolution Attempt' with 'Attempt Status' as 'In Progress'.
+3.  **Check Last Attempt**: If the error is already in `TODO.md`, I will check the last registered 'Resolution Attempt'.
+4.  **Define Next Step**: If the last 'Resolution Attempt' is 'Completed' but the error persists, I will add a new 'Resolution Attempt' with a new 'Action Plan' and 'Attempt Status' as 'In Progress'.
+5.  **Execute Action Plan**: If the 'Attempt Status' of the last 'Resolution Attempt' is 'In Progress', I will execute the 'Action Plan' described therein.
+6.  **Update Status (Awaiting Compilation)**: After executing the 'Action Plan', I will update the 'Result' of the 'Resolution Attempt' and change the 'Attempt Status' to 'Awaiting Compilation'.
+7.  **Compile Project**: I will execute "npm run build". If the compilation fails, I will update the 'Result' of the 'Resolution Attempt' to 'Compilation Failed', add a new 'Resolution Attempt' with a new 'Action Plan' to fix it, and change the 'Attempt Status' to 'In Progress'.
+8.  **Update Status (Awaiting Tests)**: After successful compilation, I will update the 'Result' of the 'Resolution Attempt' to 'Compilation Successful' and change the 'Attempt Status' to 'Awaiting Tests'.
+9.  **Await User**: After successful build, I will update the 'Result' of the 'Resolution Attempt' to 'Build Successful' and change the 'Attempt Status' to 'Awaiting User'. I will instruct the user to restart the CLI and VS Code, if necessary. I will not test the modifications before the user confirms the restart, even if the build not fail.
+10. **Update Status (In Progress - Tests)**: If the user confirms the CLI restart and the 'Attempt Status' is 'Awaiting User', I will update the 'Attempt Status' to 'In Progress' to start the tests.
+11. **Test Modifications**: If the 'Attempt Status' of the last 'Resolution Attempt' is 'In Progress' (for tests), I will test the modifications. If it's a tool, I will try to use it. After the test, I will update the 'Result' and, if the error is resolved, I will change the 'General Status' of the error to 'Resolved' and the 'Attempt Status' to 'Completed'. Otherwise, I will add a new 'Resolution Attempt' with a new 'Action Plan' and 'Attempt Status' as 'In Progress'.
+12. **Repeat Flow**: I will repeat this flow with new plan of action as necessary and if objectives are not met.
+13. **Execute Tests (Preflight)**: I will execute "npm run preflight" only if the errors are solved and objectives are met. If the tests fail, I will update the 'Result' of the 'Resolution Attempt' to 'Tests Failed', add a new 'Resolution Attempt' with a new 'Action Plan' to fix it, and change the 'Attempt Status' to 'In Progress'. If the problem is solved I will clean TODO.md section about this problem.
+
+## Project Settings
+
+**File Import** To import .ts files in this project I must to use .js instead of .ts
+**Release** This project auto release after tag creation.
+
+## Technical and Importation Conclusions for Gemini CLI Project:
+
+1.  **Internal Module Imports (`.js` instead of `.ts`):**
+    - When importing TypeScript modules (`.ts`) within the project (especially in test files or where the bundler has already processed the files), it is **mandatory to use the `.js` extension** in the import path, even if the original file is `.ts`. This is due to the compilation process and how modules are resolved at runtime.
+    - **Example:** Instead of `import { someFunction } from '../utils/myModule.ts';`, use `import { someFunction } from '../utils/myModule.js';`.
+
+2.  **`@hahnd/gemini-cli-core` Package Imports:**
+    - Modules and functionalities from the `@hahnd/gemini-cli-core` package must be imported directly from the package, not via relative paths that attempt to access the internal structure of the `core`.
+    - **Example:** Instead of `import { Config } from '../../../core/src/config/config.js';`, use `import { Config } from '@hahnd/gemini-cli-core';`.
+
+3.  **Mocking Context Functions (`commandContext.ui`):**
+    - When testing CLI commands that interact with the UI (e.g., `commandContext.ui.setNarratorMode`), it is necessary to mock these functions to isolate the test and avoid dependencies on the actual UI.
+    - Use `vi.spyOn` or similar mocks to simulate the behavior of these functions and verify that they were called correctly.
+
+4.  **Command Structure (`.action` vs. `.handler`):**
+    - The main function of a CLI command (like `/narrator`) is exposed through the `.action` property of the command object, not `.handler`. This is crucial for correctly invoking the command's logic in tests.
+
+5.  **Argument Passing for Commands:**
+    - When testing commands that expect arguments (e.g., `/narrator [mode]`), ensure that the arguments are passed in the format and type expected by the command's `action` function. In the case of `narratorCommand.action`, `args` is a string.
+
+6.  **Argument Order in Tests:**
+    - Pay attention to the order of arguments passed to test functions and mocks. Small inconsistencies in the order can lead to type errors or unexpected behavior.
