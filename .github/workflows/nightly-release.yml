@@ -48,7 +48,8 @@ jobs:
         id: get_nightly_version
         run: |
           # Use the existing script to get the nightly tag name
-          NIGHTLY_TAG=$(node -r ./scripts/get-release-version.js -e "console.log(getNightlyTagName())")
+          VERSION_JSON=$(node scripts/get-release-version.js)
+          NIGHTLY_TAG=$(echo $VERSION_JSON | jq -r .nightlyTag)
           echo "NIGHTLY_TAG=$NIGHTLY_TAG" >> $GITHUB_OUTPUT
           echo "NIGHTLY_VERSION=${NIGHTLY_TAG#v}" >> $GITHUB_OUTPUT # Remove 'v' prefix for npm version
 
