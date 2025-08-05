@@ -84,8 +84,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Install latest core package
-        run: npm install @hahnd/gemini-cli-core@${{ steps.version.outputs.RELEASE_VERSION }} --workspace=@hahnd/geminid --save-exact
+      
 
       - name: Publish @hahnd/geminid
         run: npm publish --workspace=@hahnd/geminid --tag=${{ steps.version.outputs.NPM_TAG }} --access public
