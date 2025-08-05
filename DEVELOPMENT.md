@@ -10,6 +10,10 @@ This document provides essential context and instructions for the team assisting
   - `username/develop`: Development branch for receive feat/hotfix merges, run tests and fix preflight errors before merge and release new version into `username/main`.
   - `username/feat/feature-name` or `username/hotfix/hotfix-name`: Feature/fix development branches, starded from `username/develop` and merged into `username/develop` upon completion.
 
+- **Commit Messages:**
+  - For multi-line commit messages, use multiple `-m` flags in the `git commit` command. Each `-m` flag represents a new line in the commit message.
+  - Example: `git commit -m 'Subject line' -m 'Body line 1' -m 'Body line 2'`
+
 ## Documentation
 
 - **Keep Updated:**
