@@ -5,7 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] - 2025-07-29
+## [Unreleased] - 2025-08-05
+
+### Fixed [Unreleased]
+
+- Fixed nightly release workflow by ensuring the main branch is up-to-date before creating the GitHub Release.
+
+
 
 ### Fixed [Unreleased]
 
