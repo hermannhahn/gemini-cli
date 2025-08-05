@@ -67,13 +67,13 @@ At the end, merge back into `username/develop` to continue development.
 
 To ensure continuous verification and provide early access to the latest changes, `nightly` releases are automatically generated daily.
 
-*   **Gatilho:** O workflow `nightly-release.yml` é executado diariamente à meia-noite UTC. Também pode ser disparado manualmente via GitHub Actions.
-*   **Branch de Origem:** O workflow faz o checkout da branch `main`.
-*   **Verificações:** Antes do lançamento, o workflow executa `npm run preflight` para garantir que o código esteja formatado, sem erros de lint, com tipos corretos e que todos os testes unitários e de integração passem.
-*   **Geração da Versão:** A versão `nightly` é gerada automaticamente usando o script `scripts/get-release-version.js` (função `getNightlyTagName()`), resultando em um formato como `vX.Y.Z-nightly.YYYYMMDD.sha`.
-*   **Publicação NPM:** Os pacotes `@hahnd/gemini-cli-core` e `@hahnd/geminid` são publicados no npm com a tag `nightly`.
-*   **Release GitHub:** Um novo release e tag são criados no GitHub com o nome da versão `nightly`, facilitando o acompanhamento das compilações diárias.
-*   **Requisitos de Segredos:** Para que este workflow funcione, os seguintes segredos devem estar configurados no repositório GitHub: `GEMINI_API_KEY`, `NPM_TOKEN` e `GITHUB_TOKEN`.
+- **Gatilho:** O workflow `nightly-release.yml` é executado diariamente à meia-noite UTC. Também pode ser disparado manualmente via GitHub Actions.
+- **Branch de Origem:** O workflow faz o checkout da branch `main`.
+- **Verificações:** Antes do lançamento, o workflow executa `npm run preflight` para garantir que o código esteja formatado, sem erros de lint, com tipos corretos e que todos os testes unitários e de integração passem.
+- **Geração da Versão:** A versão `nightly` é gerada automaticamente usando o script `scripts/get-release-version.js` (função `getNightlyTagName()`), resultando em um formato como `vX.Y.Z-nightly.YYYYMMDD.sha`.
+- **Publicação NPM:** Os pacotes `@hahnd/gemini-cli-core` e `@hahnd/geminid` são publicados no npm com a tag `nightly`.
+- **Release GitHub:** Um novo release e tag são criados no GitHub com o nome da versão `nightly`, facilitando o acompanhamento das compilações diárias.
+- **Requisitos de Segredos:** Para que este workflow funcione, os seguintes segredos devem estar configurados no repositório GitHub: `GEMINI_API_KEY`, `NPM_TOKEN` e `GITHUB_TOKEN`.
 
 ## Development Setup and Workflow
 
