@@ -8,6 +8,7 @@ on:
   pull_request:
     branches: [hermannhahn/release]
   merge_group:
+    branches: [hermannhahn/release]
 
 jobs:
   lint:
