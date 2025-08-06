@@ -1,5 +1,31 @@
 # TODO
 
+## Error: Release Workflow Create Release Step Branch Name Variable Issue
+
+**General Status:** Resolved
+
+**Main Objective:** Fix the incorrect branch name variable in the 'Create Release, Tag and Publish' step within the release workflow.
+
+### Resolution Attempts:
+
+- **Resolution Attempt 1:**
+  - **Action Plan:** Changed `BRANCH_NAME` to `RELEASE_BRANCH` in the `RELEASE_BRANCH` environment variable within the "Create Release, Tag and Publish" step in `.github/workflows/release.yml`.
+  - **Attempt Status:** Completed
+  - **Result:** The `release.yml` workflow was updated to use the correct branch name variable, resolving the release creation issue.
+
+## Error: Release Workflow Branch Name Variable Issue
+
+**General Status:** Resolved
+
+**Main Objective:** Fix the incorrect branch name variable in the `git push` command within the release workflow.
+
+### Resolution Attempts:
+
+- **Resolution Attempt 1:**
+  - **Action Plan:** Changed `BRANCH_NAME` to `RELEASE_BRANCH` in the `git push` command within the "Commit and Conditionally Push package versions" step in `.github/workflows/release.yml`.
+  - **Attempt Status:** Completed
+  - **Result:** The `release.yml` workflow was updated to use the correct branch name variable, resolving the push issue.
+
 ## Error: Linting Error in CHANGELOG.md
 
 **General Status:** Resolved
