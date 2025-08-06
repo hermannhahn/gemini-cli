@@ -99,9 +99,19 @@ try {
     // Pull
     execSync('git pull origin hermannhahn/main');
     console.log('Pulled hermannhahn/main branch.');
-    // Merge with hermannhahn/release branch
-    execSync('git checkout hermannhahn/release');
-    console.log('Switched to hermannhahn/release branch.');
+    // Switch to release
+    try {
+      execSync('git checkout hermannhahn/release');
+      console.log('Switched to hermannhahn/release branch.');
+    } catch (error) {
+      console.log(error);
+      // create
+      execSync('git checkout -b hermannhahn/release');
+      console.log('Created hermannhahn/release branch.');
+    }
+    // Pull
+    execSync('git pull origin hermannhahn/release');
+    console.log('Pulled hermannhahn/release branch.');
     // merge
     execSync(
       `git merge origin/hermannhahn/main --no-ff -m "chore(release): Release v${newVersion}"`,
@@ -112,8 +122,12 @@ try {
     console.log(error);
     // re-create
     try {
+      // delete local branch
       execSync('git branch -D hermannhahn/release');
+      // delete remote branch
+      execSync('git push origin --delete hermannhahn/release');
       console.log('Deleted hermannhahn/release branch.');
+      // create
       execSync('git checkout -b hermannhahn/release');
       console.log('Created hermannhahn/release branch.');
       execSync('git push --set-upstream origin hermannhahn/release');
