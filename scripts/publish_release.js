@@ -70,8 +70,11 @@ try {
     console.log(`${corePackageJsonPath} already at version ${newVersion}.`);
   }
 
-  // Update package
   try {
+    // Pull
+    execSync('git pull origin hermannhahn/main');
+    console.log('Pulled hermannhahn/main branch.');
+    // Update package
     console.log('Installing dependencies and updating packages...');
     // Install
     execSync('npm install', { stdio: 'inherit' });
@@ -79,15 +82,6 @@ try {
     // Build
     execSync('npm run build', { stdio: 'inherit' });
     console.log('npm run build completed.');
-  } catch (error) {
-    console.log(error);
-    process.exit(1);
-  }
-
-  try {
-    // Pull
-    execSync('git pull origin hermannhahn/main');
-    console.log('Pulled hermannhahn/main branch.');
     // Delete local and remote release branch
     execSync('git push origin --delete hermannhahn/release');
     execSync('git branch -D hermannhahn/release');
