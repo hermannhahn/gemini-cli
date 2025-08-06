@@ -82,13 +82,13 @@ try {
     // Build
     execSync('npm run build', { stdio: 'inherit' });
     console.log('npm run build completed.');
-    // Delete local and remote release branch
-    execSync('git push origin --delete hermannhahn/release');
-    execSync('git branch -D hermannhahn/release');
-    console.log('Deleted hermannhahn/release branch.');
-    // create
-    execSync('git checkout -b hermannhahn/release');
-    console.log('Created hermannhahn/release branch.');
+    // Preflight
+    console.log('Running preflight checks...');
+    execSync('npm run preflight', { stdio: 'inherit' });
+    console.log('npm run preflight completed.');
+    // Checkout
+    execSync('git checkout hermannhahn/release');
+    console.log('Switched to hermannhahn/release branch.');
     // Pull
     execSync('git pull origin hermannhahn/release');
     console.log('Pulled hermannhahn/release branch.');
