@@ -70,6 +70,20 @@ try {
     console.log(`${corePackageJsonPath} already at version ${newVersion}.`);
   }
 
+  // Update package
+  try {
+    console.log('Installing dependencies and updating packages...');
+    // Install
+    execSync('npm install', { stdio: 'inherit' });
+    console.log('npm install completed.');
+    // Build
+    execSync('npm run build', { stdio: 'inherit' });
+    console.log('npm run build completed.');
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
+
   // Fetch
   try {
     execSync('git fetch origin hermannhahn/release');
