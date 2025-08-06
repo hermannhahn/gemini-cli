@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed [Unreleased]
 
+- Fixed release workflow by addressing "detached HEAD" issue during git push by creating a temporary branch.
 - Fixed release workflow by ensuring `hermannhahn/release` branch is updated with `hermannhahn/main` before merging.
 - Fixed release workflow by correcting the branch name variable in the 'Create Release, Tag and Publish' step.
 - Fixed release workflow by correcting the branch name variable in the push command.

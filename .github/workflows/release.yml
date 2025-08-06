@@ -67,6 +67,13 @@ jobs:
           npm run build:packages
           npm run prepare:package
 
+      - name: Create and checkout release branch
+        id: release_branch
+        run: |
+          RELEASE_BRANCH="release/${{ steps.version.outputs.RELEASE_VERSION }}"
+          git checkout -b $RELEASE_BRANCH
+          echo "RELEASE_BRANCH=$RELEASE_BRANCH" >> $GITHUB_OUTPUT
+
       - name: Commit and Conditionally Push package versions
         run: |
           echo "Pushing release branch to remote..."
