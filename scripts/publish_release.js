@@ -122,8 +122,8 @@ try {
       console.log(error);
     }
   }
-  execSync('git checkout hermannhahn/main');
-  console.log('Switched back to hermannhahn/main branch.');
+  execSync('git checkout hermannhahn/develop');
+  console.log('Switched back to hermannhahn/develop branch.');
 } catch (error) {
   console.error('Error during version update:', error.message);
   process.exit(1);
