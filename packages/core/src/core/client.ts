@@ -584,7 +584,10 @@ export class GeminiClient {
           cleanedText = cleanedText.substring('```json'.length);
         }
         if (cleanedText.endsWith('```')) {
-          cleanedText = cleanedText.substring(0, cleanedText.length - '```'.length);
+          cleanedText = cleanedText.substring(
+            0,
+            cleanedText.length - '```'.length,
+          );
         }
         return JSON.parse(cleanedText);
       } catch (parseError) {
