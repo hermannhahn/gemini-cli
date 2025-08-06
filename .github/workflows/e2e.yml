@@ -4,10 +4,11 @@ name: E2E Tests
 
 on:
   push:
-    branches: [hermannhahn/main, hermannhahn/release]
+    branches: [hermannhahn/release]
   pull_request:
     branches: [hermannhahn/main, hermannhahn/release]
   merge_group:
+    branches: [hermannhahn/release]
 
 jobs:
   e2e-test-linux:
