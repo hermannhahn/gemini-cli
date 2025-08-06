@@ -47,6 +47,7 @@
     "release:version": "node scripts/version.js",
     "release:update-versions": "node scripts/update_package_versions.js",
     "telemetry": "node scripts/telemetry.js",
+    "version": "node scripts/version.js",
     "clean": "node scripts/clean.js",
     "publish:develop": "node scripts/publish_develop.js",
     "publish:release": "node scripts/publish_release.js"
@@ -90,5 +91,5 @@
   "overrides": {
     "@types/minimatch": "^5.1.2"
   },
-  "version": "0.1.27"
+  "version": "0.1.31"
 }

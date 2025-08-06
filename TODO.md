@@ -1,5 +1,18 @@
 # TODO
 
+## Error: Linting Error in CHANGELOG.md
+
+**General Status:** Resolved
+
+**Main Objective:** Fix the linting error in `CHANGELOG.md` caused by missing blank lines.
+
+### Resolution Attempts:
+
+- **Resolution Attempt 1:**
+  - **Action Plan:** Added two blank lines between the "Fixed [Unreleased]" sections in `CHANGELOG.md` to comply with linting rules.
+  - **Attempt Status:** Completed
+  - **Result:** The `CHANGELOG.md` was updated to include the necessary blank lines, resolving the linting issue.
+
 ## Error: Gemini CLI Core Versioning Issue in Release Workflows
 
 **General Status:** Resolved
