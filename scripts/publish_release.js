@@ -4,12 +4,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync } from 'fs';
 import { join } from 'path';
 import { execSync } from 'child_process';
 
 const rootPackageJsonPath = join(process.cwd(), 'package.json');
-const cliPackageJsonPath = join(process.cwd(), 'packages/cli/package.json');
 const currentBranch = execSync('git rev-parse --abbrev-ref HEAD')
   .toString()
   .trim();
@@ -19,82 +18,28 @@ if (currentBranch !== 'hermannhahn/main' && currentBranch !== 'main') {
   process.exit(1);
 }
 
-const newVersion = process.argv[2];
-
-if (!newVersion) {
-  console.error('Usage: npm run publish <new_version>');
-  process.exit(1);
-}
+let releaseVersion = undefined;
 
 try {
   // Check and update root package.json
   const rootPackageJsonContent = readFileSync(rootPackageJsonPath, 'utf8');
   const rootPackageJson = JSON.parse(rootPackageJsonContent);
-  if (rootPackageJson.version !== newVersion) {
-    rootPackageJson.version = newVersion;
-    writeFileSync(
-      rootPackageJsonPath,
-      JSON.stringify(rootPackageJson, null, 2) + '\n',
-    );
-    console.log(`Updated ${rootPackageJsonPath} to version ${newVersion}`);
-  } else {
-    console.log(`${rootPackageJsonPath} already at version ${newVersion}.`);
-  }
-
-  // Check and update packages/cli/package.json
-  const cliPackageJsonContent = readFileSync(cliPackageJsonPath, 'utf8');
-  const cliPackageJson = JSON.parse(cliPackageJsonContent);
-  if (cliPackageJson.version !== newVersion) {
-    cliPackageJson.version = newVersion;
-    writeFileSync(
-      cliPackageJsonPath,
-      JSON.stringify(cliPackageJson, null, 2) + '\n',
-    );
-    console.log(`Updated ${cliPackageJsonPath} to version ${newVersion}`);
-  } else {
-    console.log(`${cliPackageJsonPath} already at version ${newVersion}.`);
-  }
-
-  // Check and update packages/core/package.json
-  const corePackageJsonPath = join(process.cwd(), 'packages/core/package.json');
-  const corePackageJsonContent = readFileSync(corePackageJsonPath, 'utf8');
-  const corePackageJson = JSON.parse(corePackageJsonContent);
-  if (corePackageJson.version !== newVersion) {
-    corePackageJson.version = newVersion;
-    writeFileSync(
-      corePackageJsonPath,
-      JSON.stringify(corePackageJson, null, 2) + '\n',
-    );
-    console.log(`Updated ${corePackageJsonPath} to version ${newVersion}`);
-  } else {
-    console.log(`${corePackageJsonPath} already at version ${newVersion}.`);
-  }
+  releaseVersion = rootPackageJson.version;
+  console.log(`Releasing ${rootPackageJsonPath} version ${releaseVersion}`);
 
   try {
     // Pull
-    execSync('git pull origin hermannhahn/main');
+    execSync('git pull');
     console.log('Pulled hermannhahn/main branch.');
-    // Update package
-    console.log('Installing dependencies and updating packages...');
-    // Install
-    execSync('npm install', { stdio: 'inherit' });
-    console.log('npm install completed.');
-    // Build
-    execSync('npm run build', { stdio: 'inherit' });
-    console.log('npm run build completed.');
-    // Preflight
-    console.log('Running preflight checks...');
-    execSync('npm run preflight', { stdio: 'inherit' });
-    console.log('npm run preflight completed.');
     // Checkout
     execSync('git checkout hermannhahn/release');
     console.log('Switched to hermannhahn/release branch.');
     // Pull
-    execSync('git pull origin hermannhahn/release');
+    execSync('git pull');
     console.log('Pulled hermannhahn/release branch.');
     // merge
     execSync(
-      `git merge origin/hermannhahn/main --no-ff -m "chore(release): Release v${newVersion}"`,
+      `git merge origin/hermannhahn/main --no-ff -m "chore(release): Release v${releaseVersion}"`,
     );
     execSync('git push origin hermannhahn/release');
     console.log('Succefully triggered release workflow.');

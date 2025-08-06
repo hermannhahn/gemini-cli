@@ -263,24 +263,24 @@ The Narrator feature provides audio feedback for the Gemini CLI. You can configu
 
 **Environment Variables:**
 
-*   `MICROSOFT_TTS_KEY`: Your Microsoft Text-to-Speech API key.
-*   `MICROSOFT_TTS_REGION`: The Azure region for your TTS service (e.g., `westus2`).
-*   `MICROSOFT_TTS_VOICE`: The specific voice to use (e.g., `en-US-JennyNeural`). Defaults to `en-US-JennyNeural` if not set.
-*   `MICROSOFT_TTS_LANGUAGE`: The language for the voice (e.g., `en-US`). Defaults to `en-US` if not set.
+- `MICROSOFT_TTS_KEY`: Your Microsoft Text-to-Speech API key.
+- `MICROSOFT_TTS_REGION`: The Azure region for your TTS service (e.g., `westus2`).
+- `MICROSOFT_TTS_VOICE`: The specific voice to use (e.g., `en-US-JennyNeural`). Defaults to `en-US-JennyNeural` if not set.
+- `MICROSOFT_TTS_LANGUAGE`: The language for the voice (e.g., `en-US`). Defaults to `en-US` if not set.
 
 **Commands:**
 
 You can switch between Narrator modes using the `/narrator` command:
 
-*   `/narrator off`: Desativa a narração de áudio.
-*   `/narrator thinking`: Narra as ações do modelo de IA (chamadas de ferramentas, pensamentos) conforme elas ocorrem.
-*   `/narrator response`: Narra um resumo, observação ou aviso importante sobre a resposta do modelo de IA.
+- `/narrator off`: Desativa a narração de áudio.
+- `/narrator thinking`: Narra as ações do modelo de IA (chamadas de ferramentas, pensamentos) conforme elas ocorrem.
+- `/narrator response`: Narra um resumo, observação ou aviso importante sobre a resposta do modelo de IA.
 
 **Initialization Flag:**
 
 You can set the initial Narrator mode when starting the CLI using the `--narrator` flag:
 
-*   `--narrator [off|thinking|response]`: Define o modo inicial do narrador. Por exemplo, `--narrator thinking` iniciará o CLI com os pensamentos da IA narrados.
+- `--narrator [off|thinking|response]`: Define o modo inicial do narrador. Por exemplo, `--narrator thinking` iniciará o CLI com os pensamentos da IA narrados.
 
 #### Use a Gemini API Key:
 
