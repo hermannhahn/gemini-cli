@@ -286,7 +286,7 @@ The Vertex AI API offers a [free tier](https://cloud.google.com/vertex-ai/genera
 
 For other authentication methods, including Google Workspace accounts, refer to the [authentication guide](./docs/cli/authentication.md).
 
-### Exemplos
+### Examples
 
 Once the CLI is running, you can start interacting with Gemini from your shell.
 
