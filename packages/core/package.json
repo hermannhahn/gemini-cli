@@ -1,6 +1,5 @@
 {
   "name": "@hahnd/gemini-cli-core",
-  "version": "0.1.27",
   "description": "Gemini CLI Core",
   "repository": {
     "type": "git",
@@ -65,5 +64,6 @@
   },
   "engines": {
     "node": ">=20"
-  }
+  },
+  "version": "0.1.27"
 }
