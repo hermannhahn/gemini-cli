@@ -100,10 +100,10 @@ try {
     execSync(`git add .`); // Be specific about files
     console.log('Added all changes to git staging area.');
     // Commit updates
-    execSync(`git commit -m 'chore(release): Develop Release v${newVersion}'`);
+    execSync(`git commit -m 'chore(release): Develop Review v${newVersion}'`);
   } else {
     execSync(
-      `git commit --allow-empty -m 'chore(release): Develop Release v${newVersion}'`,
+      `git commit --allow-empty -m 'chore(release): Develop Review v${newVersion}'`,
     );
   }
 
