@@ -36,6 +36,10 @@ jobs:
           registry-url: 'https://registry.npmjs.org/'
           scope: '@hahnd'
 
+      - name: Pull
+        run: |
+          git pull
+
       - name: Install Dependencies
         run: npm ci
 
@@ -59,17 +63,13 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Create and switch to a release branch
+      - name: Checkout to release and merge
         id: release_branch
         run: |
-          BRANCH_NAME="hermannhahn/release"
-          git switch -c $BRANCH_NAME
-          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_OUTPUT
-
-      - name: Commit and Conditionally Push package versions
-        run: |
-          echo "Pushing release branch to remote..."
-          git push --set-upstream origin ${{ steps.release_branch.outputs.BRANCH_NAME }} --follow-tags
+          RELEASE_BRANCH="hermannhahn/release"
+          git checkout "$RELEASE_BRANCH"
+          git merge hermannhahn/main --no-ff -m "Release v${{ steps.version.outputs.RELEASE_VERSION }}"
+          echo "RELEASE_BRANCH=$RELEASE_BRANCH" >> $GITHUB_OUTPUT
 
       - name: Update gh CLI
         run: sudo apt-get update && sudo apt-get install -y gh
@@ -78,6 +78,11 @@ jobs:
         run: |
           npm run build:packages
           npm run prepare:package
+
+      - name: Commit and Conditionally Push package versions
+        run: |
+          echo "Pushing release branch to remote..."
+          git push --set-upstream origin ${{ steps.release_branch.outputs.BRANCH_NAME }} --follow-tags
 
       - name: Publish @hahnd/gemini-cli-core
         run: npm publish --workspace=@hahnd/gemini-cli-core --tag=${{ steps.version.outputs.NPM_TAG }} --access public
