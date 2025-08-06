@@ -70,8 +70,11 @@ try {
     console.log(`${corePackageJsonPath} already at version ${newVersion}.`);
   }
 
-  // Update package
   try {
+    // Pull
+    execSync('git pull origin hermannhahn/main');
+    console.log('Pulled hermannhahn/main branch.');
+    // Update package
     console.log('Installing dependencies and updating packages...');
     // Install
     execSync('npm install', { stdio: 'inherit' });
@@ -79,36 +82,13 @@ try {
     // Build
     execSync('npm run build', { stdio: 'inherit' });
     console.log('npm run build completed.');
-  } catch (error) {
-    console.log(error);
-    process.exit(1);
-  }
-
-  // Fetch
-  try {
-    execSync('git fetch origin hermannhahn/release');
-  } catch (error) {
-    // if error is fatal: couldn't find remote ref hermannhahn/release
-    if (error.message.includes("couldn't find remote ref")) {
-      // fetch -u
-      execSync('git fetch -u origin hermannhahn/release');
-    }
-  }
-
-  try {
-    // Pull
-    execSync('git pull origin hermannhahn/main');
-    console.log('Pulled hermannhahn/main branch.');
-    // Switch to release
-    try {
-      execSync('git checkout hermannhahn/release');
-      console.log('Switched to hermannhahn/release branch.');
-    } catch (error) {
-      console.log(error);
-      // create
-      execSync('git checkout -b hermannhahn/release');
-      console.log('Created hermannhahn/release branch.');
-    }
+    // Delete local and remote release branch
+    execSync('git push origin --delete hermannhahn/release');
+    execSync('git branch -D hermannhahn/release');
+    console.log('Deleted hermannhahn/release branch.');
+    // create
+    execSync('git checkout -b hermannhahn/release');
+    console.log('Created hermannhahn/release branch.');
     // Pull
     execSync('git pull origin hermannhahn/release');
     console.log('Pulled hermannhahn/release branch.');
@@ -120,21 +100,6 @@ try {
     console.log('Succefully triggered release workflow.');
   } catch (error) {
     console.log(error);
-    // re-create
-    try {
-      // delete local branch
-      execSync('git branch -D hermannhahn/release');
-      // delete remote branch
-      execSync('git push origin --delete hermannhahn/release');
-      console.log('Deleted hermannhahn/release branch.');
-      // create
-      execSync('git checkout -b hermannhahn/release');
-      console.log('Created hermannhahn/release branch.');
-      execSync('git push --set-upstream origin hermannhahn/release');
-      console.log('Succefully triggered release workflow.');
-    } catch (error) {
-      console.log(error);
-    }
   }
   execSync('git checkout hermannhahn/develop');
   console.log('Switched back to hermannhahn/develop branch.');
