@@ -64,6 +64,7 @@ jobs:
         run: |
           RELEASE_BRANCH="hermannhahn/release"
           git checkout "$RELEASE_BRANCH"
+          git pull origin "$RELEASE_BRANCH"
           git merge hermannhahn/main --no-ff -m "Release v${{ steps.version.outputs.RELEASE_VERSION }}"
           echo "RELEASE_BRANCH=$RELEASE_BRANCH" >> $GITHUB_OUTPUT
 
