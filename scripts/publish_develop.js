@@ -78,29 +78,30 @@ try {
     console.log(`${corePackageJsonPath} already at version ${newVersion}.`);
   }
 
+  // Update package
+  try {
+    console.log('Installing dependencies and updating packages...');
+    // Install
+    execSync('npm install', { stdio: 'inherit' });
+    console.log('npm install completed.');
+    // Build
+    execSync('npm run build', { stdio: 'inherit' });
+    console.log('npm run build completed.');
+    // Preflight
+    console.log('Running preflight checks...');
+    // execSync('npm run preflight', { stdio: 'inherit' });
+    console.log('npm run preflight completed.');
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
+
   // Check if any other files were modified
   const modifiedFiles = execSync('git status --porcelain').toString().trim();
 
   if (modifiedFiles) {
     console.log('Files were modified since the last commit:');
     console.log(modifiedFiles);
-
-    try {
-      console.log('Installing dependencies and updating packages...');
-      // Install
-      execSync('npm install', { stdio: 'inherit' });
-      console.log('npm install completed.');
-      // Build
-      execSync('npm run build', { stdio: 'inherit' });
-      console.log('npm run build completed.');
-      // Preflight
-      console.log('Running preflight checks...');
-      // execSync('npm run preflight', { stdio: 'inherit' });
-      console.log('npm run preflight completed.');
-    } catch (error) {
-      console.log(error);
-      process.exit(1);
-    }
 
     // Add changes to git
     execSync(`git add .`); // Be specific about files
