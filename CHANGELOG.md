@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed [Unreleased]
 
+- Fixed release workflow by correcting the branch name variable in the 'Create Release, Tag and Publish' step.
 - Fixed release workflow by correcting the branch name variable in the push command.
 - Fixed linting error in `packages/core/src/core/client.ts` related to code formatting.
 - Fixed nightly release workflow by ensuring the main branch is up-to-date before creating the GitHub Release.
