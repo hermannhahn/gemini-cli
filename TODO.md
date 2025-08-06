@@ -1,5 +1,18 @@
 # TODO
 
+## Error: Release Workflow Merge Issue
+
+**General Status:** Resolved
+
+**Main Objective:** Fix the "merge: hermannhahn/main - not something we can merge" error in the `release.yml` workflow.
+
+### Resolution Attempts:
+
+- **Resolution Attempt 1:**
+  - **Action Plan:** Modified the `Checkout to release and merge` step in `.github/workflows/release.yml` to first pull `hermannhahn/release` and then merge `hermannhahn/main` into it.
+  - **Attempt Status:** Completed
+  - **Result:** The `release.yml` workflow was updated to correctly merge `hermannhahn/main` into `hermannhahn/release`.
+
 ## Error: Release Workflow Create Release Step Branch Name Variable Issue
 
 **General Status:** Resolved
