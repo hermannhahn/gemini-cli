@@ -36,10 +36,6 @@ jobs:
           registry-url: 'https://registry.npmjs.org/'
           scope: '@hahnd'
 
-      - name: Pull
-        run: |
-          git pull
-
       - name: Install Dependencies
         run: npm ci
 
@@ -82,7 +78,7 @@ jobs:
       - name: Commit and Conditionally Push package versions
         run: |
           echo "Pushing release branch to remote..."
-          git push --set-upstream origin ${{ steps.release_branch.outputs.BRANCH_NAME }} --follow-tags
+          git push --set-upstream origin ${{ steps.release_branch.outputs.RELEASE_BRANCH }} --follow-tags
 
       - name: Publish @hahnd/gemini-cli-core
         run: npm publish --workspace=@hahnd/gemini-cli-core --tag=${{ steps.version.outputs.NPM_TAG }} --access public
@@ -97,7 +93,7 @@ jobs:
       - name: Create Release, Tag and Publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_BRANCH: ${{ steps.release_branch.outputs.BRANCH_NAME }}
+          RELEASE_BRANCH: ${{ steps.release_branch.outputs.RELEASE_BRANCH }}
         run: |
           gh release create "$RELEASE_TAG" \
             --target "$RELEASE_BRANCH" \
