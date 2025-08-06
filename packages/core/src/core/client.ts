@@ -490,7 +490,15 @@ export class GeminiClient {
         throw error;
       }
       try {
-        return JSON.parse(text);
+        // Remove markdown code block wrappers if present
+        let cleanedText = text.trim();
+        if (cleanedText.startsWith('```json')) {
+          cleanedText = cleanedText.substring('```json'.length);
+        }
+        if (cleanedText.endsWith('```')) {
+          cleanedText = cleanedText.substring(0, cleanedText.length - '```'.length);
+        }
+        return JSON.parse(cleanedText);
       } catch (parseError) {
         await reportError(
           parseError,

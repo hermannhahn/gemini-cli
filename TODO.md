@@ -1,5 +1,31 @@
 # TODO
 
+## Error: Gemini CLI Core Versioning Issue in Release Workflows
+
+**General Status:** Resolved
+
+**Main Objective:** Ensure release and nightly release workflows use the local `gemini-cli-core` package version instead of the published npm version.
+
+### Resolution Attempts:
+
+- **Resolution Attempt 1:**
+  - **Action Plan:** Removed the redundant `Install latest core package` step from `.github/workflows/release.yml` and `.github/workflows/nightly-release.yml` as the monorepo setup with `file:../core` handles local package linking.
+  - **Attempt Status:** Completed
+  - **Result:** The `release.yml` and `nightly-release.yml` workflows were updated to remove the explicit installation of `gemini-cli-core` from npm.
+
+## Error: Nightly Release Non-Fast-Forward Issue
+
+**General Status:** Resolved
+
+**Main Objective:** Fix the "non-fast-forward" error during the nightly release workflow.
+
+### Resolution Attempts:
+
+- **Resolution Attempt 1:**
+  - **Action Plan:** Added a `git pull origin hermannhahn/main` step before the `Create GitHub Release` action in `.github/workflows/nightly-release.yml` to ensure the local branch is up-to-date.
+  - **Attempt Status:** Completed
+  - **Result:** The `nightly-release.yml` workflow was updated to include a `git pull` before the release creation.
+
 ## Error: Snapshot Mismatches in App.test.tsx
 
 **General Status:** Resolved

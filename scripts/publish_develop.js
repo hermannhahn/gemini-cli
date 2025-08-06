@@ -8,6 +8,10 @@ import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { execSync } from 'child_process';
 
+const commitGenerated = join(
+  process.cwd(),
+  'packages/cli/src/generated/git-commit.ts',
+);
 const rootPackageJsonPath = join(process.cwd(), 'package.json');
 const cliPackageJsonPath = join(process.cwd(), 'packages/cli/package.json');
 const currentBranch = execSync('git rev-parse --abbrev-ref HEAD')
@@ -20,6 +24,15 @@ if (currentBranch !== 'hermannhahn/develop' && currentBranch !== 'develop') {
 }
 
 let newVersion = process.argv[2];
+const gitCommitFile = readFileSync(commitGenerated, 'utf-8');
+const GIT_COMMIT_INFO = gitCommitFile.match(
+  /export const GIT_COMMIT_INFO = '(.*)';/,
+)[1];
+
+if (!newVersion) {
+  console.error('Usage: npm run publish:develop <new_version>');
+  process.exit(1);
+}
 
 try {
   // Check and update root package.json
@@ -50,11 +63,19 @@ try {
     console.log(`${cliPackageJsonPath} already at version ${newVersion}.`);
   }
 
-  if (!newVersion) {
-    newVersion = rootPackageJson.version;
-    console.log(
-      `No new version provided. Using current version from package.json: ${newVersion}`,
+  // Check and update packages/core/package.json
+  const corePackageJsonPath = join(process.cwd(), 'packages/core/package.json');
+  const corePackageJsonContent = readFileSync(corePackageJsonPath, 'utf8');
+  const corePackageJson = JSON.parse(corePackageJsonContent);
+  if (corePackageJson.version !== newVersion) {
+    corePackageJson.version = newVersion;
+    writeFileSync(
+      corePackageJsonPath,
+      JSON.stringify(corePackageJson, null, 2) + '\n',
     );
+    console.log(`Updated ${corePackageJsonPath} to version ${newVersion}`);
+  } else {
+    console.log(`${corePackageJsonPath} already at version ${newVersion}.`);
   }
 
   // Check if any other files were modified
@@ -85,10 +106,12 @@ try {
     execSync(`git add .`); // Be specific about files
     console.log('Added all changes to git staging area.');
     // Commit updates
-    execSync(`git commit -m 'chore(release): Develop Release v${newVersion}'`);
+    execSync(
+      `git commit -m 'chore(release): Develop Review v${newVersion} (${GIT_COMMIT_INFO})'`,
+    );
   } else {
     execSync(
-      `git commit --allow-empty -m 'chore(release): Develop Release v${newVersion}'`,
+      `git commit --allow-empty -m 'chore(release): Develop Review v${newVersion} (${GIT_COMMIT_INFO})'`,
     );
   }
 
