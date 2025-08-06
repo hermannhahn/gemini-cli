@@ -87,3 +87,16 @@
   - **Action Plan:** Modify the `run-name` in `.github/workflows/release.yml` to use `steps.version.outputs.RELEASE_TAG` directly, as this output already contains the correctly formatted version from the `get-release-version.js` script.
   - **Attempt Status:** Completed
   - **Result:** Release run-name updated to use RELEASE_TAG output.
+
+## Feature: Narrator Documentation in README.md
+
+**General Status:** Completed
+
+**Main Objective:** Add a section to `README.md` detailing the Narrator feature's configuration, commands, and initialization flags.
+
+### Resolution Attempts:
+
+- **Resolution Attempt 1:**
+  - **Action Plan:** Read `docs/features/narrator.md` to gather information on environment variables, commands, and flags. Then, insert this information into `README.md` before the "Use a Gemini API Key" section.
+  - **Attempt Status:** Completed
+  - **Result:** The `README.md` was updated with the Narrator documentation.

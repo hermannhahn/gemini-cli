@@ -1,6 +1,6 @@
 # Gemini Dev CLI
 
-[![Gemini CLI CI](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml) ![Gemini CLI Screenshot](./docs/assets/gemini-screenshot.png)
+[![Gemini CLI CI](https://github.com/hermannhahn/gemini-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/hermannhahn/gemini-cli/actions/workflows/ci.yml) ![Gemini CLI Screenshot](./docs/assets/gemini-screenshot.png)
 
 This repository contains the **Gemini Dev CLI**, a public fork of the [official Gemini CLI](https://github.com/google-gemini/gemini-cli). Our goal is to extend and customize the tool for specific development workflows, while maintaining compatibility for future updates from the original project.
 
@@ -41,6 +41,31 @@ This personal fork of the Gemini CLI includes the following custom features:
 
 You're ready to use the Gemini Dev CLI!
 
+### Narrator Configuration and Usage:
+
+The Narrator feature provides audio feedback for the Gemini CLI. You can configure its behavior using environment variables and control it with CLI commands or flags.
+
+**Environment Variables:**
+
+- `MICROSOFT_TTS_KEY`: Your Microsoft Text-to-Speech API key.
+- `MICROSOFT_TTS_REGION`: The Azure region for your TTS service (e.g., `westus2`).
+- `MICROSOFT_TTS_VOICE`: The specific voice to use (e.g., `en-US-JennyNeural`). Defaults to `en-US-JennyNeural` if not set.
+- `MICROSOFT_TTS_LANGUAGE`: The language for the voice (e.g., `en-US`). Defaults to `en-US` if not set.
+
+**Commands:**
+
+You can switch between Narrator modes using the `/narrator` command:
+
+- `/narrator off`: Desativa a narração de áudio.
+- `/narrator thinking`: Narra as ações do modelo de IA (chamadas de ferramentas, pensamentos) conforme elas ocorrem.
+- `/narrator response`: Narra um resumo, observação ou aviso importante sobre a resposta do modelo de IA.
+
+**Initialization Flag:**
+
+You can set the initial Narrator mode when starting the CLI using the `--narrator` flag:
+
+- `--narrator [off|thinking|response]`: Define o modo inicial do narrador. Por exemplo, `--narrator thinking` iniciará o CLI com os pensamentos da IA narrados.
+
 #### Use a Gemini API Key:
 
 The Gemini API offers a free tier with [100 requests per day](https://ai.google.dev/gemini-api/docs/rate-limits#free-tier) using Gemini 2.5 Pro, control over which model you use, and access to higher rate limits (with a paid plan):
@@ -70,7 +95,7 @@ The Vertex AI API offers a [free tier](https://cloud.google.com/vertex-ai/genera
 
 For other authentication methods, including Google Workspace accounts, refer to the [authentication guide](./docs/cli/authentication.md).
 
-### Exemplos
+### Examples
 
 Once the CLI is running, you can start interacting with Gemini from your shell.
 
