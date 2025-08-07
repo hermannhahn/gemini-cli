@@ -90,7 +90,7 @@ This section guides contributors on how to build, modify, and understand the dev
 To clone the repository:
 
 ```bash
-git clone https://github.com/google-gemini/gemini-cli.git # Or your fork's URL
+git clone https://github.com/hermannhahn/gemini-cli.git # Or your fork's URL
 cd gemini-cli
 ```
 
@@ -201,7 +201,7 @@ npm run lint
 ### Coding Conventions
 
 - Please adhere to the coding style, patterns, and conventions used throughout the existing codebase.
-- Consult [GEMINI.md](https://github.com/google-gemini/gemini-cli/blob/main/GEMINI.md) (typically found in the project root) for specific instructions related to AI-assisted development, including conventions for React, comments, and Git usage.
+- Consult [GEMINI.md](https://github.com/hermannhahn/gemini-cli/blob/main/GEMINI.md) (typically found in the project root) for specific instructions related to AI-assisted development, including conventions for React, comments, and Git usage.
 - **Imports:** Pay special attention to import paths. The project uses ESLint to enforce restrictions on relative imports between packages.
 
 ### Project Structure
