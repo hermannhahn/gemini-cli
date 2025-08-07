@@ -1,5 +1,18 @@
 # TODO
 
+## Error: Release Workflow Detached HEAD Issue
+
+**General Status:** Resolved
+
+**Main Objective:** Fix the "fatal: You are not currently on a branch." error during git push in the release workflow.
+
+### Resolution Attempts:
+
+- **Resolution Attempt 1:**
+  - **Action Plan:** Added a step to create and checkout a temporary branch before the git push command in `.github/workflows/release.yml` to resolve the "detached HEAD" issue.
+  - **Attempt Status:** Completed
+  - **Result:** The `release.yml` workflow was updated to create a temporary branch, allowing the git push to succeed.
+
 ## Error: Release Workflow Merge Issue
 
 **General Status:** Resolved
