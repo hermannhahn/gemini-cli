@@ -3,7 +3,7 @@
   "description": "Gemini CLI Core",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/google-gemini/gemini-cli.git"
+    "url": "git+https://github.com/hermannhahn/gemini-cli.git"
   },
   "type": "module",
   "main": "dist/index.js",
@@ -65,5 +65,5 @@
   "engines": {
     "node": ">=20"
   },
-  "version": "0.1.28"
+  "version": "0.1.29"
 }

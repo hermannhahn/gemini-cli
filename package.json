@@ -5,6 +5,7 @@
     "node": ">=20.0.0"
   },
   "type": "module",
+  "main": "bundle/geminid.js",
   "workspaces": [
     "packages/*"
   ],
@@ -96,5 +97,5 @@
   "dependencies": {
     "node-fetch": "^3.3.2"
   },
-  "version": "0.1.28"
+  "version": "0.1.29"
 }
