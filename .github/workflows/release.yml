@@ -92,7 +92,7 @@ jobs:
       - name: Commit and Conditionally Push package versions
         run: |
           echo "Pushing release branch to remote..."
-          git push --set-upstream origin ${{ steps.release_branch.outputs.RELEASE_BRANCH }} --follow-tags
+          git push --set-upstream origin ${{ steps.release_branch.outputs.RELEASE_BRANCH }}
 
       - name: Publish @hahnd/gemini-cli-core
         run: npm publish --workspace=@hahnd/gemini-cli-core --tag=${{ steps.version.outputs.NPM_TAG }} --access public
