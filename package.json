@@ -1,6 +1,6 @@
 {
   "name": "@hahnd/geminid",
-  "description": "Gemini Dev CLI - A personal fork from Google's Gemini CLI repository.",
+  "description": "Gemini Dev CLI - Google's Gemini CLI for developers, with improvements and more tools.",
   "engines": {
     "node": ">=20.0.0"
   },
