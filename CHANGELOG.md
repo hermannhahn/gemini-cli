@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed [Unreleased]
 
+- Fixed global installation issue by bundling `@hahnd/gemini-cli-core` into the `geminid` executable.
 - Fixed release workflow (`release.yml`) to correctly target `hermannhahn/release` for GitHub releases and ensure tags are created only by `gh release create`.
 - Corrected `WORKFLOW.md` to accurately reflect the detailed development and release workflow, including branching strategy, PR process, `publish:develop`, `publish:release` scripts, and automated release triggers.
 

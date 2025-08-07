@@ -21,7 +21,7 @@ esbuild
     outfile: 'bundle/geminid.js',
     platform: 'node',
     format: 'esm',
-    external: ['@hahnd/gemini-cli-core'],
+    
     alias: {
       'is-in-ci': path.resolve(
         __dirname,
