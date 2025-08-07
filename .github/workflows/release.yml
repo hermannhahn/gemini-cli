@@ -28,6 +28,21 @@ jobs:
           ref: ${{ github.sha }} # Checkout a specific commit
           fetch-depth: 0 # Required for notes generation
 
+      - name: Set booleans for simplified logic
+        id: vars
+        run: |
+          is_nightly="false"
+          if [[ "${{ github.event_name }}" == "schedule" || "${{ github.event.inputs.create_nightly_release }}" == "true" ]]; then
+            is_nightly="true"
+          fi
+          echo "is_nightly=${is_nightly}" >> $GITHUB_OUTPUT
+
+          is_dry_run="false"
+          if [[ "${{ github.event.inputs.dry_run }}" == "true" ]]; then
+            is_dry_run="true"
+          fi
+          echo "is_dry_run=${is_dry_run}" >> $GITHUB_OUTPUT
+
       - name: Setup Node.js and npm
         uses: actions/setup-node@v4
         with:
@@ -77,24 +92,28 @@ jobs:
       - name: Commit and Conditionally Push package versions
         run: |
           echo "Pushing release branch to remote..."
-          git push --set-upstream origin ${{ steps.release_branch.outputs.RELEASE_BRANCH }} --follow-tags
+          git push --set-upstream origin ${{ steps.release_branch.outputs.RELEASE_BRANCH }}
 
       - name: Publish @hahnd/gemini-cli-core
         run: npm publish --workspace=@hahnd/gemini-cli-core --tag=${{ steps.version.outputs.NPM_TAG }} --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      - name: Install latest core package
+        if: steps.vars.outputs.is_dry_run == 'false'
+        run: npm install @hahnd/gemini-cli-core@${{ steps.version.outputs.RELEASE_VERSION }} --workspace=@hahnd/geminid --save-exact
+
       - name: Publish @hahnd/geminid
-        run: npm publish --workspace=@hahnd/geminid --tag=${{ steps.version.outputs.NPM_TAG }} --access public
+        run: npm publish --tag=${{ steps.version.outputs.NPM_TAG }} --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create Release, Tag and Publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_BRANCH: ${{ steps.release_branch.outputs.RELEASE_BRANCH }}
+          RELEASE_TAG: ${{ steps.version.outputs.RELEASE_TAG }}
         run: |
           gh release create "$RELEASE_TAG" \
-            --target "$RELEASE_BRANCH" \
+            --target hermannhahn/release \
             --title "Release v${{ steps.version.outputs.RELEASE_TAG }}" \
             --generate-notes
