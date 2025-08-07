@@ -89,7 +89,7 @@ try {
     console.log('npm run build completed.');
     // Preflight
     console.log('Running preflight checks...');
-    // execSync('npm run preflight', { stdio: 'inherit' });
+    execSync('npm run preflight', { stdio: 'inherit' });
     console.log('npm run preflight completed.');
   } catch (error) {
     console.log(error);
