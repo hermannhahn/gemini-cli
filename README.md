@@ -4,24 +4,18 @@
 
 This repository contains the **Gemini Dev CLI**, a public fork of the [official Gemini CLI](https://github.com/google-gemini/gemini-cli). Our goal is to extend and customize the tool for specific development workflows, while maintaining compatibility for future updates from the original project.
 
-The Gemini CLI is a command-line AI workflow tool that connects to your tools, understands your code, and accelerates your workflows. With it, you can:
-
-- Query and edit large codebases within and beyond Gemini's 1M token context window.
-- Generate new applications from PDFs or sketches, using Gemini's multimodal capabilities.
-- Automate operational tasks, such as querying pull requests or handling complex rebases.
-- Use tools and MCP servers to connect new capabilities, including [media generation with Imagen, Veo, or Lyria](https://github.com/GoogleCloudPlatform/vertex-ai-creative-studio/tree/main/experiments/mcp-genmedia).
-- Ground your queries with the [Google Search](https://ai.google.dev/gemini-api/docs/grounding) tool, built into Gemini.
-
 ## Custom Features
 
 This personal fork of the Gemini CLI includes the following custom features:
 
-- **Long-Term Memory (LTM):** A tool for permanent instructions and information storage, allowing the AI to retain key details across sessions.
+- **Narrator:** Provides audio feedback for the CLI, with modes for AI thinking, responses or off (default).
+- **Long-Term Memory (LTM):** A tool for permanent context, instructions and informations storage, allowing the AI to keep context across sessions.
 - **Short-Term Memory (STM):** Manages structured memories in a JSON file, providing session-specific context and enhancing interaction continuity.
 - **Upstream Updates:** Regularly synchronized with the official Gemini CLI to incorporate the latest features and improvements.
-- **Narrator:** Provides audio feedback for the CLI, with modes for AI actions and response summaries. The 'acts' mode has been refactored to 'thinking', and the command functionality has been restored and improved.
 
 ### Quickstart
+
+**Project Status**: All preflight checks passed, ensuring a stable and ready-to-use development environment.
 
 1.  **Prerequisites:** Ensure you have [Node.js version 20](https://nodejs.org/en/download) or higher installed.
 2.  **Run the CLI:** Execute the following command in your terminal to install and use the Gemini Dev CLI:
@@ -264,9 +258,9 @@ The Narrator feature provides audio feedback for the Gemini CLI. You can configu
 **Environment Variables:**
 
 - `MICROSOFT_TTS_KEY`: Your Microsoft Text-to-Speech API key.
-- `MICROSOFT_TTS_REGION`: The Azure region for your TTS service (e.g., `westus2`).
-- `MICROSOFT_TTS_VOICE`: The specific voice to use (e.g., `en-US-JennyNeural`). Defaults to `en-US-JennyNeural` if not set.
-- `MICROSOFT_TTS_LANGUAGE`: The language for the voice (e.g., `en-US`). Defaults to `en-US` if not set.
+- `MICROSOFT_TTS_REGION`: The Azure region for your TTS service (e.g., `eastus`).
+- `MICROSOFT_TTS_VOICE`: The specific voice to use for responses (e.g., `pt-BR-AntonioNeural`).
+- `MICROSOFT_TTS_THINKING`: The specific voice to use for AI thinking narration (e.g., `en-US-JennyNeural`).
 
 **Commands:**
 

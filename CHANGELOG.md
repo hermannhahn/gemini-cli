@@ -5,36 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] - 2025-08-06
+## [0.1.30] - 2025-08-07
 
-### Fixed [Unreleased]
+### Fixed [0.1.30]
 
-- Fixed linting error in `esbuild.config.js` by removing an extra blank line.
-- Fixed global installation issue by bundling `@hahnd/gemini-cli-core` into the `geminid` executable.
-- Fixed release workflow (`release.yml`) to correctly target `hermannhahn/release` for GitHub releases and ensure tags are created only by `gh release create`.
-- Corrected `WORKFLOW.md` to accurately reflect the detailed development and release workflow, including branching strategy, PR process, `publish:develop`, `publish:release` scripts, and automated release triggers.
-
-- Reverted global installation fix to align with original project's publishing strategy, ensuring the root package is published with the bundled executable.
-- Fixed release workflow by addressing "detached HEAD" issue during git push by creating a temporary branch.
-- Fixed release workflow by ensuring `hermannhahn/release` branch is updated with `hermannhahn/main` before merging.
-- Fixed release workflow by correcting the branch name variable in the 'Create Release, Tag and Publish' step.
-- Fixed release workflow by correcting the branch name variable in the push command.
-- Fixed linting error in `packages/core/src/core/client.ts` related to code formatting.
-- Fixed nightly release workflow by ensuring the main branch is up-to-date before creating the GitHub Release.
-- Resolved issue with `/narrator` command not working and re-integrated upstream React state/config updates.
-- Fixed release and nightly release workflows to use the local `gemini-cli-core` package instead of the published npm version.
-
-### Added [Unreleased]
-
-- Added Narrator configuration and usage to README.md.
-- Narrator feature documentation reviewed and finalized.
-
-### Changed [Unreleased]
-
-- Translated Portuguese content in README.md to English.
-- Integrated latest upstream changes, resolved compilation and test failures.
-- Narrator command flag changed from 'acts' to 'thinking'.
-- Added upstream updates.
+- Resolved all preflight check issues, ensuring successful build, linting, and testing.
 
 ## [0.1.26] - 2025-08-02
 
@@ -84,7 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added [0.0.2]
 
-- Narrator feature documentation.
+- Narrator feature functionality.
 - Short-Term Memory (STM) functionality, including tools to add, search, and delete memories.
 - Memory Tool functionality.
 
