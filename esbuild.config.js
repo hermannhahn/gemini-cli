@@ -21,7 +21,6 @@ esbuild
     outfile: 'bundle/geminid.js',
     platform: 'node',
     format: 'esm',
-    
     alias: {
       'is-in-ci': path.resolve(
         __dirname,
