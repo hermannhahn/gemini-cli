@@ -115,5 +115,5 @@ jobs:
         run: |
           gh release create "$RELEASE_TAG" \
             --target hermannhahn/release \
-            --title "Release v${{ steps.version.outputs.RELEASE_TAG }}" \
+            --title "Release ${{ steps.version.outputs.RELEASE_TAG }}" \
             --generate-notes
