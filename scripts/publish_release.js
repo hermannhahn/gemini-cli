@@ -14,13 +14,17 @@ const currentBranch = execSync('git rev-parse --abbrev-ref HEAD')
   .trim();
 
 if (currentBranch !== 'hermannhahn/main' && currentBranch !== 'main') {
-  console.error('This script can only be run on the main branch.');
-  process.exit(1);
+  execSync('git checkout hermannhahn/main');
+  console.log('Switched to hermannhahn/main branch.');
 }
 
 let releaseVersion = undefined;
 
 try {
+  // Pull
+  execSync('git pull');
+  console.log('Pulled hermannhahn/main branch.');
+
   // Check and update root package.json
   const rootPackageJsonContent = readFileSync(rootPackageJsonPath, 'utf8');
   const rootPackageJson = JSON.parse(rootPackageJsonContent);
@@ -28,9 +32,6 @@ try {
   console.log(`Releasing ${rootPackageJsonPath} version ${releaseVersion}`);
 
   try {
-    // Pull
-    execSync('git pull');
-    console.log('Pulled hermannhahn/main branch.');
     // Checkout
     execSync('git checkout hermannhahn/release');
     console.log('Switched to hermannhahn/release branch.');

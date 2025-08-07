@@ -5,6 +5,7 @@
     "node": ">=20.0.0"
   },
   "type": "module",
+  "main": "bundle/geminid.js",
   "workspaces": [
     "packages/*"
   ],
@@ -91,5 +92,5 @@
   "overrides": {
     "@types/minimatch": "^5.1.2"
   },
-  "version": "0.1.28"
+  "version": "0.1.29"
 }

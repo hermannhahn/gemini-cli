@@ -56,15 +56,15 @@ The Narrator feature provides audio feedback for the Gemini CLI. You can configu
 
 You can switch between Narrator modes using the `/narrator` command:
 
-- `/narrator off`: Desativa a narração de áudio.
-- `/narrator thinking`: Narra as ações do modelo de IA (chamadas de ferramentas, pensamentos) conforme elas ocorrem.
-- `/narrator response`: Narra um resumo, observação ou aviso importante sobre a resposta do modelo de IA.
+- `/narrator off`: Disables audio narration.
+- `/narrator thinking`: Narrates AI model actions (tool calls, thoughts) as they occur.
+- `/narrator response`: Narrates a summary, observation, or important warning about the AI model's response.
 
 **Initialization Flag:**
 
 You can set the initial Narrator mode when starting the CLI using the `--narrator` flag:
 
-- `--narrator [off|thinking|response]`: Define o modo inicial do narrador. Por exemplo, `--narrator thinking` iniciará o CLI com os pensamentos da IA narrados.
+- `--narrator [off|thinking|response]`: Sets the initial narrator mode. For example, `--narrator thinking` will start the CLI with AI thoughts narrated.
 
 #### Use a Gemini API Key:
 
@@ -99,7 +99,7 @@ For other authentication methods, including Google Workspace accounts, refer to 
 
 Once the CLI is running, you can start interacting with Gemini from your shell.
 
-Você pode iniciar um projeto a partir de um novo diretório:
+You can start a project from a new directory:
 
 ```sh
 cd new-project/
@@ -107,7 +107,7 @@ geminid
 > Write me a Gemini Discord bot that answers questions using a FAQ.md file I will provide
 ```
 
-Ou trabalhar com um projeto existente:
+Or work with an existing project:
 
 ```sh
 git clone https://github.com/hermannhahn/gemini-cli
@@ -128,14 +128,14 @@ geminid
 
 Refer to the [troubleshooting guide](docs/troubleshooting.md) if you are having issues.
 
-### Tarefas populares
+### Popular Tasks
 
-#### Explorar uma nova base de código
+#### Explore a new codebase
 
-Comece entrando em um repositório existente ou recém-clonado e executando `gemini-dev`.
+Start by entering an existing or newly cloned repository and running `geminid`.
 
 ```text
-> Descreva as principais partes da arquitetura deste sistema.
+> Describe the main parts of this system's architecture.
 ```
 
 ```text
@@ -182,7 +182,7 @@ Comece entrando em um repositório existente ou recém-clonado e executando `gem
 
 #### Automate your workflows
 
-Use servidores MCP para integrar suas ferramentas de sistema local com sua suíte de colaboração empresarial.
+Use MCP servers to integrate your local system tools with your enterprise collaboration suite.
 
 ```text
 > Create a slide deck showing the git history for the last 7 days, grouped by feature and team member.
