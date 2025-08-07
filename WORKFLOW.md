@@ -26,8 +26,12 @@ git checkout main
 git fetch upstream
 git rebase upstream/main # Updates your main with the latest from the official project
 git checkout hermannhahn/develop
-git rebase main # Brings official updates to your development branch
-git push origin hermannhahn/develop # Optional: to keep your remote fork updated
+git checkout -b hermannhahn/rebase
+git rebase main # Brings official updates to rebase branch
+git checkout hermannhahn/develop
+git push -u origin hermannhahn/develop  # Update development branch
+git merge hermannhahn/rebase # Merges the rebase branch into develop
+git branch -d hermannhahn/rebase # Deletes the temporary rebase branch
 ```
 
 ### Developing a New Feature
@@ -35,6 +39,7 @@ git push origin hermannhahn/develop # Optional: to keep your remote fork updated
 ```bash
 git checkout hermannhahn/develop # Make sure you are on your latest development branch
 git checkout -b hermannhahn/feat/feature-name # Creates the new feature branch
+git checkout -b hermannhahn/hotfix/hotfix-name # Creates the new hotfix branch
 ```
 
 ### Finalizing and Integrating the Feature
@@ -64,8 +69,8 @@ git checkout -b hermannhahn/feat/feature-name # Creates the new feature branch
 After changes are merged into `hermannhahn/develop` and are ready for a stable release:
 
 1.  **Merge to Main:** Open a Pull Request (PR) from `hermannhahn/develop` to `hermannhahn/main`.
-    *   Ensure all tests pass in the PR.
-    *   Merge the PR into `hermannhahn/main`.
+    - Ensure all tests pass in the PR.
+    - Merge the PR into `hermannhahn/main`.
 
 2.  **Trigger Release Workflow:** After a successful merge into `hermannhahn/main`, trigger the release process by merging `hermannhahn/main` into `hermannhahn/release`.
 
@@ -74,16 +79,16 @@ After changes are merged into `hermannhahn/develop` and are ready for a stable r
     ```
 
     This script will:
-    *   Merge `hermannhahn/main` into `hermannhahn/release`.
-    *   Push the changes to `hermannhahn/release`.
-    *   This push will trigger the `Release` workflow (`release.yml`) in GitHub Actions.
+    - Merge `hermannhahn/main` into `hermannhahn/release`.
+    - Push the changes to `hermannhahn/release`.
+    - This push will trigger the `Release` workflow (`release.yml`) in GitHub Actions.
 
 **Outcome:** The `Release` workflow will:
 
--   Build the CLI.
--   Run tests.
--   Publish the `@hahnd/gemini-cli-core` and `@hahnd/geminid` packages to npm.
--   Create the GitHub Release associated with the new tag, targeting the `hermannhahn/release` branch.
+- Build the CLI.
+- Run tests.
+- Publish the `@hahnd/gemini-cli-core` and `@hahnd/geminid` packages to npm.
+- Create the GitHub Release associated with the new tag, targeting the `hermannhahn/release` branch.
 
 ### Nightly Releases
 
@@ -91,17 +96,19 @@ The `Nightly Release` workflow (`nightly-release.yml`) is automatically triggere
 
 **Outcome:** The `Nightly Release` workflow will:
 
--   Checkout the `hermannhahn/main` branch.
--   Build the project.
--   Run tests.
--   Create a GitHub Release with a nightly tag, targeting the `hermannhahn/main` branch.
+- Checkout the `hermannhahn/main` branch.
+- Build the project.
+- Run tests.
+- Create a GitHub Release with a nightly tag, targeting the `hermannhahn/main` branch.
 
 ### Troubleshooting Release Issues:
 
--   **"tag already exists" error:** This means the Git tag already exists on GitHub. Delete it remotely before retrying:
+- **"tag already exists" error:** This means the Git tag already exists on GitHub. Delete it remotely before retrying:
 
-    ```bash
-    git push --delete origin <tag_name>
-    ```
+  ```bash
+  git push --delete origin <tag_name>
+  ```
 
--   **`npm ci` / `package-lock.json` issues:** If `npm ci` fails, your `package-lock.json` might be out of sync. Run `npm install` locally to update it, commit the changes, push to GitHub, and then retry the release workflow.
+- **npm version error** Upgrade to the next version.
+
+- **`npm ci` / `package-lock.json` issues:** If `npm ci` fails, your `package-lock.json` might be out of sync. Run `npm install` locally to update it, commit the changes, push to GitHub, and then retry the release workflow.
