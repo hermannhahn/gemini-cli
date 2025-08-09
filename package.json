@@ -50,7 +50,8 @@
     "telemetry": "node scripts/telemetry.js",
     "version": "node scripts/version.js",
     "clean": "node scripts/clean.js",
-    "publish:develop": "node scripts/publish_develop.js"
+    "publish:develop": "node scripts/publish_develop.js",
+    "publish:release": "node scripts/publish_release.js"
   },
   "bin": {
     "geminid": "bundle/geminid.js"
