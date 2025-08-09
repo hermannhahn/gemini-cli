@@ -1,9 +1,37 @@
 name: Release
 
 on:
+  schedule:
+    # Runs every day at midnight UTC for the nightly release.
+    - cron: '0 0 * * *'
   repository_dispatch:
     types: [run-release]
   workflow_dispatch: # Keep for manual triggering
+    inputs:
+      version:
+        description: 'The version to release (e.g., v0.1.11). Required for manual patch releases.'
+        required: false # Not required for scheduled runs
+        type: string
+      ref:
+        description: 'The branch or ref (full git sha) to release from.'
+        required: true
+        type: string
+        default: 'main'
+      dry_run:
+        description: 'Run a dry-run of the release process; no branches, npm packages or GitHub releases will be created.'
+        required: true
+        type: boolean
+        default: true
+      create_nightly_release:
+        description: 'Auto apply the nightly release tag, input version is ignored.'
+        required: false
+        type: boolean
+        default: false
+      force_skip_tests:
+        description: 'Select to skip the "Run Tests" step in testing. Prod releases should run tests'
+        required: false
+        type: boolean
+        default: false
 
 run-name: Release v${{ github.event.client_payload.version }}
 
@@ -74,28 +102,42 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Update gh CLI
-        run: sudo apt-get update && sudo apt-get install -y gh
+      - name: Create and switch to a release branch
+        id: release_branch
+        run: |
+          BRANCH_NAME="release/${{ steps.version.outputs.RELEASE_TAG }}"
+          git switch -c $BRANCH_NAME
+          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_OUTPUT
+
+      - name: Update package versions
+        run: |
+          npm run release:version ${{ steps.version.outputs.RELEASE_VERSION }}
+
+      - name: Commit and Conditionally Push package versions
+        run: |
+          git add package.json package-lock.json packages/*/package.json
+          git commit -m "chore(release): ${{ steps.version.outputs.RELEASE_TAG }}"
+          if [[ "${{ steps.vars.outputs.is_dry_run }}" == "false" ]]; then
+            echo "Pushing release branch to remote..."
+            git push --set-upstream origin ${{ steps.release_branch.outputs.BRANCH_NAME }} --follow-tags
+          else
+            echo "Dry run enabled. Skipping push."
+          fi
 
       - name: Build and Prepare Packages
         run: |
           npm run build:packages
           npm run prepare:package
 
-      - name: Create and checkout release branch
-        id: release_branch
-        run: |
-          RELEASE_BRANCH="release/${{ steps.version.outputs.RELEASE_VERSION }}"
-          git checkout -b $RELEASE_BRANCH
-          echo "RELEASE_BRANCH=$RELEASE_BRANCH" >> $GITHUB_OUTPUT
-
-      - name: Commit and Conditionally Push package versions
-        run: |
-          echo "Pushing release branch to remote..."
-          git push --set-upstream origin ${{ steps.release_branch.outputs.RELEASE_BRANCH }}
+      - name: Configure npm for publishing
+        uses: actions/setup-node@v4 # v4
+        with:
+          node-version: '20'
+          registry-url: 'https://wombat-dressing-room.appspot.com'
+          scope: '@hahnd'
 
       - name: Publish @hahnd/gemini-cli-core
-        run: npm publish --workspace=@hahnd/gemini-cli-core --tag=${{ steps.version.outputs.NPM_TAG }} --access public
+        run: npm publish --workspace=@hahnd/gemini-cli-core --tag=${{ steps.version.outputs.NPM_TAG }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -104,16 +146,18 @@ jobs:
         run: npm install @hahnd/gemini-cli-core@${{ steps.version.outputs.RELEASE_VERSION }} --workspace=@hahnd/geminid --save-exact
 
       - name: Publish @hahnd/geminid
-        run: npm publish --tag=${{ steps.version.outputs.NPM_TAG }} --access public
+        run: npm publish --workspace=@hahnd/geminid --tag=${{ steps.version.outputs.NPM_TAG }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Create Release, Tag and Publish
+      - name: Create GitHub Release and Tag
+        if: ${{ steps.vars.outputs.is_dry_run == 'false' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_TAG: ${{ steps.version.outputs.RELEASE_TAG }}
+          RELEASE_BRANCH: ${{ steps.release_branch.outputs.BRANCH_NAME }}
         run: |
-          gh release create "$RELEASE_TAG" \
-            --target hermannhahn/release \
+          gh release create ${{ steps.version.outputs.RELEASE_TAG }} \
+            bundle/gemini.js \
+            --target "$RELEASE_BRANCH" \
             --title "Release ${{ steps.version.outputs.RELEASE_TAG }}" \
             --generate-notes
