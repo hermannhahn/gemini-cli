@@ -72,16 +72,8 @@ After changes are merged into `username/develop` and are ready for a stable rele
     - Ensure all tests pass in the PR.
     - Merge the PR into `username/main`.
 
-2.  **Trigger Release Workflow:** After a successful merge into `username/main`, trigger the release process by merging `username/main` into `username/release`.
-
-    ```bash
-    npm run publish:release
-    ```
-
-    This script will:
-    - Merge `username/main` into `username/release`.
-    - Push the changes to `username/release`.
-    - This push will trigger the `Release` workflow (`release.yml`) in GitHub Actions.
+2.  **Trigger Release Workflow:** After a successful merge into `username/main`, the release process starts.
+    - This merge will trigger the `Release` workflow (`release.yml`) in GitHub Actions.
 
 **Outcome:** The `Release` workflow will:
 
@@ -92,7 +84,7 @@ After changes are merged into `username/develop` and are ready for a stable rele
 
 ### Nightly Releases
 
-The `Nightly Release` workflow (`nightly-release.yml`) is automatically triggered daily (or can be manually dispatched).
+The `Nightly Release` workflow (`release.yml`) is automatically triggered daily (or can be manually dispatched).
 
 **Outcome:** The `Nightly Release` workflow will:
 

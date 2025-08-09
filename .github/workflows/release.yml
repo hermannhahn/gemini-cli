@@ -1,6 +1,8 @@
 name: Release
 
 on:
+  pull_request:
+    branches: [hermannhahn/main]
   schedule:
     # Runs every day at midnight UTC for the nightly release.
     - cron: '0 0 * * *'
