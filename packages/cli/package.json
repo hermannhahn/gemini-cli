@@ -1,11 +1,12 @@
 {
   "name": "@hahnd/geminid",
-  "description": "Gemini Dev CLI - A personal fork from Google's Gemini CLI repository.",
+  "description": "Gemini Dev CLI - Google's Gemini CLI for developers, with improvements and more tools.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hermannhahn/gemini-cli.git"
   },
   "type": "module",
+  "main": "dist/index.js",
   "scripts": {
     "build": "node ../../scripts/build_package.js",
     "start": "node dist/index.js",
@@ -17,7 +18,8 @@
     "typecheck": "tsc --noEmit"
   },
   "files": [
-    "dist"
+    "dist",
+    "bundle"
   ],
   "config": {
     "sandboxImageUri": "us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox:0.1.15"
@@ -74,5 +76,5 @@
   "engines": {
     "node": ">=20"
   },
-  "version": "0.1.31"
+  "version": "0.1.32"
 }
