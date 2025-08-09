@@ -15,9 +15,11 @@ The `TODO.md` file is the primary, detailed source of task progress, including s
 
 **Keep updated** these files before committing:
 
-- [CHANGELOG.md](./CHANGELOG.md)
-- [TODO.md](./TODO.md)
-- [README.md](./README.md)
+- [CHANGELOG](./CHANGELOG.md)
+- [TODO](./TODO.md)
+- [README](./README.md)
+- [DOCUMENTATION](./docs)
+- [WORKFLOW](./WORKFLOW.md)
 
 ## Essential Guides
 

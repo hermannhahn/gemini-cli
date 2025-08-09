@@ -99,6 +99,7 @@ The `Nightly Release` workflow (`nightly-release.yml`) is automatically triggere
 - Checkout the `username/main` branch.
 - Build the project.
 - Run tests.
+- Publish the `@hahnd/gemini-cli-core@nightly` and `@hahnd/geminid@nightly` packages to npm.
 - Create a GitHub Release with a nightly tag, targeting the `username/main` branch.
 
 ### Troubleshooting Release Issues:
@@ -111,4 +112,6 @@ The `Nightly Release` workflow (`nightly-release.yml`) is automatically triggere
 
 - **npm version error** Upgrade to the next version.
 
-- **`npm ci` / `package-lock.json` issues:** If `npm ci` fails, your `package-lock.json` might be out of sync. Run `npm install` locally to update it, commit the changes, push to GitHub, and then retry the release workflow.
+  ```bash
+    npm run publish:develop <version> # Example: npm run publish:develop 0.1.27
+  ```
