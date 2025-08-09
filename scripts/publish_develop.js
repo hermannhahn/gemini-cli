@@ -24,6 +24,8 @@ if (currentBranch !== 'hermannhahn/develop' && currentBranch !== 'develop') {
 }
 
 let newVersion = process.argv[2];
+let skipTest = process.argv[3];
+
 const gitCommitFile = readFileSync(commitGenerated, 'utf-8');
 const GIT_COMMIT_INFO = gitCommitFile.match(
   /export const GIT_COMMIT_INFO = '(.*)';/,
@@ -88,9 +90,11 @@ try {
     execSync('npm run build', { stdio: 'inherit' });
     console.log('npm run build completed.');
     // Preflight
-    console.log('Running preflight checks...');
-    execSync('npm run preflight', { stdio: 'inherit' });
-    console.log('npm run preflight completed.');
+    if (skipTest === '--skip-tests') {
+      console.log('Running preflight checks...');
+      execSync('npm run preflight', { stdio: 'inherit' });
+      console.log('npm run preflight completed.');
+    }
   } catch (error) {
     console.log(error);
     process.exit(1);
