@@ -9,8 +9,7 @@ import { resolve } from 'path';
 import { join } from 'path';
 import { execSync } from 'child_process';
 
-const versionType = process.argv[2];
-const skipTest = process.argv[3];
+const commandArg = process.argv[2];
 
 function readJson(filePath) {
   return JSON.parse(readFileSync(filePath, 'utf-8'));
@@ -30,7 +29,7 @@ if (
 ) {
   if (currentBranch !== currentBranch.includes('develop')) {
     // Preflight
-    if (skipTest !== '--skip-tests' && versionType !== '--skip-tests') {
+    if (commandArg !== 'skip-test') {
       console.log('Running preflight checks...');
       try {
         execSync('npm run preflight', { stdio: 'inherit' });
@@ -73,8 +72,8 @@ if (
   process.exit(1);
 }
 
-if (versionType && !versionType.startsWith('--')) {
-  execSync(`node scripts/version.js ${versionType}`);
+if (commandArg && commandArg !== 'skip-test') {
+  execSync(`node scripts/version.js ${commandArg}`);
 }
 
 try {
