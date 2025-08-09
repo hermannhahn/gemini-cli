@@ -62,6 +62,20 @@ jobs:
           npm run build:packages
           npm run prepare:package
 
+      - name: Publish @hahnd/gemini-cli-core@nightly
+        run: npm publish --workspace=@hahnd/gemini-cli-core --tag=${{ steps.get_nightly_version.outputs.NIGHTLY_TAG }}-${{ github.sha }}-nightly --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Install latest nigthly core package
+        if: steps.vars.outputs.is_dry_run == 'false'
+        run: npm install @hahnd/gemini-cli-core@${{ steps.get_nightly_version.outputs.NIGHTLY_VERSION }}-${{ github.sha }}-nightly --workspace=@hahnd/geminid --save-exact
+
+      - name: Publish @hahnd/geminid
+        run: npm publish --tag=${{ steps.get_nightly_version.outputs.NIGHTLY_TAG }}-${{ github.sha }}-nightly --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Create GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
