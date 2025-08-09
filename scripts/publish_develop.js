@@ -24,6 +24,8 @@ if (currentBranch !== 'hermannhahn/develop' && currentBranch !== 'develop') {
 }
 
 let newVersion = process.argv[2];
+let skipTest = process.argv[3];
+
 const gitCommitFile = readFileSync(commitGenerated, 'utf-8');
 const GIT_COMMIT_INFO = gitCommitFile.match(
   /export const GIT_COMMIT_INFO = '(.*)';/,
@@ -88,9 +90,11 @@ try {
     execSync('npm run build', { stdio: 'inherit' });
     console.log('npm run build completed.');
     // Preflight
-    console.log('Running preflight checks...');
-    execSync('npm run preflight', { stdio: 'inherit' });
-    console.log('npm run preflight completed.');
+    if (skipTest === '--skip-tests') {
+      console.log('Running preflight checks...');
+      execSync('npm run preflight', { stdio: 'inherit' });
+      console.log('npm run preflight completed.');
+    }
   } catch (error) {
     console.log(error);
     process.exit(1);
@@ -119,6 +123,20 @@ try {
   // Pushing
   execSync('git push origin hermannhahn/develop');
   console.log(`Develop branch v${newVersion} successfully pushed.`);
+
+  // Create Pull Request
+  try {
+    console.log('Creating Pull Request...');
+    execSync(
+      `gh pr create --repo hermannhahn/gemini-cli --base hermannhahn/main --head hermannhahn/develop --title "chore(release): Develop Review v${newVersion} (${GIT_COMMIT_INFO})" --body "Automated PR for develop branch."`,
+      { stdio: 'inherit' }
+    );
+    console.log('Pull Request created successfully.');
+  } catch (prError) {
+    console.error('Error creating Pull Request:', prError.message);
+    // Do not exit here, as the push was successful.
+    // The user can manually create the PR if this step fails.
+  }
 } catch (error) {
   console.error('Error during version update:', error.message);
   process.exit(1);

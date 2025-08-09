@@ -2,9 +2,9 @@ name: Trigger Release
 
 on:
   pull_request:
-    branches: [hermannhahn/release]
+    branches: [hermannhahn/test-release]
   push:
-    branches: [hermannhahn/release]
+    branches: [hermannhahn/test-release]
 
 jobs:
   wait_for_ci:
