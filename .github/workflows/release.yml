@@ -1,7 +1,7 @@
 name: 'Release'
 
 on:
-  pull_request:
+  merge_group:
     branches: [hermannhahn/main]
   schedule:
     # Runs every day at midnight UTC for the nightly release.
@@ -110,10 +110,6 @@ jobs:
           BRANCH_NAME="release/${{ steps.version.outputs.RELEASE_TAG }}"
           git switch -c $BRANCH_NAME
           echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_OUTPUT
-
-      - name: Update package versions
-        run: |
-          npm run release:version ${{ steps.version.outputs.RELEASE_VERSION }}
 
       - name: Commit and Conditionally Push package versions
         run: |
