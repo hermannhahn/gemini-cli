@@ -20,6 +20,19 @@ This file lists tasks and their progress.
     - Ensured `external: ['@hahnd/gemini-cli-core']` is present in `esbuild.config.js`.
     - Both `npm start` and global `geminid` command are now working as expected.
 
+## Error: `gh pr create` fails with "No default remote repository has been set"
+
+**General Status:** Resolved
+
+**Main Objective:** Ensure the `gh pr create` command in `scripts/publish_develop.js` successfully creates a Pull Request.
+
+### Resolution Attempts:
+
+- **Resolution Attempt 1:**
+  - **Action Plan:** Modified `scripts/publish_develop.js` to include `--repo hermannhahn/gemini-cli` in the `gh pr create` command, explicitly specifying the repository.
+  - **Attempt Status:** Completed
+  - **Result:** The `gh pr create` command should now execute successfully without the "No default remote repository has been set" error.
+
 ## Preflight Checks
 
 - **General Status**: Completed

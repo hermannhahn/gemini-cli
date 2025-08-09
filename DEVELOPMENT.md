@@ -14,16 +14,8 @@ This document provides essential context and instructions for the team assisting
   - For multi-line commit messages, use multiple `-m` flags in the `git commit` command. Each `-m` flag represents a new line in the commit message if needed.
   - Example: `git commit -m 'Subject line' -m 'Body line 1' -m 'Body line 2'`
 
-## Documentation
-
-- **Keep Updated:**
-  - `TODO.md`: Project tasks.
-  - `CHANGELOG.md`: Project updates.
-  - `docs/`: Project documentation, especially feature-specific documentation (e.g., `docs/features/narrator.md`).
-
 ## Development Instructions
 
-- **Workflow:** [WORKFLOW.md](./WORKFLOW.md)
 - **Development Environment:** Developers uses `npm start` for development. Code changes require recompilation and CLI restart for testing.
 - **ToolResult Handling:**
   - `llmContent`: Always sent to the AI model for processing. Never suppressed.
@@ -97,6 +89,7 @@ This command will run ESLint, Prettier, all tests, and other checks as defined i
 - Please adhere to the coding style, patterns, and conventions used throughout the existing codebase.
 - Consult [GEMINI.md](https://github.com/hermannhahn/gemini-cli/blob/main/GEMINI.md) (typically found in the project root) for specific instructions related to AI-assisted development, including conventions for React, comments, and Git usage.
 - **Imports:** Pay special attention to import paths. The project uses `eslint-rules/no-relative-cross-package-imports.js` to enforce restrictions on relative imports between packages.
+- **`npm ci` / `package-lock.json` issues:** If `npm ci` fails, your `package-lock.json` might be out of sync. Run `npm install` locally to update it, commit the changes, push to GitHub, and then retry the release workflow.
 
 ### Project Structure
 
