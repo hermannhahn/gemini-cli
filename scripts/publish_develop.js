@@ -128,7 +128,7 @@ try {
   try {
     console.log('Creating Pull Request...');
     execSync(
-      `gh pr create --base hermannhahn/main --head hermannhahn/develop --title "chore(release): Develop Review v${newVersion} (${GIT_COMMIT_INFO})" --body "Automated PR for develop branch."`,
+      `gh pr create --repo hermannhahn/gemini-cli --base hermannhahn/main --head hermannhahn/develop --title "chore(release): Develop Review v${newVersion} (${GIT_COMMIT_INFO})" --body "Automated PR for develop branch."`,
       { stdio: 'inherit' }
     );
     console.log('Pull Request created successfully.');
