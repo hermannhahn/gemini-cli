@@ -5,7 +5,7 @@ on:
     # Runs every day at midnight UTC for the nightly release.
     - cron: '0 0 * * *'
   push:
-    branches: [hermannhahn/nightly-release]
+    branches: [hermannhahn/nightly]
 
 jobs:
   wait_for_ci:
@@ -17,7 +17,7 @@ jobs:
           workflow_file_name: 'ci.yml'
           owner: ${{ github.repository_owner }}
           repo: ${{ github.event.repository.name }}
-          ref: hermannhahn/nightly-release
+          ref: hermannhahn/nightly
           github_token: ${{ secrets.GITHUB_TOKEN }}
           propagate_failure: true
 
