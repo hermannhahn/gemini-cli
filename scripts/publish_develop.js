@@ -6,138 +6,141 @@
 
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-import { join } from 'path';
 import { execSync } from 'child_process';
 
 const commandArg = process.argv[2];
+
+function run(command) {
+  try {
+    console.log(`> ${command}`);
+    execSync(command); // { stdio: 'inherit' }
+  } catch (error) {
+    console.error(`🛑 Error running ${command}: \n⚠️`, error.message);
+    process.exit(1);
+  }
+}
 
 function readJson(filePath) {
   return JSON.parse(readFileSync(filePath, 'utf-8'));
 }
 
-const commitGenerated = join(
-  process.cwd(),
-  'packages/cli/src/generated/git-commit.ts',
-);
+console.log('🏁 Starting publishing into development branch...');
+
+console.log(`🔎 Checking current branch...`);
 const currentBranch = execSync('git rev-parse --abbrev-ref HEAD')
   .toString()
   .trim();
+const currentBranchType = currentBranch.split('/')[1];
+const currentCommitType = currentBranch.split('/')[2];
+const currentCommitInfo =
+  currentBranch.split('/')[1] + ' ' + currentBranch.split('/')[2];
 
 if (
   !currentBranch.includes('main') &&
   !currentBranch.includes('release') &&
   !currentBranch.includes('develop')
 ) {
-  if (currentBranch !== currentBranch.includes('develop')) {
-    // Preflight
-    if (commandArg !== 'skip-test') {
-      console.log('Running preflight checks...');
-      try {
-        execSync('npm run preflight', { stdio: 'inherit' });
-      } catch (preflightError) {
-        console.error(preflightError.message);
-        console.error(
-          'Preflight checks failed. Please, fix the error(s) and try again!',
-        );
-        process.exit(1);
-      }
-      console.log('Preflight checks successfully completed.');
-    }
+  // Starting publishing into development branch
+  console.log(`📦 Current branch: ${currentBranch}`);
+  console.log(`🛠️ Current branch type: ${currentBranchType}`);
+  console.log(`📝 Current commit type: ${currentCommitType}`);
 
-    // Merge with development branch
-    try {
-      execSync('git merge origin/hermannhahn/develop --no-ff', {
-        stdio: 'inherit',
-      });
-      // checkout to develop
-      execSync('git checkout hermannhahn/develop', { stdio: 'inherit' });
-      // delete feature/fix branch
-      try {
-        execSync(`git branch -D ${currentBranch}`, { stdio: 'inherit' });
-      } catch (deleteError) {
-        console.error(
-          `Error deleting branch ${currentBranch}:`,
-          deleteError.message,
-        );
-      }
-    } catch (mergeError) {
-      console.error(
-        'Error merging with origin/hermannhahn/develop:',
-        mergeError.message,
-      );
-      process.exit(1);
-    }
+  // If is new version
+  if (commandArg && commandArg !== 'skip-test') {
+    // Bump version
+    console.log('🔢 Bumping version...');
+    run(`node scripts/version.js ${commandArg}`);
+    console.log('✅ Successfully bumped version.');
+    // Clean
+    console.log('🗑️ Cleaning up...');
+    run('rm -rf node_modules package-lock.json');
+    console.log('✅ Successfully cleaned up.');
+    // Install
+    console.log('📥 Installing packages...');
+    run('npm install');
+    console.log('✅ Successfully installed packages.');
   }
+
+  // Preflight
+  if (commandArg !== 'skip-test') {
+    console.log('📋 Running preflight checks...');
+    run('npm run preflight');
+    console.log('✅ Preflight checks successfully completed.');
+  }
+
+  // Test
+  if (commandArg === 'test') {
+    // Build package
+    console.log('🛠️ Building packages...');
+    run('npm run build');
+    console.log('✅ Successfully built packages.');
+
+    // npm global uninstall
+    console.log('🗑️ Uninstalling previous global package...');
+    run('npm uninstall -g @hahnd/geminid');
+    console.log('✅ Successfully uninstalled previous global package.');
+
+    // npm install
+    console.log('📥 Installing global package...');
+    run('npm install -g .');
+    console.log('✅ Successfully installed global package.');
+
+    // Test
+    console.log('🧪 Running test...');
+    run('geminid Test 1 2 3...');
+    process.exit(0);
+  }
+
+  // Get version
+  const rootPackageJsonPath = resolve(process.cwd(), 'package.json');
+  const version = readJson(rootPackageJsonPath).version;
+
+  // Commit
+  console.log('📝 Generated git commit info.');
+  const GIT_COMMIT_INFO = execSync('node scripts/generate-git-commit-info.js', {
+    encoding: 'utf-8',
+  }).trim();
+  console.log('✒️ Committing changes...');
+  run('git add .');
+  run(
+    `git commit --allow-empty -m "${currentBranchType}(${currentCommitType}): ${currentCommitInfo} - Release v${version} (${GIT_COMMIT_INFO})"`,
+  );
+  console.log('✅ Successfully committed changes.');
+
+  // Checkout to development branch
+  console.log('🔁 Checking out to development branch...');
+  run('git checkout hermannhahn/develop');
+
+  // Merge into development branch
+  console.log('🔀 Merging into development branch...');
+  run(
+    `git merge ${currentBranch} --no-ff -m "${currentBranchType}(${currentCommitType}): ${currentCommitInfo} - Release v${version} (${GIT_COMMIT_INFO})"`,
+  );
+  console.log('✅ Successfully merged into development branch.');
+
+  // delete feature/fix branch
+  console.log(`⛔ Deleting ${currentBranch} branch...`);
+  run(`git branch -D ${currentBranch}`);
+  console.log(`✅ Successfully deleted ${currentBranch} branch.`);
+
+  // Push to development branch
+  console.log('📤 Pushing to development branch...');
+  run('git push origin hermannhahn/develop');
+  console.log('✅ Successfully pushed to development branch.');
+
+  // Create Pull Request
+  console.log('📝 Creating Pull Request...');
+  run(
+    `gh pr create --repo hermannhahn/gemini-cli --base hermannhahn/main --head hermannhahn/develop --title "${currentBranchType}(${currentCommitType}): Release v${version} ${GIT_COMMIT_INFO}" --body "Automated PR for develop branch: ${currentCommitInfo}"`,
+  );
+  console.log('✅ Pull Request created successfully.');
+  console.log(
+    `✅ Successfully pushed version ${version} to develop branch and PR created.`,
+  );
 } else {
-  console.error('This script can only be run on the feature or fix branch.');
+  console.error('🛑 This script can only be run on the feature or fix branch.');
   process.exit(1);
 }
 
-if (commandArg && commandArg !== 'skip-test') {
-  execSync(`node scripts/version.js ${commandArg}`);
-}
-
-try {
-  console.log('Installing dependencies and updating packages...');
-  // Install
-  execSync('npm install', { stdio: 'inherit' });
-  console.log('npm install completed.');
-  // Build
-  execSync('npm run build', { stdio: 'inherit' });
-  console.log('npm run build completed.');
-} catch (error) {
-  console.log(error);
-  process.exit(1);
-}
-
-const rootPackageJsonPath = resolve(process.cwd(), 'package.json');
-const version = readJson(rootPackageJsonPath).version;
-
-const gitCommitFile = readFileSync(commitGenerated, 'utf-8');
-const GIT_COMMIT_INFO = gitCommitFile.match(
-  /export const GIT_COMMIT_INFO = '(.*)';/,
-)[1];
-console.log(GIT_COMMIT_INFO);
-
-// Check if any other files were modified
-const modifiedFiles = execSync('git status --porcelain').toString().trim();
-
-if (modifiedFiles) {
-  console.log('Files were modified since the last commit:');
-  console.log(modifiedFiles);
-
-  // Add changes to git
-  execSync(`git add .`); // Be specific about files
-  console.log('Added all changes to git staging area.');
-  // Commit updates
-  execSync(
-    `git commit -m 'chore(release): Develop Release v${version} (${GIT_COMMIT_INFO})'`,
-  );
-} else {
-  execSync(
-    `git commit --allow-empty -m 'chore(release): Develop Release v${version}'`,
-  );
-}
-
-// Pushing
-execSync('git push origin hermannhahn/develop');
-console.log(`Develop branch v${version} successfully pushed.`);
-
-// Create Pull Request
-try {
-  console.log('Creating Pull Request...');
-  execSync(
-    `gh pr create --repo hermannhahn/gemini-cli --base hermannhahn/main --head hermannhahn/develop --title "chore(release): Develop Review v${version}" --body "Automated PR for develop branch: ${GIT_COMMIT_INFO}"`,
-    { stdio: 'inherit' },
-  );
-  console.log('Pull Request created successfully.');
-} catch (prError) {
-  console.error('Error creating Pull Request:', prError.message);
-  // Do not exit here, as the push was successful.
-  // The user can manually create the PR if this step fails.
-}
-console.log(
-  `Successfully pushed version ${version} to develop branch and PR created.`,
-);
 process.exit(0);
 // END
