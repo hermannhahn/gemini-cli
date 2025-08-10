@@ -22,7 +22,7 @@ on:
         type: boolean
         default: false
 
-run-name: Release v${{ github.event.inputs.version }}
+run-name: Release v${{ github.event.client_payload.version }}
 
 jobs:
   release:
@@ -90,8 +90,6 @@ jobs:
 
       - name: Commit and Conditionally Push package versions
         run: |
-          git add .
-          git commit --allow-empty -m "chore(release): ${{ steps.version.outputs.RELEASE_TAG }}"
           echo "Pushing release branch to remote..."
           git push --set-upstream origin ${{ steps.release_branch.outputs.BRANCH_NAME }} --follow-tags
 

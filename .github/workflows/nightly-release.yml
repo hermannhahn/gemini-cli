@@ -26,7 +26,7 @@ on:
         type: boolean
         default: false
 
-run-name: Nightly Release v${{ github.event.inputs.version }} (${{ github.event.inputs.ref }})
+run-name: Nightly Release v${{ github.event.client_payload.version }} (${{ github.event.inputs.ref }})
 
 jobs:
   release:
@@ -89,7 +89,7 @@ jobs:
       - name: Nightly release branch
         id: release_branch
         run: |
-          BRANCH_NAME="hermannhahn/nightly-release"
+          BRANCH_NAME="hermannhahn/nightly"
           echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_OUTPUT
 
       - name: Build and Prepare Packages
