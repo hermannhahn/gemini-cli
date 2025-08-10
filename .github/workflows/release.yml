@@ -80,13 +80,12 @@ jobs:
           npm run build:packages
           npm run prepare:package
 
-      - name: Create and switch to a release branch
-        id: release_branch
+      - name: Commit package-lock.json and build artifacts
         run: |
-          BRANCH_NAME="hermannhahn/release"
-          git checkout -b "$BRANCH_NAME"/${{ steps.version.outputs.RELEASE_VERSION }}
-          git push origin "$BRANCH_NAME"/${{ steps.version.outputs.RELEASE_VERSION }}
-          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_OUTPUT
+          git add package-lock.json
+          git add packages/**/dist
+          git add bundle
+          git commit --allow-empty -m "chore(release): Update package-lock.json and build artifacts"
 
       - name: Publish @hahnd/gemini-cli-core
         run: npm publish --workspace=@hahnd/gemini-cli-core --tag=${{ steps.version.outputs.NPM_TAG }}
@@ -104,10 +103,9 @@ jobs:
       - name: Create GitHub Release and Tag
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_BRANCH: ${{ steps.release_branch.outputs.BRANCH_NAME }}
         run: |
           gh release create ${{ steps.version.outputs.RELEASE_TAG }} \
             bundle/gemini.js \
-            --target "$RELEASE_BRANCH" \
+            --target ${{ github.sha }} \
             --title "Release ${{ steps.version.outputs.RELEASE_TAG }}" \
             --generate-notes
