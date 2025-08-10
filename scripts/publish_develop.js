@@ -12,8 +12,8 @@ const commandArg = process.argv[2];
 
 function run(command) {
   try {
-    console.log(`> ${command}`);
-    execSync(command); // { stdio: 'inherit' }
+    // console.log(`> ${command}`);
+    execSync(command, { encoding: 'utf8' });
   } catch (error) {
     console.error(`🛑 Error running ${command}: \n⚠️`, error.message);
     process.exit(1);
