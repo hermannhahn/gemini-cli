@@ -2,7 +2,7 @@ name: Release
 
 on:
   merge_group:
-    branches: [hermannhahn/main]
+    branches: [hermannhahn/release]
   schedule:
     # Runs every day at midnight UTC for the nightly release.
     - cron: '0 0 * * *'
@@ -35,7 +35,7 @@ on:
         type: boolean
         default: false
 
-run-name: Release v${{ github.event.client_payload.version }}
+run-name: Release v${{ github.event.inputs.version }}
 
 jobs:
   release:
@@ -111,21 +111,21 @@ jobs:
           git switch -c $BRANCH_NAME
           echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_OUTPUT
 
+      - name: Build and Prepare Packages
+        run: |
+          npm run build:packages
+          npm run prepare:package
+
       - name: Commit and Conditionally Push package versions
         run: |
-          git add package.json package-lock.json packages/*/package.json
-          git commit -m "chore(release): ${{ steps.version.outputs.RELEASE_TAG }}"
+          git add .
+          git commit --allow-empty -m "chore(release): ${{ steps.version.outputs.RELEASE_TAG }}"
           if [[ "${{ steps.vars.outputs.is_dry_run }}" == "false" ]]; then
             echo "Pushing release branch to remote..."
             git push --set-upstream origin ${{ steps.release_branch.outputs.BRANCH_NAME }} --follow-tags
           else
             echo "Dry run enabled. Skipping push."
           fi
-
-      - name: Build and Prepare Packages
-        run: |
-          npm run build:packages
-          npm run prepare:package
 
       - name: Configure npm for publishing
         uses: actions/setup-node@v4 # v4

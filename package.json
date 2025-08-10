@@ -1,6 +1,6 @@
 {
   "name": "@hahnd/geminid",
-  "description": "Geminid - Google's Gemini CLI for developers, with improvements and more tools.",
+  "description": "🧠 Google's Gemini CLI for developers, with improvements and more tools.",
   "engines": {
     "node": ">=20.0.0"
   },
