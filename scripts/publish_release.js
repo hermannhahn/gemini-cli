@@ -8,50 +8,68 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import { execSync } from 'child_process';
 
+function run(command) {
+  try {
+    console.log(`> ${command}`);
+    execSync(command, { stdio: 'inherit' });
+  } catch (error) {
+    console.error(`🛑 Error running ${command}: \n⚠️`, error.message);
+    process.exit(1);
+  }
+}
+
 const rootPackageJsonPath = join(process.cwd(), 'package.json');
-const currentBranch = execSync('git rev-parse --abbrev-ref HEAD')
+let currentBranch = execSync('git rev-parse --abbrev-ref HEAD')
   .toString()
   .trim();
 
+// Starting release
+console.log('🏁 Starting release...');
+
 if (currentBranch !== 'hermannhahn/main' && currentBranch !== 'main') {
-  execSync('git checkout hermannhahn/main');
-  console.log('Switched to hermannhahn/main branch.');
+  run('git checkout hermannhahn/main');
+  currentBranch = 'hermannhahn/main';
 }
+console.log(`📦 Current branch: ${currentBranch}`);
 
 let releaseVersion = undefined;
 
-try {
-  // Pull
-  execSync('git pull');
-  console.log('Pulled hermannhahn/main branch.');
+// Pull
+console.log('📥 Pulling main branch.');
+run('git pull');
+console.log('✅ Pulled main branch.');
 
-  // Check and update root package.json
-  const rootPackageJsonContent = readFileSync(rootPackageJsonPath, 'utf8');
-  const rootPackageJson = JSON.parse(rootPackageJsonContent);
-  releaseVersion = rootPackageJson.version;
-  console.log(`Releasing ${rootPackageJsonPath} version ${releaseVersion}`);
+// Check and update root package.json
+const rootPackageJsonContent = readFileSync(rootPackageJsonPath, 'utf8');
+const rootPackageJson = JSON.parse(rootPackageJsonContent);
+releaseVersion = rootPackageJson.version;
+console.log(`📦 Releasing version ${releaseVersion}`);
 
-  try {
-    // Checkout
-    execSync('git checkout hermannhahn/release');
-    console.log('Switched to hermannhahn/release branch.');
-    // Pull
-    execSync('git pull');
-    console.log('Pulled hermannhahn/release branch.');
-    // merge
-    execSync(
-      `git merge origin/hermannhahn/main --no-ff -m "chore(release): Release v${releaseVersion}"`,
-    );
-    execSync('git push origin hermannhahn/release');
-    console.log('Succefully triggered release workflow.');
-  } catch (error) {
-    console.log(error);
-  }
-  execSync('git checkout hermannhahn/develop');
-  console.log('Switched back to hermannhahn/develop branch.');
-} catch (error) {
-  console.error('Error during version update:', error.message);
-  process.exit(1);
-}
+// Checkout
+console.log('🔁 Checking out to release branch...');
+run('git checkout hermannhahn/release');
+// Pull
+console.log('📥 Pulling release branch.');
+run('git pull');
+console.log('✅ Pulled release branch.');
+// merge
+console.log('🔀 Merging main into release branch...');
+run(
+  `git merge origin/hermannhahn/main --no-ff -m "chore(release): Release v${releaseVersion}"`,
+);
+console.log('✅ Successfully merged main into release branch.');
 
+// Push
+console.log('📤 Pushing release branch.');
+run('git push origin hermannhahn/release');
+console.log('✅ Successfully pushed release branch.');
+
+// Trigger release workflow
+console.log('✅ Succefully triggered release workflow.');
+
+// Checkout to develop branch
+console.log('🔁 Checking out to develop branch...');
+execSync('git checkout hermannhahn/develop');
+
+// end
 process.exit(0);
