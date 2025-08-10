@@ -5,7 +5,7 @@
  */
 
 import { readFileSync } from 'fs';
-import { resolve } from 'path';
+import { resolve, join } from 'path';
 import { execSync } from 'child_process';
 
 const commandArg = process.argv[2];
@@ -99,10 +99,16 @@ if (
   const version = readJson(rootPackageJsonPath).version;
 
   // Commit
+  run('node scripts/generate-git-commit-info.js');
+  const commitGenerated = join(
+    process.cwd(),
+    'packages/cli/src/generated/git-commit.ts',
+  );
+  const gitCommitFile = readFileSync(commitGenerated, 'utf-8');
+  const GIT_COMMIT_INFO = gitCommitFile.match(
+    /export const GIT_COMMIT_INFO = '(.*)';/,
+  )[1];
   console.log('📝 Generated git commit info.');
-  const GIT_COMMIT_INFO = execSync('node scripts/generate-git-commit-info.js', {
-    encoding: 'utf-8',
-  }).trim();
   console.log('✒️ Committing changes...');
   run('git add .');
   run(
