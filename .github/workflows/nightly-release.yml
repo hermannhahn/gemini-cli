@@ -1,10 +1,9 @@
-name: 'Release'
+name: Nightly Release
 
 on:
-  merge_group:
-    branches: [hermannhahn/release]
   repository_dispatch:
-    types: [run-release]
+    types: [run-nightly-release]
+
   workflow_dispatch: # Keep for manual triggering
     inputs:
       version:
@@ -16,13 +15,18 @@ on:
         required: true
         type: string
         default: 'main'
+      create_nightly_release:
+        description: 'Auto apply the nightly release tag, input version is ignored.'
+        required: false
+        type: boolean
+        default: false
       force_skip_tests:
         description: 'Select to skip the "Run Tests" step in testing. Prod releases should run tests'
         required: false
         type: boolean
         default: false
 
-run-name: Release v${{ github.event.inputs.version }}
+run-name: Nightly Release v${{ github.event.inputs.version }} (${{ github.event.inputs.ref }})
 
 jobs:
   release:
@@ -45,10 +49,16 @@ jobs:
           ref: ${{ github.sha }} # Checkout a specific commit
           fetch-depth: 0 # Required for notes generation
 
+      - name: Set nightly
+        id: vars
+        run: |
+          is_nightly="true"
+          echo "is_nightly=${is_nightly}" >> $GITHUB_OUTPUT
+
       - name: Setup Node.js and npm
         uses: actions/setup-node@v4
         with:
-          node-version-file: '.nvmrc'
+          node-version: '20'
           cache: 'npm'
           registry-url: 'https://registry.npmjs.org/'
           scope: '@hahnd'
@@ -59,7 +69,7 @@ jobs:
       - name: Get the version
         id: version
         run: |
-          VERSION_JSON=$(node scripts/get-release-version.js)
+          VERSION_JSON=$(node scripts/get-nightly-version.js)
           echo "RELEASE_TAG=$(echo $VERSION_JSON | jq -r .releaseTag)" >> $GITHUB_OUTPUT
           echo "RELEASE_VERSION=$(echo $VERSION_JSON | jq -r .releaseVersion)" >> $GITHUB_OUTPUT
           echo "NPM_TAG=$(echo $VERSION_JSON | jq -r .npmTag)" >> $GITHUB_OUTPUT
@@ -76,24 +86,16 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Create and switch to a release branch
+      - name: Nightly release branch
         id: release_branch
         run: |
-          BRANCH_NAME="release/${{ steps.version.outputs.RELEASE_TAG }}"
-          git switch -c $BRANCH_NAME
+          BRANCH_NAME="hermannhahn/nightly-release"
           echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_OUTPUT
 
       - name: Build and Prepare Packages
         run: |
           npm run build:packages
           npm run prepare:package
-
-      - name: Commit and Conditionally Push package versions
-        run: |
-          git add .
-          git commit --allow-empty -m "chore(release): ${{ steps.version.outputs.RELEASE_TAG }}"
-          echo "Pushing release branch to remote..."
-          git push --set-upstream origin ${{ steps.release_branch.outputs.BRANCH_NAME }} --follow-tags
 
       - name: Configure npm for publishing
         uses: actions/setup-node@v4 # v4
@@ -108,6 +110,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Install latest core package
+        if: steps.vars.outputs.is_dry_run == 'false'
         run: npm install @hahnd/gemini-cli-core@${{ steps.version.outputs.RELEASE_VERSION }} --workspace=@hahnd/geminid --save-exact
 
       - name: Publish @hahnd/geminid
@@ -116,6 +119,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create GitHub Release and Tag
+        if: ${{ steps.vars.outputs.is_dry_run == 'false' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_BRANCH: ${{ steps.release_branch.outputs.BRANCH_NAME }}
@@ -123,5 +127,5 @@ jobs:
           gh release create ${{ steps.version.outputs.RELEASE_TAG }} \
             bundle/gemini.js \
             --target "$RELEASE_BRANCH" \
-            --title "Release ${{ steps.version.outputs.RELEASE_TAG }}" \
+            --title "Nightly Release ${{ steps.version.outputs.RELEASE_TAG }}" \
             --generate-notes
