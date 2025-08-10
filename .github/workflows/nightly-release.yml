@@ -90,6 +90,7 @@ jobs:
         id: release_branch
         run: |
           BRANCH_NAME="hermannhahn/nightly"
+          git checkout -b "$BRANCH_NAME"/${{ steps.version.outputs.RELEASE_VERSION }}
           echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_OUTPUT
 
       - name: Build and Prepare Packages
