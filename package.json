@@ -99,5 +99,8 @@
   "dependencies": {
     "node-fetch": "^3.3.2"
   },
-  "version": "0.1.32"
+  "version": "0.1.32",
+  "dependencies": {
+    "fast-uri": "^3.0.6"
+  }
 }
