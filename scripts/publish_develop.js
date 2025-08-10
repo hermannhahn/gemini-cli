@@ -24,8 +24,9 @@ const currentBranch = execSync('git rev-parse --abbrev-ref HEAD')
   .trim();
 
 if (
-  currentBranch !== currentBranch.includes('main') ||
-  currentBranch !== currentBranch.includes('release')
+  !currentBranch.includes('main') &&
+  !currentBranch.includes('release') &&
+  !currentBranch.includes('develop')
 ) {
   if (currentBranch !== currentBranch.includes('develop')) {
     // Preflight
