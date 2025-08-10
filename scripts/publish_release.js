@@ -26,7 +26,7 @@ let currentBranch = execSync('git rev-parse --abbrev-ref HEAD')
 // Starting release
 console.log('🏁 Starting release...');
 
-if (currentBranch !== 'hermannhahn/main' && currentBranch !== 'main') {
+if (!currentBranch.includes('main')) {
   run('git checkout hermannhahn/main');
   currentBranch = 'hermannhahn/main';
 }
@@ -64,12 +64,10 @@ console.log('📤 Pushing release branch.');
 run('git push origin hermannhahn/release');
 console.log('✅ Successfully pushed release branch.');
 
-// Trigger release workflow
-console.log('✅ Succefully triggered release workflow.');
-
 // Checkout to develop branch
 console.log('🔁 Checking out to develop branch...');
 execSync('git checkout hermannhahn/develop');
 
-// end
+// Trigger release workflow
+console.log('✅ Succefully triggered release workflow.');
 process.exit(0);
