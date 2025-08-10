@@ -10,8 +10,8 @@ import { execSync } from 'child_process';
 
 function run(command) {
   try {
-    console.log(`> ${command}`);
-    execSync(command, { stdio: 'inherit' });
+    // console.log(`> ${command}`);
+    execSync(command, { encoding: 'utf8' });
   } catch (error) {
     console.error(`🛑 Error running ${command}: \n⚠️`, error.message);
     process.exit(1);
@@ -66,7 +66,7 @@ console.log('✅ Successfully pushed release branch.');
 
 // Checkout to develop branch
 console.log('🔁 Checking out to develop branch...');
-execSync('git checkout hermannhahn/develop');
+run('git checkout hermannhahn/develop');
 
 // Trigger release workflow
 console.log('✅ Succefully triggered release workflow.');
