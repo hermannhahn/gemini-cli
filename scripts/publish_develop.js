@@ -13,7 +13,7 @@ const commandArg = process.argv[2];
 function run(command) {
   try {
     // console.log(`> ${command}`);
-    execSync(command, { encoding: 'utf8' });
+    execSync(command, { stdio: 'inherit' });
   } catch (error) {
     console.error(`🛑 Error running ${command}: \n⚠️`, error.message);
     process.exit(1);
@@ -42,24 +42,32 @@ if (
 ) {
   // Starting publishing into development branch
   console.log(`📦 Current branch: ${currentBranch}`);
-  console.log(`🛠️ Current branch type: ${currentBranchType}`);
+  console.log(`🛠️  Current branch type: ${currentBranchType}`);
   console.log(`📝 Current commit type: ${currentCommitType}`);
 
   // If is new version
   if (commandArg && commandArg !== 'skip-test') {
     // Bump version
-    console.log('🔢 Bumping version...');
-    run(`node scripts/version.js ${commandArg}`);
-    console.log('✅ Successfully bumped version.');
-    // Clean
-    console.log('🗑️ Cleaning up...');
-    run('rm -rf node_modules package-lock.json');
-    console.log('✅ Successfully cleaned up.');
-    // Install
-    console.log('📥 Installing packages...');
-    run('npm install');
-    console.log('✅ Successfully installed packages.');
+    if (commandArg !== 'test') {
+      console.log('🔢 Bumping version...');
+      run(`node scripts/version.js ${commandArg}`);
+      console.log('✅ Successfully bumped version.');
+      // Clean
+      console.log('🗑️ Cleaning up...');
+      run('rm -rf node_modules package-lock.json');
+      console.log('✅ Successfully cleaned up.');
+    }
   }
+
+  // Install
+  console.log('📥 Installing packages...');
+  run('npm install');
+  console.log('✅ Successfully installed packages.');
+
+  // Build package
+  console.log('🛠️  Building packages...');
+  run('npm run build');
+  console.log('✅ Successfully built packages.');
 
   // Preflight
   if (commandArg !== 'skip-test') {
@@ -68,26 +76,21 @@ if (
     console.log('✅ Preflight checks successfully completed.');
   }
 
+  // npm global uninstall
+  console.log('🗑️ Uninstalling previous global package...');
+  run('npm uninstall -g @hahnd/geminid');
+  console.log('✅ Successfully uninstalled previous global package.');
+
+  // npm install
+  console.log('📥 Installing global package...');
+  run('npm install -g .');
+  console.log('✅ Successfully installed global package.');
+
   // Test
   if (commandArg === 'test') {
-    // Build package
-    console.log('🛠️ Building packages...');
-    run('npm run build');
-    console.log('✅ Successfully built packages.');
-
-    // npm global uninstall
-    console.log('🗑️ Uninstalling previous global package...');
-    run('npm uninstall -g @hahnd/geminid');
-    console.log('✅ Successfully uninstalled previous global package.');
-
-    // npm install
-    console.log('📥 Installing global package...');
-    run('npm install -g .');
-    console.log('✅ Successfully installed global package.');
-
     // Test
     console.log('🧪 Running test...');
-    run('geminid Test 1 2 3...');
+    run('geminid -p "Test 1 2 3..."');
     process.exit(0);
   }
 

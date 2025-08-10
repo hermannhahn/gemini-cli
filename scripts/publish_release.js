@@ -11,7 +11,7 @@ import { execSync } from 'child_process';
 function run(command) {
   try {
     // console.log(`> ${command}`);
-    execSync(command, { encoding: 'utf8' });
+    execSync(command, { stdio: 'inherit' });
   } catch (error) {
     console.error(`🛑 Error running ${command}: \n⚠️`, error.message);
     process.exit(1);
