@@ -31,9 +31,13 @@ jobs:
         with:
           ref: ${{ github.sha }}
 
-      - name: Get package version
-        id: get_version
-        run: echo "PACKAGE_VERSION=$(jq -r .version package.json)" >> $GITHUB_OUTPUT
+      - name: Get the version
+        id: version
+        run: |
+          VERSION_JSON=$(node scripts/get-release-version.js)
+          echo "RELEASE_TAG=$(echo $VERSION_JSON | jq -r .releaseTag)" >> $GITHUB_OUTPUT
+          echo "RELEASE_VERSION=$(echo $VERSION_JSON | jq -r .releaseVersion)" >> $GITHUB_OUTPUT
+          echo "NPM_TAG=$(echo $VERSION_JSON | jq -r .npmTag)" >> $GITHUB_OUTPUT
 
       - name: Dispatch Nightly Release Workflow
         uses: peter-evans/repository-dispatch@v2
@@ -41,4 +45,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.repository }}
           event-type: run-nightly-release
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "${{ steps.get_version.outputs.PACKAGE_VERSION }}", "create_nightly_release": true }'
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "${{ steps.version.outputs.RELEASE_VERSION }}", "create_nightly_release": true }'
