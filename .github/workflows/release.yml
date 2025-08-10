@@ -101,6 +101,8 @@ jobs:
           node-version: '20'
           registry-url: 'https://wombat-dressing-room.appspot.com'
           scope: '@hahnd'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Publish @hahnd/gemini-cli-core
         run: npm publish --workspace=@hahnd/gemini-cli-core --tag=${{ steps.version.outputs.NPM_TAG }}
