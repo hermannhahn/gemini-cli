@@ -52,8 +52,10 @@ jobs:
           registry-url: 'https://registry.npmjs.org/'
           scope: '@hahnd'
 
-      - name: Install Dependencies
-        run: npm ci
+      - name: Clean and Install Dependencies
+        run: |
+          rm -rf node_modules package-lock.json
+          npm install
 
       - name: Get the version
         id: version
