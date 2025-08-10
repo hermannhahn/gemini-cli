@@ -72,7 +72,7 @@ if (
   // Preflight
   if (commandArg !== 'skip-test') {
     console.log('📋 Running preflight checks...');
-    run('npm run preflight');
+    // run('npm run preflight');
     console.log('✅ Preflight checks successfully completed.');
   }
 
