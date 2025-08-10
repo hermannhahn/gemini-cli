@@ -1,24 +1,37 @@
-# Gemini Dev CLI
+# 🧠 Geminid
+
+The Gemini CLI for Developers
 
 [![Gemini CLI CI](https://github.com/hermannhahn/gemini-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/hermannhahn/gemini-cli/actions/workflows/ci.yml) ![Gemini CLI Screenshot](./docs/assets/gemini-screenshot.png)
 
-This repository contains the **Gemini Dev CLI**, a public fork of the [official Gemini CLI](https://github.com/google-gemini/gemini-cli). Our goal is to extend and customize the tool for specific development workflows, while maintaining compatibility for future updates from the original project.
+This repository contains the **Geminid**, a public fork of the [official Gemini CLI](https://github.com/google-gemini/gemini-cli). Our goal is to extend and customize the tool for specific development workflows, while maintaining compatibility for future updates from the original project.
 
-## Custom Features
+Perfect for: Developers, researchers, content creators, and anyone who wants a well-configured Gemini CLI setup with powerful automation capabilities.
 
-This personal fork of the Gemini CLI includes the following custom features:
+## 📑 Context Files
 
-- **Narrator:** Provides audio feedback for the CLI, with modes for AI thinking, responses or off (default).
-- **Long-Term Memory (LTM):** A tool for permanent context, instructions and informations storage, allowing the AI to keep context across sessions.
-- **Short-Term Memory (STM):** Manages structured memories in a JSON file, providing session-specific context and enhancing interaction continuity.
-- **Upstream Updates:** Regularly synchronized with the official Gemini CLI to incorporate the latest features and improvements.
+- Create `GEMINI.md` files or make a simple request to permanently save instructions in Gemini's context file.
 
-### Quickstart
+## 🦾 Custom Features
 
-**Project Status**: All preflight checks passed, ensuring a stable and ready-to-use development environment.
+✨ Geminid includes the following custom features:
 
-1.  **Prerequisites:** Ensure you have [Node.js version 20](https://nodejs.org/en/download) or higher installed.
-2.  **Run the CLI:** Execute the following command in your terminal to install and use the Gemini Dev CLI:
+- 🗣️ **Narrator** Provides audio feedback to the CLI, with modes for AI thinking, responses, or off (default).
+- 🗃️ **Short-Term Memory (STM)** Request Gemini to remember things, then ask Gemini to recall them later.
+- 📡 **Upstream Updates** Regularly synchronized with the official Gemini CLI to incorporate the latest features and improvements.
+
+## 📌 Next Steps
+
+✨ What I'm working on:
+
+🎙️ Voice activated - Just say "hey gemini" to talk or send your request
+📅 Natural Language Scheduling - Say "daily at 9am" to schedule recurring tasks
+🏃 Background processing - Run long tasks in AFk mode while you do other work
+
+## 🖥️ Quickstart
+
+**Prerequisites** Ensure you have [Node.js version 20](https://nodejs.org/en/download) or higher installed.
+**Run the CLI** Execute the following command in your terminal to install and use the Geminid:
 
     ```bash
     npm install -g @hahnd/geminid
@@ -30,253 +43,63 @@ This personal fork of the Gemini CLI includes the following custom features:
     geminid
     ```
 
-3.  **Pick a color theme**
-4.  **Authenticate:** When prompted, sign in with your personal Google account. This will grant you up to 60 model requests per minute and 1,000 model requests per day using Gemini.
-
-You are now ready to use the Gemini Dev CLI!
-
-#### Use a Gemini API key:
-
-The Gemini API provides a free tier with [100 requests per day](https://ai.google.dev/gemini-api/docs/rate-limits#free-tier) using Gemini 2.5 Pro, control over which model you use, and access to higher rate limits (with a paid plan):
-
-1.  Generate a key from [Google AI Studio](https://aistudio.google.com/apikey).
-2.  Set it as an environment variable in your terminal. Replace `YOUR_API_KEY` with your generated key.
+    Or just prompt for a request:
 
     ```bash
-    export GEMINI_API_KEY="YOUR_API_KEY"
+    geminid "What's the weather like in London?"
     ```
 
-3.  (Optional) Upgrade your Gemini API project to a paid plan on the API key page (will automatically unlock [Tier 1 rate limits](https://ai.google.dev/gemini-api/docs/rate-limits#tier-1))
+🔑 **Authenticate** When prompted, sign in with your personal Google account. This will grant you up to 60 model requests per minute and 1,000 model requests per day using Gemini.
 
-#### Use a Vertex AI API key:
+You're ready to use the Geminid!
 
-The Vertex AI API provides a [free tier](https://cloud.google.com/vertex-ai/generative-ai/docs/start/express-mode/overview) using express mode for Gemini 2.5 Pro, control over which model you use, and access to higher rate limits with a billing account:
+### 🗝️ Environment Variables
 
-1.  Generate a key from [Google Cloud](https://cloud.google.com/vertex-ai/generative-ai/docs/start/api-keys).
-2.  Set it as an environment variable in your terminal. Replace `YOUR_API_KEY` with your generated key and set GOOGLE_GENAI_USE_VERTEXAI to true
+- `GEMINI_API_KEY="YOUR_API_KEY"`: Your Gemini API key. (optional)
+- `MICROSOFT_TTS_KEY`: Your Microsoft Text-to-Speech API key. (optional)
+- `MICROSOFT_TTS_REGION`: The Azure region for your TTS service (e.g., `eastus`). (optional)
+- `MICROSOFT_TTS_VOICE`: The specific voice to use for responses (e.g., `en-US-JennyNeural`). (optional)
+- `MICROSOFT_TTS_THINKING`: The specific voice to use for AI thinking narration (e.g., `en-US-JennyNeural`). (optional)
 
-    ```bash
-    export GOOGLE_API_KEY="YOUR_API_KEY"
-    export GOOGLE_GENAI_USE_VERTEXAI=true
-    ```
-
-3.  (Optional) Add a billing account to your project to get access to [higher usage limits](https://cloud.google.com/vertex-ai/generative-ai/docs/quotas)
-
-For other authentication methods, including Google Workspace accounts, see the [authentication](./docs/cli/authentication.md) guide.
-
-### Examples
-
-Once the CLI is running, you can start interacting with Gemini from your shell.
-
-You can start from any directory:
-
-```sh
-cd new-project/
-geminid
-> Write me a Gemini Discord bot that answers questions using a FAQ.md file I will provide
-```
-
-### Next steps
-
-- Explore the available **[CLI Commands](./docs/cli/commands.md)**.
-- If you encounter any issues, review the **[troubleshooting guide](./docs/troubleshooting.md)**.
-- For more comprehensive documentation, see the [full documentation](./docs/index.md).
-- Take a look at some [popular tasks](#popular-tasks) for more inspiration.
-- For project development overview and details, consult the [DEVELOPMENT.md](./DEVELOPMENT.md).
-
-### Troubleshooting
-
-Head over to the [troubleshooting guide](docs/troubleshooting.md) if you're having issues.
-
-### Popular tasks
-
-#### Explore a new codebase
-
-Start by entering an existing or newly cloned repository and running `geminid`.
-
-```text
-> Describe the main pieces of this system's architecture.
-```
-
-```text
-> What security mechanisms are in place?
-```
-
-#### Work with your existing code
-
-```text
-> Implement a first draft for GitHub issue #123.
-```
-
-```text
-> Help me migrate this codebase to the latest version of Java. Start with a plan.
-```
-
-#### Automate your workflows
-
-Use MCP servers to integrate your local system tools with your enterprise collaboration suite.
-
-```text
-> Make me a slide deck showing the git history from the last 7 days, grouped by feature and team member.
-```
-
-```text
-> Make a full-screen web app for a wall display to show our most interacted-with GitHub issues.
-```
-
-#### Interact with your system
-
-```text
-> Convert all the images in this directory to png, and rename them to use dates from the exif data.
-```
-
-```text
-> Organize my PDF invoices by month of expenditure.
-```
-
-### Uninstall
-
-Head over to the [Uninstall](docs/Uninstall.md) guide for uninstallation instructions.
-
-## Terms of Service and Privacy Notice
-
-For details on the terms of service and privacy notice applicable to your use of Gemini CLI, see the [Terms of Service and Privacy Notice](./docs/tos-privacy.md).
-
----
-
-## Versão em Português
-
-Este repositório contém o **Gemini Dev CLI**, um fork pessoal do [Gemini CLI oficial](https://github.com/google-gemini/gemini-cli). Nosso objetivo é estender e personalizar a ferramenta para fluxos de trabalho de desenvolvimento específicos, mantendo a compatibilidade para futuras atualizações do projeto original.
-
-O Gemini CLI é uma ferramenta de fluxo de trabalho de IA de linha de comando que se conecta às suas ferramentas, entende seu código e acelera seus fluxos de trabalho. Com ele, você pode:
-
-- Query and edit large codebases in and beyond Gemini's 1M token context window.
-- Generate new apps from PDFs or sketches, using Gemini's multimodal capabilities.
-- Automate operational tasks, like querying pull requests or handling complex rebases.
-- Use tools and MCP servers to connect new capabilities, including [media generation with Imagen,
-  Veo or Lyria](https://github.com/GoogleCloudPlatform/vertex-ai-creative-studio/tree/main/experiments/mcp-genmedia)
-- Ground your queries with the [Google Search](https://ai.google.dev/gemini-api/docs/grounding)
-  tool, built into Gemini.
-
-## Quickstart
-
-You have two options to install Gemini CLI.
-
-### Início Rápido
-
-1.  **Pré-requisitos:** Certifique-se de ter o [Node.js versão 20](https://nodejs.org/en/download) ou superior instalado.
-2.  **Executar o CLI:** Execute o seguinte comando em seu terminal para instalar e usar o Gemini Dev CLI:
-
-    ```bash
-    npm install -g @hahnd/gemini-dev
-    ```
-
-    Em seguida, execute o CLI de qualquer lugar:
-
-```bash
-npm install -g @google/gemini-cli
-```
-
-```bash
-npm install -g @google/gemini-cli
-```
-
-Then, run the CLI from anywhere:
-
-```bash
-gemini
-```
-
-### With Homebrew
-
-1. **Prerequisites:** Ensure you have [Homebrew](https://brew.sh/) installed.
-2. **Install the CLI** Execute the following command in your terminal:
-
-```bash
-brew install gemini-cli
-```
-
-#### System Requirements
-
-- Node.js version 20 or higher
-- macOS, Linux, or Windows
-
-## 📋 Key Features
-
-With Gemini CLI you can:
-
-- **Code Understanding & Generation**
-  - Query and edit large codebases
-  - Generate new apps from PDFs, images, or sketches using multimodal capabilities
-  - Debug issues and troubleshoot with natural language
-- **Automation & Integration**
-  - Automate operational tasks like querying pull requests or handling complex rebases
-  - Use MCP servers to connect new capabilities, including [media generation with Imagen, Veo or Lyria](https://github.com/GoogleCloudPlatform/vertex-ai-creative-studio/tree/main/experiments/mcp-genmedia)
-  - Run non-interactively in scripts for workflow automation
-- **Advanced Capabilities**
-  - Ground your queries with built-in [Google Search](https://ai.google.dev/gemini-api/docs/grounding) for real-time information
-  - Conversation checkpointing to save and resume complex sessions
-  - Custom context files (GEMINI.md) to tailor behavior for your projects
-
-- **🔗 GitHub Integration**
-  - Use the Gemini CLI GitHub Action for automated PR reviews
-  - Automated issue triage and on-demand AI assistance directly in your repositories
-  - Seamless integration with your GitHub workflows
-
-## 🔐 Authentication Options
-
-Choose the authentication method that best fits your needs:
-
-### Option 1: OAuth login (Using your Google Account)
-
-**✨ Best for:** Individual developers as well as anyone who has a Gemini Code Assist License. (see [quota limits and terms of service](https://cloud.google.com/gemini/docs/quotas) for details)
-
-**Benefits:**
-
-- **Free tier**: 60 requests/min and 1,000 requests/day
-- **Gemini 2.5 Pro** with 1M token context window
-- **No API key management** - just sign in with your Google account
-- **Automatic updates** to latest models
-
-#### Start Gemini CLI, then choose OAuth and follow the browser authentication flow when prompted
-
-```bash
-gemini
-```
-
-### Common Configuration steps
-
-3. **Pick a color theme**
-4. **Authenticate:** When prompted, sign in with your personal Google account. This will grant you up to 60 model requests per minute and 1,000 model requests per day using Gemini.
-
-You're ready to use the Gemini Dev CLI!
-
-### Narrator Configuration and Usage:
+## 🛠️ Narrator Configuration and Usage
 
 The Narrator feature provides audio feedback for the Gemini CLI. You can configure its behavior using environment variables and control it with CLI commands or flags.
 
-**Environment Variables:**
+1.  Generate a key in [Azure Text-to-Speech](https://learn.microsoft.com/en-us/azure/cognitive-services/speech-service/get-started-speech-key).
+2.  Set it as an environment variable in your terminal. Replace `YOUR_API_KEY` and `MICROSOFT_TTS_REGION` with your generated key and API region.
 
-- `MICROSOFT_TTS_KEY`: Your Microsoft Text-to-Speech API key.
-- `MICROSOFT_TTS_REGION`: The Azure region for your TTS service (e.g., `eastus`).
-- `MICROSOFT_TTS_VOICE`: The specific voice to use for responses (e.g., `pt-BR-AntonioNeural`).
-- `MICROSOFT_TTS_THINKING`: The specific voice to use for AI thinking narration (e.g., `en-US-JennyNeural`).
+    ```bash
+    export MICROSOFT_TTS_KEY="YOUR_API_KEY"
+    export MICROSOFT_TTS_REGION="eastus"
+    export MICROSOFT_TTS_VOICE="en-US-JennyNeural"
+    export MICROSOFT_TTS_THINKING="en-US-JennyNeural"
+    ```
 
-**Commands:**
+3.  (Optional) Add to your `.bashrc` or `.zshrc` for persistence:
+
+    ```bash
+    echo 'export MICROSOFT_TTS_KEY="YOUR_API_KEY"' >> ~/.bashrc
+    echo 'export MICROSOFT_TTS_REGION="eastus"' >> ~/.bashrc
+    echo 'export MICROSOFT_TTS_VOICE="en-US-JennyNeural"' >> ~/.bashrc
+    echo 'export MICROSOFT_TTS_THINKING="en-US-JennyNeural"' >> ~/.bashrc
+    source ~/.bashrc
+    ```
+
+### ⚙️ Narrator Modes
 
 You can switch between Narrator modes using the `/narrator` command:
 
-- `/narrator off`: Disables audio narration.
-- `/narrator thinking`: Narrates AI model actions (tool calls, thoughts) as they occur.
-- `/narrator response`: Narrates a summary, observation, or important warning about the AI model's response.
+- 🔇 `/narrator off`: Disables audio narration.
+- 💭 `/narrator thinking`: Narrates AI model actions (tool calls, thoughts) as they occur.
+- 🗣️ `/narrator response`: Narrates a summary, observation, or important warning about the AI model's response.
 
-**Initialization Flag:**
+### 🏳️ Initialization Flag
 
 You can set the initial Narrator mode when starting the CLI using the `--narrator` flag:
 
-- `--narrator [off|thinking|response]`: Sets the initial narrator mode. For example, `--narrator thinking` will start the CLI with AI thoughts narrated.
+- `geminid --narrator [off|thinking|response]`: Sets the initial narrator mode. For example, `geminid --narrator thinking` will start the CLI with AI thoughts narrated.
 
-#### Use a Gemini API Key:
+## 🔑 Use a Gemini API Key
 
 The Gemini API offers a free tier with [100 requests per day](https://ai.google.dev/gemini-api/docs/rate-limits#free-tier) using Gemini 2.5 Pro, control over which model you use, and access to higher rate limits (with a paid plan):
 
@@ -287,9 +110,16 @@ The Gemini API offers a free tier with [100 requests per day](https://ai.google.
     export GEMINI_API_KEY="YOUR_API_KEY"
     ```
 
-3.  (Optional) Upgrade your Gemini API project to a paid plan on the API key page (will automatically unlock [Tier 1 rate limits](https://ai.google.dev/gemini-api/docs/rate-limits#tier-1))
+3.  (Optional) Add to your `.bashrc` or `.zshrc` for persistence:
 
-#### Use a Vertex AI API Key:
+    ```bash
+    echo 'export GEMINI_API_KEY="YOUR_API_KEY"' >> ~/.bashrc
+    source ~/.bashrc
+    ```
+
+4.  (Optional) Upgrade your Gemini API project to a paid plan on the API key page (will automatically unlock [Tier 1 rate limits](https://ai.google.dev/gemini-api/docs/rate-limits#tier-1))
+
+### 🔑 Use a Vertex AI API Key
 
 The Vertex AI API offers a [free tier](https://cloud.google.com/vertex-ai/generative-ai/docs/start/express-mode/overview) using express mode for Gemini 2.5 Pro, control over which model you use, and access to higher rate limits with a billing account:
 
@@ -305,7 +135,7 @@ The Vertex AI API offers a [free tier](https://cloud.google.com/vertex-ai/genera
 
 For other authentication methods, including Google Workspace accounts, refer to the [authentication guide](./docs/cli/authentication.md).
 
-### Examples
+## 💻 CLI Usage and Examples
 
 Once the CLI is running, you can start interacting with Gemini from your shell.
 
@@ -326,21 +156,9 @@ geminid
 > Give me a summary of all of the changes that went in yesterday
 ```
 
-### Next Steps
+### 🌟 Popular Tasks
 
-- Explore the **[CLI Commands](./docs/cli/commands.md)** available.
-- If you encounter any issues, review the **[troubleshooting guide](./docs/troubleshooting.md)**.
-- For more comprehensive documentation, refer to the [full documentation](./docs/index.md).
-- Take a look at some [popular tasks](#popular-tasks) for more inspiration.
-- For details on the development workflow and contribution, refer to the [WORKFLOW.md](./WORKFLOW.md).
-
-### Troubleshooting
-
-Refer to the [troubleshooting guide](docs/troubleshooting.md) if you are having issues.
-
-### Popular Tasks
-
-#### Explore a new codebase
+#### ⌨️ Explore a new codebase
 
 Start by entering an existing or newly cloned repository and running `geminid`.
 
@@ -380,7 +198,7 @@ Start by entering an existing or newly cloned repository and running `geminid`.
 > Which tools, libraries, and dependencies are used in this project?
 ```
 
-#### Work with your existing code
+#### ⌨️ Work with your existing code
 
 ```text
 > Implement a first draft for GitHub issue #123.
@@ -390,7 +208,7 @@ Start by entering an existing or newly cloned repository and running `geminid`.
 > Help me migrate this codebase to the latest Java version. Start with a plan.
 ```
 
-#### Automate your workflows
+#### ⌨️ Automate your workflows
 
 Use MCP servers to integrate your local system tools with your enterprise collaboration suite.
 
@@ -402,7 +220,7 @@ Use MCP servers to integrate your local system tools with your enterprise collab
 > Create a full-screen web app for a wall display to show our most interacted GitHub issues.
 ```
 
-#### Interact with your system
+#### ⌨️ Interact with your system
 
 ```text
 > Convert all images in this directory to png and rename them to use exif data dates.
@@ -412,10 +230,14 @@ Use MCP servers to integrate your local system tools with your enterprise collab
 > Organize my PDF invoices by expense month.
 ```
 
-### Uninstall
+## ⛔ Uninstall
 
-Refer to the [Uninstall guide](docs/Uninstall.md) for uninstallation instructions.
+To uninstall the Geminid CLI:
 
-## Terms of Service and Privacy Notice
+```bash
+npm uninstall -g @hahnd/geminid
+```
+
+## 📝 Terms of Service and Privacy Notice
 
 For details on the terms of service and privacy notice applicable to your use of the Gemini CLI, refer to the [Terms of Service and Privacy Notice](./docs/tos-privacy.md).

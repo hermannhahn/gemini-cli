@@ -1,6 +1,6 @@
 ## Detailed Workflow
 
-This document outlines the development and release workflow for the **Gemini Dev CLI**, a personal fork of the official Gemini CLI. This workflow is optimized for personal development, ensuring organization, clarity, and the ability to integrate updates from the original project while enabling automated releases.
+This document outlines the development and release workflow for the **Geminid**, a personal fork of the official Gemini CLI. This workflow is optimized for personal development, ensuring organization, clarity, and the ability to integrate updates from the original project while enabling automated releases.
 
 ### Initial Setup (once)
 

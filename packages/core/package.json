@@ -1,6 +1,6 @@
 {
   "name": "@hahnd/gemini-cli-core",
-  "description": "Core package for Gemini Dev CLI Core (@hahnd/geminid).",
+  "description": "Core package for Geminid Core (@hahnd/geminid).",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hermannhahn/gemini-cli.git"

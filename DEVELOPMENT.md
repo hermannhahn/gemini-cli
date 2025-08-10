@@ -1,6 +1,6 @@
-# Gemini Dev CLI
+# Geminid
 
-This document provides essential context and instructions for the team assisting in the development of the **Gemini Dev CLI**. This project is a personal fork of the official Gemini CLI. This project was created by Hermann Hahn and is focused on custom modifications and improvements while maintaining compatibility for upstream updates.
+This document provides essential context and instructions for the team assisting in the development of the **Geminid**. This project is a personal fork of the official Gemini CLI. This project was created by Hermann Hahn and is focused on custom modifications and improvements while maintaining compatibility for upstream updates.
 
 ## Git Repository
 
