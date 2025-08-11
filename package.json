@@ -14,7 +14,7 @@
     "url": "git+https://github.com/hermannhahn/gemini-cli.git"
   },
   "config": {
-    "sandboxImageUri": "us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox:0.1.15"
+    "sandboxImageUri": "us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox:0.1.33"
   },
   "scripts": {
     "start": "node scripts/start.js --narrator response",
@@ -48,7 +48,7 @@
     "release:version": "node scripts/version.js",
     "release:update-versions": "node scripts/update_package_versions.js",
     "telemetry": "node scripts/telemetry.js",
-    "version": "node scripts/version.js",
+    "update:version": "node scripts/version.js",
     "clean": "node scripts/clean.js",
     "publish:develop": "node scripts/publish_develop.js",
     "publish:release": "node scripts/publish_release.js",
@@ -95,5 +95,8 @@
   "overrides": {
     "@types/minimatch": "^5.1.2"
   },
-  "version": "0.1.32"
+  "version": "0.1.33",
+  "license": "MIT",
+  "author": "Hermann Hahn",
+  "homepage": "https://github.com/hermannhahn/gemini-cli"
 }
