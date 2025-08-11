@@ -91,9 +91,12 @@ jobs:
           npm run build:packages
           npm run prepare:package
 
-      - name: Update @hahnd/gemini-cli-core version
+      
+
+      - name: Update @hahnd/gemini-cli-core package.json version
         run: |
-          npm version ${{ steps.version.outputs.RELEASE_VERSION }} --workspace=@hahnd/gemini-cli-core --no-git-tag-version
+          PACKAGE_JSON_PATH="packages/core/package.json"
+          jq --arg version "${{ steps.version.outputs.RELEASE_VERSION }}" '.version = $version' $PACKAGE_JSON_PATH > "$PACKAGE_JSON_PATH.tmp" && mv "$PACKAGE_JSON_PATH.tmp" $PACKAGE_JSON_PATH
 
       - name: Publish @hahnd/gemini-cli-core
         run: npm publish --workspace=@hahnd/gemini-cli-core --tag=${{ steps.version.outputs.NPM_TAG }}
@@ -104,10 +107,13 @@ jobs:
         if: steps.vars.outputs.is_dry_run == 'false'
         run: npm install @hahnd/gemini-cli-core@${{ steps.version.outputs.RELEASE_TAG }} --workspace=@hahnd/geminid --save-exact
 
-      - name: Update @hahnd/geminid version
+      
+
+      - name: Update @hahnd/geminid package.json version
         if: steps.vars.outputs.is_dry_run == 'false'
         run: |
-          npm version ${{ steps.version.outputs.RELEASE_VERSION }} --workspace=@hahnd/geminid --no-git-tag-version
+          PACKAGE_JSON_PATH="packages/cli/package.json"
+          jq --arg version "${{ steps.version.outputs.RELEASE_VERSION }}" '.version = $version' $PACKAGE_JSON_PATH > "$PACKAGE_JSON_PATH.tmp" && mv "$PACKAGE_JSON_PATH.tmp" $PACKAGE_JSON_PATH
 
       - name: Publish @hahnd/geminid
         run: npm publish --workspace=@hahnd/geminid --tag=${{ steps.version.outputs.NPM_TAG }}
