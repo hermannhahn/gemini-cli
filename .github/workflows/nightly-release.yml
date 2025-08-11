@@ -26,7 +26,7 @@ on:
         type: boolean
         default: false
 
-run-name: Nightly Release v${{ github.event.client_payload.version }} (${{ github.event.inputs.ref }})
+run-name: Nightly Release v${{ github.event.client_payload.version }}
 
 jobs:
   release:
