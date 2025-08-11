@@ -25,7 +25,7 @@ function writeJson(filePath, data) {
 
 // 1. Get the version type from the command line arguments.
 const versionType = process.argv[2];
-if (!versionType) {
+if (!versionType || versionType === undefined) {
   console.error('Error: No version type specified.');
   console.error('Usage: npm run version <patch|minor|major|prerelease>');
   process.exit(1);
@@ -75,7 +75,7 @@ if (cliPackageJson.config?.sandboxImageUri) {
   writeJson(cliPackageJsonPath, cliPackageJson);
 }
 
-// 6. Run `npm install` to update package-lock.json.
+// 7. Run `npm install` to update package-lock.json.
 run('npm install');
 run('npm run build');
 
