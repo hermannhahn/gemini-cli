@@ -4,7 +4,7 @@ name: Gemini CLI CI
 
 on:
   push:
-    branches: [hermannhahn/release, hermannhahn/nightly]
+    branches: [hermannhahn/release]
 
 jobs:
   lint:
