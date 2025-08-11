@@ -92,16 +92,16 @@ jobs:
           npm run prepare:package
 
       - name: Publish @hahnd/gemini-cli-core
-        run: npm publish --workspace=@hahnd/gemini-cli-core@${{ steps.version.outputs.RELEASE_VERSION }} --tag=${{ steps.version.outputs.NPM_TAG }}
+        run: npm publish --workspace=@hahnd/gemini-cli-core@${{ steps.version.outputs.RELEASE_TAG }} --tag=${{ steps.version.outputs.NPM_TAG }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Install latest core package
         if: steps.vars.outputs.is_dry_run == 'false'
-        run: npm install @hahnd/gemini-cli-core@${{ steps.version.outputs.RELEASE_VERSION }} --workspace=@hahnd/geminid --save-exact
+        run: npm install @hahnd/gemini-cli-core@${{ steps.version.outputs.RELEASE_TAG }} --workspace=@hahnd/geminid --save-exact
 
       - name: Publish @hahnd/geminid
-        run: npm publish --workspace=@hahnd/geminid@${{ steps.version.outputs.RELEASE_VERSION }} --tag=${{ steps.version.outputs.NPM_TAG }}
+        run: npm publish --workspace=@hahnd/geminid@${{ steps.version.outputs.RELEASE_TAG }} --tag=${{ steps.version.outputs.NPM_TAG }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
