@@ -111,7 +111,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release create ${{ steps.version.outputs.RELEASE_TAG }} \
-            bundle/gemini.js \
-            --target "$RELEASE_BRANCH" \
+            bundle/geminid.js \
+            --target ${{ github.sha }} \
             --title "Nightly Release ${{ steps.version.outputs.RELEASE_TAG }}" \
             --generate-notes
