@@ -3,23 +3,8 @@ name: Nightly Release
 on:
   repository_dispatch:
     types: [run-nightly-release]
-
-  workflow_dispatch: # Keep for manual triggering
+  workflow_dispatch:
     inputs:
-      version:
-        description: 'The version to release (e.g., v0.1.11). Required for manual patch releases.'
-        required: false # Not required for scheduled runs
-        type: string
-      ref:
-        description: 'The branch or ref (full git sha) to release from.'
-        required: true
-        type: string
-        default: 'main'
-      create_nightly_release:
-        description: 'Auto apply the nightly release tag, input version is ignored.'
-        required: false
-        type: boolean
-        default: false
       force_skip_tests:
         description: 'Select to skip the "Run Tests" step in testing. Prod releases should run tests'
         required: false
@@ -41,6 +26,8 @@ jobs:
       id-token: write
     outputs:
       RELEASE_TAG: ${{ steps.version.outputs.RELEASE_TAG }}
+      RELEASE_VERSION: ${{ steps.version.outputs.RELEASE_VERSION }}
+      NPM_TAG: ${{ steps.version.outputs.NPM_TAG }}
 
     steps:
       - name: Checkout code
@@ -48,12 +35,6 @@ jobs:
         with:
           ref: ${{ github.sha }} # Checkout a specific commit
           fetch-depth: 0 # Required for notes generation
-
-      - name: Set nightly
-        id: vars
-        run: |
-          is_nightly="true"
-          echo "is_nightly=${is_nightly}" >> $GITHUB_OUTPUT
 
       - name: Setup Node.js and npm
         uses: actions/setup-node@v4

@@ -5,6 +5,12 @@ on:
     # Runs every day at midnight UTC for the nightly release.
     - cron: '0 0 * * *'
   workflow_dispatch:
+    inputs:
+      force_skip_tests:
+        description: 'Select to skip the "Run Tests" step in testing. Prod releases should run tests'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   dispatch_release:
@@ -29,4 +35,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.repository }}
           event-type: run-nightly-release
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "${{ steps.version.outputs.RELEASE_VERSION }}", "create_nightly_release": true }'
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "${{ steps.version.outputs.RELEASE_VERSION }}", "force_skip_tests": "${{ github.event.inputs.force_skip_tests }}" }'
