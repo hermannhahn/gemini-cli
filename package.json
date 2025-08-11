@@ -5,7 +5,6 @@
     "node": ">=20.0.0"
   },
   "type": "module",
-  "main": "bundle/geminid.js",
   "workspaces": [
     "packages/*"
   ],
