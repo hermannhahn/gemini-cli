@@ -47,4 +47,17 @@ This file lists tasks and their progress.
     - **Attempt Status**: Completed
     - **Result**: Preflight checks passed after markdownlint configuration update.
 
+## Error: `release.yml` fails on GitHub Actions due to ignored files
+
+**General Status:** Resolved
+
+**Main Objective:** Ensure the `release.yml` workflow successfully commits `package-lock.json` and build artifacts.
+
+### Resolution Attempts:
+
+- **Resolution Attempt 1:**
+  - **Action Plan:** Modified `.github/workflows/release.yml` to use `git add -f packages/**/dist` to force the addition of `dist` directories, which were being ignored by `.gitignore`.
+  - **Attempt Status:** Completed
+  - **Result:** The `release.yml` workflow should now successfully commit `package-lock.json` and build artifacts.
+
 ## Completed Tasks
