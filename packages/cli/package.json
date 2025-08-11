@@ -22,7 +22,7 @@
     "bundle"
   ],
   "config": {
-    "sandboxImageUri": "us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox:0.1.15"
+    "sandboxImageUri": "us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox:0.1.41"
   },
   "dependencies": {
     "@hahnd/gemini-cli-core": "file:../core",
