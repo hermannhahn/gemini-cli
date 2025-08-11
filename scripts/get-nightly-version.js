@@ -30,7 +30,7 @@ export function getNightlyTagName() {
 
   let releaseTag = `v${version}-nightly.${date}.${sha}`;
 
-  const releaseVersion = releaseTag.substring(1);
+  const releaseVersion = `${version}-nightly-${date}-${sha}`;
   let npmTag = 'nightly';
   if (releaseVersion.includes('-')) {
     npmTag = releaseVersion.split('-')[1].split('.')[0];
