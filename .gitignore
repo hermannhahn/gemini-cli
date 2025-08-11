@@ -8,6 +8,9 @@
 
 # Note: .gemini-clipboard/ is NOT in gitignore so Gemini can access pasted images
 
+# branch notes
+TODO.md
+
 # Dependency directory
 node_modules
 bower_components
