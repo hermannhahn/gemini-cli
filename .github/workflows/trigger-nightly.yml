@@ -6,6 +6,7 @@ on:
     - cron: '0 0 * * *'
   push:
     branches: [hermannhahn/nightly]
+  workflow_dispatch:
 
 jobs:
   wait_for_ci:
