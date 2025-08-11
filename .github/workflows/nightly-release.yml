@@ -86,44 +86,51 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Build and Prepare Packages
-        run: |
-          npm run build:packages
-          npm run prepare:package
-
       - name: Update @hahnd/gemini-cli-core package.json version
         run: |
           PACKAGE_JSON_PATH="packages/core/package.json"
           echo 'Updating version in $PACKAGE_JSON_PATH to ${{ steps.version.outputs.RELEASE_VERSION }}'
           jq ".version=\"${{ steps.version.outputs.RELEASE_VERSION }}\"" $PACKAGE_JSON_PATH > tmp.$$.json && mv tmp.$$.json $PACKAGE_JSON_PATH
 
-      - name: Publish @hahnd/gemini-cli-core
-        if: steps.vars.outputs.is_dry_run == 'false'
-        run: npm publish --workspace=@hahnd/gemini-cli-core --tag=${{ steps.version.outputs.NPM_TAG }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Update @hahnd/geminid package.json version
+      - name: Update @hahnd/geminid cli package.json version
         run: |
           PACKAGE_JSON_PATH="packages/cli/package.json"
           echo 'Updating version in $PACKAGE_JSON_PATH to ${{ steps.version.outputs.RELEASE_VERSION }}'
           jq ".version=\"${{ steps.version.outputs.RELEASE_VERSION }}\"" $PACKAGE_JSON_PATH > tmp.$.json && mv tmp.$.json $PACKAGE_JSON_PATH
 
-      - name: Install @hahnd/geminid dependencies
-        if: steps.vars.outputs.is_dry_run == 'false'
-        run: npm install --workspace=@hahnd/geminid
+      - name: Update @hahnd/geminid package.json version
+        run: |
+          PACKAGE_JSON_PATH="package.json"
+          echo 'Updating version in $PACKAGE_JSON_PATH to ${{ steps.version.outputs.RELEASE_VERSION }}'
+          jq ".version=\"${{ steps.version.outputs.RELEASE_VERSION }}\"" $PACKAGE_JSON_PATH > tmp.$.json && mv tmp.$.json $PACKAGE_JSON_PATH
+
+      - name: Build and Prepare Packages
+        run: |
+          npm run build:packages
+          npm run prepare:package
+
+      - name: Publish @hahnd/gemini-cli-core
+        run: |
+          echo "Attempting to publish @hahnd/gemini-cli-core with version ${{ steps.version.outputs.RELEASE_VERSION }} and tag ${{ steps.version.outputs.NPM_TAG }}"
+          npm publish --workspace=@hahnd/gemini-cli-core --tag=${{ steps.version.outputs.NPM_TAG }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Install latest core package
+        run: npm install @hahnd/gemini-cli-core@${{ steps.version.outputs.RELEASE_VERSION }} --workspace=@hahnd/geminid --save-exact
 
       - name: Publish @hahnd/geminid
-        if: steps.vars.outputs.is_dry_run == 'false'
-        run: npm publish --workspace=@hahnd/geminid --tag=${{ steps.version.outputs.NPM_TAG }}
+        run: |
+          echo "Attempting to publish @hahnd/geminid with version ${{ steps.version.outputs.RELEASE_VERSION }} and tag ${{ steps.version.outputs.NPM_TAG }}"
+          npm publish --workspace=@hahnd/geminid --tag=${{ steps.version.outputs.NPM_TAG }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create GitHub Release and Tag
-        if: ${{ steps.vars.outputs.is_dry_run == 'false' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          echo "Attempting to create GitHub Release and Tag with version ${{ steps.version.outputs.RELEASE_TAG }}"
           gh release create ${{ steps.version.outputs.RELEASE_TAG }} \
             bundle/geminid.js \
             --target ${{ github.sha }} \
