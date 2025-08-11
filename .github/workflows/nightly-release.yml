@@ -86,30 +86,22 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Nightly release branch
-        id: release_branch
-        run: |
-          BRANCH_NAME="hermannhahn/nightly"
-          git checkout -b "$BRANCH_NAME"/${{ steps.version.outputs.RELEASE_VERSION }}
-          git push origin "$BRANCH_NAME"/${{ steps.version.outputs.RELEASE_VERSION }}
-          echo "BRANCH_NAME=${BRANCH_NAME}" >> $GITHUB_OUTPUT
-
       - name: Build and Prepare Packages
         run: |
           npm run build:packages
           npm run prepare:package
 
       - name: Publish @hahnd/gemini-cli-core
-        run: npm publish --workspace=@hahnd/gemini-cli-core --tag=${{ steps.version.outputs.NPM_TAG }}
+        run: npm publish --workspace=@hahnd/gemini-cli-core@${{ steps.version.outputs.RELEASE_TAG }} --tag=${{ steps.version.outputs.NPM_TAG }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Install latest core package
         if: steps.vars.outputs.is_dry_run == 'false'
-        run: npm install @hahnd/gemini-cli-core@${{ steps.version.outputs.RELEASE_VERSION }} --workspace=@hahnd/geminid --save-exact
+        run: npm install @hahnd/gemini-cli-core@${{ steps.version.outputs.RELEASE_TAG }} --workspace=@hahnd/geminid --save-exact
 
       - name: Publish @hahnd/geminid
-        run: npm publish --workspace=@hahnd/geminid --tag=${{ steps.version.outputs.NPM_TAG }}
+        run: npm publish --workspace=@hahnd/geminid@${{ steps.version.outputs.RELEASE_TAG }} --tag=${{ steps.version.outputs.NPM_TAG }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -117,7 +109,6 @@ jobs:
         if: ${{ steps.vars.outputs.is_dry_run == 'false' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_BRANCH: ${{ steps.release_branch.outputs.BRANCH_NAME }}
         run: |
           gh release create ${{ steps.version.outputs.RELEASE_TAG }} \
             bundle/gemini.js \
