@@ -7,6 +7,9 @@
   },
   "type": "module",
   "main": "dist/index.js",
+  "bin": {
+    "gemini": "dist/index.js"
+  },
   "scripts": {
     "build": "node ../../scripts/build_package.js",
     "start": "node dist/index.js",
@@ -18,8 +21,7 @@
     "typecheck": "tsc --noEmit"
   },
   "files": [
-    "dist",
-    "bundle"
+    "dist"
   ],
   "config": {
     "sandboxImageUri": "us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox:0.1.19"
@@ -79,5 +81,5 @@
   "engines": {
     "node": ">=20"
   },
-  "version": "0.1.34"
+  "version": "0.1.35"
 }

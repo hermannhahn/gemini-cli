@@ -8,6 +8,7 @@
   "workspaces": [
     "packages/*"
   ],
+  "private": "true",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hermannhahn/gemini-cli.git"
@@ -99,7 +100,7 @@
   "dependencies": {
     "node-fetch": "^3.3.2"
   },
-  "version": "0.1.34",
+  "version": "0.1.35",
   "license": "MIT",
   "author": "Hermann Hahn",
   "homepage": "https://github.com/hermannhahn/gemini-cli"
