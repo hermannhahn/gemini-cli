@@ -3,18 +3,8 @@ name: 'Release'
 on:
   repository_dispatch:
     types: [run-release]
-
-  workflow_dispatch: # Keep for manual triggering
+  workflow_dispatch:
     inputs:
-      version:
-        description: 'The version to release (e.g., v0.1.11). Required for manual patch releases.'
-        required: false # Not required for scheduled runs
-        type: string
-      ref:
-        description: 'The branch or ref (full git sha) to release from.'
-        required: true
-        type: string
-        default: 'main'
       force_skip_tests:
         description: 'Select to skip the "Run Tests" step in testing. Prod releases should run tests'
         required: false
