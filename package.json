@@ -95,5 +95,5 @@
   "overrides": {
     "@types/minimatch": "^5.1.2"
   },
-  "version": "0.1.32"
+  "version": "0.1.33"
 }
