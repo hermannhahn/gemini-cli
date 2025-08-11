@@ -7,23 +7,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  wait_for_ci:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Wait for GitHub Actions CI
-        uses: convictional/trigger-workflow-and-wait@v1.3.0
-        with:
-          workflow_file_name: 'ci.yml'
-          owner: ${{ github.repository_owner }}
-          repo: ${{ github.event.repository.name }}
-          ref: hermannhahn/main
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          propagate_failure: true
-
   dispatch_release:
     runs-on: ubuntu-latest
-    needs: [wait_for_ci]
-    if: ${{ always() && needs.wait_for_ci.result == 'success' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
