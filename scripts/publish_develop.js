@@ -112,7 +112,7 @@ if (
   console.log('✒️ Committing changes...');
   run('git add .');
   run(
-    `git commit --allow-empty -m "${currentBranchType}(${currentCommitType}): ${currentCommitInfo} - Release v${version} (${GIT_COMMIT_INFO})"`,
+    `git commit --allow-empty -m "${currentBranchType}(${currentCommitType}): Release v${version} - ${GIT_COMMIT_INFO}"`,
   );
   console.log('✅ Successfully committed changes.');
 
@@ -123,7 +123,7 @@ if (
   // Merge into development branch
   console.log('🔀 Merging into development branch...');
   run(
-    `git merge ${currentBranch} --no-ff -m "${currentBranchType}(${currentCommitType}): ${currentCommitInfo} - Release v${version} (${GIT_COMMIT_INFO})"`,
+    `git merge ${currentBranch} --no-ff -m "${currentBranchType}(${currentCommitType}): Release v${version} - ${GIT_COMMIT_INFO}"`,
   );
   console.log('✅ Successfully merged into development branch.');
 
@@ -140,7 +140,7 @@ if (
   // Create Pull Request
   console.log('📝 Creating Pull Request...');
   run(
-    `gh pr create --repo hermannhahn/gemini-cli --base hermannhahn/main --head hermannhahn/develop --title "${currentBranchType}(${currentCommitType}): Release v${version} ${GIT_COMMIT_INFO}" --body "Automated PR for develop branch: ${currentCommitInfo}"`,
+    `gh pr create --repo hermannhahn/gemini-cli --base hermannhahn/main --head hermannhahn/develop --title "${currentBranchType}(${currentCommitType}): Release v${version} - ${GIT_COMMIT_INFO}" --body "Automated PR for develop branch: ${currentCommitInfo}"`,
   );
   console.log('✅ Pull Request created successfully.');
   console.log(
