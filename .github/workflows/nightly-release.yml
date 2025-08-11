@@ -32,7 +32,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     environment:
-      name: production-release
+      name: ${{ github.ref_name }}
       url: ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ steps.version.outputs.RELEASE_TAG }}
     if: github.repository == 'hermannhahn/gemini-cli'
     permissions:
