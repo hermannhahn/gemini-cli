@@ -21,3 +21,23 @@
         -   Adicionar um passo para atualizar a versão no `package.json` dos pacotes (`@hahnd/gemini-cli-core` e `@hahnd/geminid`) com a versão nightly gerada, antes da publicação.
   - **Attempt Status**: Completed
   - **Result**: As alterações foram aplicadas no `nightly-release.yml`. O fluxo de publicação agora deve gerar a versão nightly, atualizar o `package.json` dos pacotes com essa versão e, em seguida, publicar corretamente no NPM.
+
+### Falha Intermitente no Teste useCompletion.test.ts
+
+**General Status**: Intermittent
+
+**Main Objective**: Investigar e resolver a falha intermitente no teste `src/ui/hooks/useCompletion.test.ts > useCompletion > File Path Completion (` @`) > Basic Completion > should use glob for top-level @ completions when available`.
+
+**Resolution Attempts**:
+
+- **Attempt 1**:
+  - **Action Plan**:
+    1.  Analisar o `TODO.md` para histórico do erro (nenhum encontrado).
+    2.  Analisar o código do teste `useCompletion.test.ts` e da função `useCompletion.ts`.
+    3.  Identificar que o teste espera 2 sugestões, mas recebe 0.
+    4.  Suspeitar de problemas na criação de arquivos de teste, lógica de `glob` ou temporização.
+    5.  Adicionar `console.log`s em `findFilesWithGlob` para depuração.
+    6.  Recompilar o projeto.
+    7.  Rodar o teste novamente.
+  - **Attempt Status**: Awaiting User
+  - **Result**: O teste passou após a adição dos `console.log`s e também após a remoção e recompilação. O erro não é reproduzível consistentemente.

@@ -8,7 +8,7 @@
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "gemini": "dist/index.js"
+    "geminid": "dist/index.js"
   },
   "scripts": {
     "build": "node ../../scripts/build_package.js",
@@ -81,5 +81,5 @@
   "engines": {
     "node": ">=20"
   },
-  "version": "0.1.35"
+  "version": "0.1.36"
 }

@@ -100,7 +100,7 @@
   "dependencies": {
     "node-fetch": "^3.3.2"
   },
-  "version": "0.1.35",
+  "version": "0.1.36",
   "license": "MIT",
   "author": "Hermann Hahn",
   "homepage": "https://github.com/hermannhahn/gemini-cli"
