@@ -42,7 +42,7 @@ export const useSlashCommandProcessor = (
   addItem: UseHistoryManagerReturn['addItem'],
   clearItems: UseHistoryManagerReturn['clearItems'],
   loadHistory: UseHistoryManagerReturn['loadHistory'],
-  refreshStatic: () => void,
+  refreshConfig: () => void,
   onDebugMessage: (message: string) => void,
   openThemeDialog: () => void,
   openAuthDialog: () => void,
@@ -200,7 +200,6 @@ export const useSlashCommandProcessor = (
       toggleVimEnabled,
       sessionShellAllowlist,
       setGeminiMdFileCount,
-      refreshConfig,
       setNarratorMode,
     ],
   );

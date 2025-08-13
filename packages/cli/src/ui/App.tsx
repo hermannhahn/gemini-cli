@@ -517,7 +517,7 @@ const App = ({
     addItem,
     clearItems,
     loadHistory,
-    refreshStatic,
+    refreshConfig,
     setDebugMessage,
     openThemeDialog,
     openAuthDialog,
@@ -571,7 +571,7 @@ const App = ({
     modelSwitchedFromQuotaError,
     narratorMode,
     setModelSwitchedFromQuotaError,
-    refreshStatic,
+    refreshConfig,
     handleUserCancel,
   );
 

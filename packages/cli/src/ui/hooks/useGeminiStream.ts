@@ -573,7 +573,7 @@ Use '[AUDIO] 🗣️' at the end of your response to speech your next actions, c
               // Remove the audio marker from the text before playing TTS
               thoughtText = thoughtText.replace(/\s*🗣️/g, '');
               if (thoughtText.trim().length > 0) {
-                void generateAndPlayTts(thoughtText, {
+                void generateAndPlayTts(thoughtText, 'thinking', {
                   language: 'en-US',
                   voiceName: 'en-US-JennyNeural',
                 });
@@ -757,7 +757,6 @@ Use '[AUDIO] 🗣️' at the end of your response to speech your next actions, c
       startNewPrompt,
       getPromptCount,
       handleLoopDetectedEvent,
-      setModelSwitchedFromQuotaError,
     ],
   );
 

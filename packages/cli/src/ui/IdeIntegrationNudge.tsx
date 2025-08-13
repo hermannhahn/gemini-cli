@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DetectedIde, getIdeInfo } from '@google/gemini-cli-core';
+import { DetectedIde, getIdeInfo } from '@hahnd/gemini-cli-core';
 import { Box, Text, useInput } from 'ink';
 import {
   RadioButtonSelect,

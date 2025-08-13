@@ -83,7 +83,7 @@ if (!argv.s) {
   execSync('npm run build --workspaces', { stdio: 'inherit' });
 }
 
-console.log('packing @google/gemini-cli ...');
+console.log('packing @hahnd/geminid ...');
 const cliPackageDir = join('packages', 'cli');
 rmSync(join(cliPackageDir, 'dist', 'google-gemini-cli-*.tgz'), { force: true });
 execSync(`npm pack -w @hahnd/geminid --pack-destination ./packages/cli/dist`, {
