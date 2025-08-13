@@ -137,7 +137,6 @@ const App = ({
     registerCleanup(() => config.getIdeClient().disconnect());
   }, [config]);
   const shouldShowIdePrompt =
-    config.getIdeModeFeature() &&
     currentIDE &&
     !config.getIdeMode() &&
     !settings.merged.hasSeenIdeIntegrationNudge &&
