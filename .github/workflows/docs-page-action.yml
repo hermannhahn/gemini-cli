@@ -1,8 +1,8 @@
 name: 'Deploy GitHub Pages'
 
 on:
-  push:
-    tags: 'v*'
+  repository_dispatch:
+    types: [run-docs-build]
   workflow_dispatch:
 
 permissions:

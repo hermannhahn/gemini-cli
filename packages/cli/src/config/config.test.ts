@@ -1253,7 +1253,7 @@ describe('loadCliConfig model selection', () => {
       argv,
     );
 
-    expect(config.getModel()).toBe('gemini-9001-ultra');
+    expect(config.getModel()).toBe('gemini-2.5-flash');
   });
 
   it('uses the default gemini model if nothing is set', async () => {
@@ -1268,7 +1268,7 @@ describe('loadCliConfig model selection', () => {
       argv,
     );
 
-    expect(config.getModel()).toBe('gemini-2.5-pro');
+    expect(config.getModel()).toBe('gemini-2.5-flash');
   });
 
   it('always prefers model from argvs', async () => {

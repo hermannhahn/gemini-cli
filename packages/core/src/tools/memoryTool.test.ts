@@ -232,7 +232,7 @@ ${INSTRUCTION_SECTION_HEADER}
     });
 
     it('should have correct name, displayName, description, and schema', () => {
-      expect(memoryTool.name).toBe('save_instruction');
+      expect(memoryTool.name).toBe('save_memory');
       expect(memoryTool.displayName).toBe('Save Instruction');
       expect(memoryTool.description).toContain(
         'Saves a permanent, immutable instruction for long-term memory.',
@@ -242,7 +242,7 @@ ${INSTRUCTION_SECTION_HEADER}
       expect(memoryTool.schema.parametersJsonSchema).toStrictEqual({
         type: 'object',
         properties: {
-          fact: {
+          instruction: {
             type: 'string',
             description:
               'The specific instruction to remember. Should be a clear, self-contained statement.',

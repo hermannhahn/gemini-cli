@@ -21,7 +21,7 @@ import { tildeifyPath } from '../utils/paths.js';
 import { ModifiableDeclarativeTool, ModifyContext } from './modifiable-tool.js';
 
 const memoryToolSchemaData: FunctionDeclaration = {
-  name: 'save_instruction',
+  name: 'save_memory',
   description:
     'Saves a permanent, immutable instruction for long-term memory. Use for general, lasting guidelines that shape behavior across all future sessions. Not for temporary or project-specific details; use STM for those.',
   parametersJsonSchema: {
@@ -30,7 +30,7 @@ const memoryToolSchemaData: FunctionDeclaration = {
       instruction: {
         type: 'string',
         description:
-          'The specific instruction or information to remember. Should be a clear, self-contained statement.',
+          'The specific instruction to remember. Should be a clear, self-contained statement.',
       },
     },
     required: ['instruction'],

@@ -199,9 +199,7 @@ describe('getInstallationInfo', () => {
     const info = getInstallationInfo(projectRoot, false);
     expect(info.packageManager).toBe(PackageManager.YARN);
     expect(info.isGlobal).toBe(true);
-    expect(info.updateCommand).toBe(
-      'yarn global add @hahnd/geminid@latest',
-    );
+    expect(info.updateCommand).toBe('yarn global add @hahnd/geminid@latest');
     expect(info.updateMessage).toContain('Attempting to automatically update');
 
     const infoDisabled = getInstallationInfo(projectRoot, true);

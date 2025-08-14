@@ -193,7 +193,7 @@ describe('useAtCompletion', () => {
       // Spy on the search method to introduce an artificial delay
       const originalSearch = FileSearch.prototype.search;
       vi.spyOn(FileSearch.prototype, 'search').mockImplementation(
-        async function (...args) {
+        async function (this: FileSearch, ...args) {
           await new Promise((resolve) => setTimeout(resolve, 300));
           return originalSearch.apply(this, args);
         },
@@ -241,13 +241,22 @@ describe('useAtCompletion', () => {
       testRootDir = await createTmpDir(structure);
 
       const abortSpy = vi.spyOn(AbortController.prototype, 'abort');
+      const originalSearch = FileSearch.prototype.search;
       const searchSpy = vi
         .spyOn(FileSearch.prototype, 'search')
-        .mockImplementation(async (...args) => {
-          const delay = args[0] === 'a' ? 500 : 50;
-          await new Promise((resolve) => setTimeout(resolve, delay));
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          return [args[0] as any];
+        .mockImplementation(async function (
+          this: FileSearch,
+          pattern: string,
+          options?: { signal?: AbortSignal },
+        ) {
+          // Simulate a slow search for 'a' and a fast search for 'b'
+          if (pattern === 'a') {
+            await new Promise((resolve) => setTimeout(resolve, 300));
+          } else if (pattern === 'b') {
+            await new Promise((resolve) => setTimeout(resolve, 50));
+          }
+          // Call the original search method
+          return originalSearch.apply(this, [pattern, options]);
         });
 
       const { result, rerender } = renderHook(
@@ -272,7 +281,9 @@ describe('useAtCompletion', () => {
       // Wait for the final result, which should be from the second, faster search.
       await waitFor(
         () => {
-          expect(result.current.suggestions.map((s) => s.value)).toEqual(['b']);
+          expect(result.current.suggestions.map((s) => s.value)).toEqual([
+            'b.txt',
+          ]);
         },
         { timeout: 1000 },
       );

@@ -237,13 +237,10 @@ describe('handleAutoUpdate', () => {
 
     handleAutoUpdate(mockUpdateInfo, mockSettings, '/root', mockSpawn);
 
-    expect(mockSpawn).toHaveBeenCalledWith(
-      'npm i -g @hahnd/geminid@nightly',
-      {
-        shell: true,
-        stdio: 'pipe',
-      },
-    );
+    expect(mockSpawn).toHaveBeenCalledWith('npm i -g @hahnd/geminid@nightly', {
+      shell: true,
+      stdio: 'pipe',
+    });
   });
 
   it('should emit "update-success" when the update process succeeds', async () => {
