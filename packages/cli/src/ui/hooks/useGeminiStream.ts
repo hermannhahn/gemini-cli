@@ -323,7 +323,7 @@ export const useGeminiStream = (
         if (narratorMode === 'response') {
           localQueryToSendToGemini = `${localQueryToSendToGemini}
 
-Use '[AUDIO] 🗣️' at the end of your response to speech your next actions, comments, warnings, alarms, joke, have fun, express a thought, or anything that helps illustrate your thoughts.`;
+Use '[AUDIO] 🗣️' at the end of the text to speech your response.`;
         }
       } else {
         // It's a function response (PartListUnion that isn't a string)
@@ -570,11 +570,9 @@ Use '[AUDIO] 🗣️' at the end of your response to speech your next actions, c
           case ServerGeminiEventType.Thought:
             setThought(event.value);
             if (narratorMode === 'thinking' && event.value) {
-              let thoughtText = event.value.subject
+              const thoughtText = event.value.subject
                 ? `${event.value.subject}. ${event.value.description}`
                 : event.value.description;
-              // Remove the audio marker from the text before playing TTS
-              thoughtText = thoughtText.replace(/\s*🗣️/g, '');
               if (thoughtText.trim().length > 0) {
                 void generateAndPlayTts(thoughtText, 'thinking', {
                   language: 'en-US',
@@ -629,7 +627,11 @@ Use '[AUDIO] 🗣️' at the end of your response to speech your next actions, c
       }
       if (narratorMode === 'response' && geminiMessageBuffer) {
         // Remove the audio marker from the text before playing TTS
-        const textToPlay = geminiMessageBuffer.replace(/\s*🗣️/g, '');
+        let textToPlay = geminiMessageBuffer.replace(/\s*🗣️/g, '');
+        // Remove markdown
+        textToPlay = textToPlay.replace(/```[^`]*```/gs, ''); // Remove code blocks
+        textToPlay = textToPlay.replace(/\[.*?\]\(.*?\)/g, ''); // Remove markdown links
+        textToPlay = textToPlay.replace(/[*_~`]/g, ''); // Remove markdown formatting
         if (textToPlay.trim().length > 0) {
           await generateAndPlayTts(textToPlay, 'response');
         }
