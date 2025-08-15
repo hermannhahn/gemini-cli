@@ -1,4 +1,4 @@
-# Memory Import Processor
+# Context Import Processor
 
 The Memory Import Processor is a feature that allows you to modularize your GEMINI.md files by importing content from other files using the `@file.md` syntax.
 
@@ -110,12 +110,12 @@ The import processor uses the `marked` library to detect code blocks and inline 
 
 ## Import Tree Structure
 
-The processor returns an import tree that shows the hierarchy of imported files, similar to Claude's `/memory` feature. This helps users debug problems with their GEMINI.md files by showing which files were read and their import relationships.
+The processor returns an import tree that shows the hierarchy of imported files, similar to Claude's `/instruction` feature. This helps users debug problems with their GEMINI.md files by showing which files were read and their import relationships.
 
 Example tree structure:
 
 ```
-Memory Files
+Context Files
  L project: GEMINI.md
             L a.md
               L b.md
@@ -128,9 +128,9 @@ Memory Files
 
 The tree preserves the order that files were imported and shows the complete import chain for debugging purposes.
 
-## Comparison to Claude Code's `/memory` (`claude.md`) Approach
+## Comparison to Claude Code's `/instruction` (`claude.md`) Approach
 
-Claude Code's `/memory` feature (as seen in `claude.md`) produces a flat, linear document by concatenating all included files, always marking file boundaries with clear comments and path names. It does not explicitly present the import hierarchy, but the LLM receives all file contents and paths, which is sufficient for reconstructing the hierarchy if needed.
+Claude Code's `/instruction` feature (as seen in `claude.md`) produces a flat, linear document by concatenating all included files, always marking file boundaries with clear comments and path names. It does not explicitly present the import hierarchy, but the LLM receives all file contents and paths, which is sufficient for reconstructing the hierarchy if needed.
 
 Note: The import tree is mainly for clarity during development and has limited relevance to LLM consumption.
 

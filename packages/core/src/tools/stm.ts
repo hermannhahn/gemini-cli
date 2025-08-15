@@ -27,9 +27,9 @@ export interface StmEntry {
 }
 
 /**
- * Adds a new entry to the Short-Term Memory (STM) file.
+ * Adds a new entry to the Memory file.
  */
-export class AddStmTool extends DeclarativeTool<
+export class AddMemoryTool extends DeclarativeTool<
   { content: string },
   ToolResult
 > {
@@ -88,8 +88,8 @@ export class AddStmTool extends DeclarativeTool<
     stmEntries.push(newEntry);
 
     writeFileSync(stmFilePath, JSON.stringify(stmEntries, null, 2), 'utf-8');
-    let returnDisplay = `memory entry added: id='${newEntry.id}'`;
-    let llmContent = `memory entry added: id='${newEntry.id}'`;
+    let returnDisplay = `Memory entry added: id='${newEntry.id}'`;
+    let llmContent = `Memory entry added: id='${newEntry.id}'`;
     if (process.env.STM_SHOW_STATUS !== 'TRUE') {
       returnDisplay = '';
       llmContent = ''; // Adicionado para suprimir a saída do modelo
@@ -102,9 +102,9 @@ export class AddStmTool extends DeclarativeTool<
 }
 
 /**
- * Searches for entries in the Short-Term Memory (STM) file.
+ * Searches for entries in the Memory file.
  */
-export class SearchStmTool extends DeclarativeTool<
+export class SearchMemoryTool extends DeclarativeTool<
   { query?: string; id?: string; date?: string },
   ToolResult
 > {
@@ -235,8 +235,8 @@ export class SearchStmTool extends DeclarativeTool<
 
     if (results.length === 0) {
       llmContent =
-        'No matching memories entries found. The search returns occurrences containing all query words, case-insensitive. Consider trying broader terms or alternative queries to locate the memory.';
-      returnDisplay = 'No matching memories entries found.';
+        'No matching memory entries found. The search returns occurrences containing all query words, case-insensitive. Consider trying broader terms or alternative queries to locate the memory.';
+      returnDisplay = 'No matching memory entries found.';
     } else {
       llmContent = jsonResult;
       returnDisplay = jsonResult;
@@ -254,9 +254,12 @@ export class SearchStmTool extends DeclarativeTool<
 }
 
 /**
- * Deletes an entry from the Short-Term Memory (STM) file by ID.
+ * Deletes an entry from the Memory file by ID.
  */
-export class DeleteStmTool extends DeclarativeTool<{ id: string }, ToolResult> {
+export class DeleteMemoryTool extends DeclarativeTool<
+  { id: string },
+  ToolResult
+> {
   constructor() {
     super(
       'delete_memory',
@@ -324,9 +327,9 @@ export class DeleteStmTool extends DeclarativeTool<{ id: string }, ToolResult> {
 }
 
 /**
- * Clears entries from the Short-Term Memory (STM) file older than 35 days.
+ * Clears entries from the Memory file older than 35 days.
  */
-export class ClearStmTool {
+export class ClearMemoryTool {
   async execute(): Promise<void> {
     const stmFilePath = getProjectStmFile();
 

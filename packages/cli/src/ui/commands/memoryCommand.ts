@@ -16,13 +16,13 @@ import {
 } from './types.js';
 
 export const memoryCommand: SlashCommand = {
-  name: 'memory',
-  description: 'Commands for interacting with memory.',
+  name: 'instruction',
+  description: 'Commands for interacting with context file.',
   kind: CommandKind.BUILT_IN,
   subCommands: [
     {
       name: 'show',
-      description: 'Show the current memory contents.',
+      description: 'Show the current instructions contents.',
       kind: CommandKind.BUILT_IN,
       action: async (context) => {
         const memoryContent = context.services.config?.getUserMemory() || '';
@@ -30,8 +30,8 @@ export const memoryCommand: SlashCommand = {
 
         const messageContent =
           memoryContent.length > 0
-            ? `Current memory content from ${fileCount} file(s):\n\n---\n${memoryContent}\n---`
-            : 'Memory is currently empty.';
+            ? `Current instructions content from ${fileCount} file(s):\n\n---\n${memoryContent}\n---`
+            : 'No instructions found.';
 
         context.ui.addItem(
           {
@@ -44,21 +44,21 @@ export const memoryCommand: SlashCommand = {
     },
     {
       name: 'add',
-      description: 'Add content to the memory.',
+      description: 'Add instruction to the context file.',
       kind: CommandKind.BUILT_IN,
       action: (context, args): SlashCommandActionReturn | void => {
         if (!args || args.trim() === '') {
           return {
             type: 'message',
             messageType: 'error',
-            content: 'Usage: /memory add <text to remember>',
+            content: 'Usage: /instruction add <text to remember>',
           };
         }
 
         context.ui.addItem(
           {
             type: MessageType.INFO,
-            text: `Attempting to save to memory: "${args.trim()}"`,
+            text: `Attempting to save instruction: "${args.trim()}"`,
           },
           Date.now(),
         );
@@ -72,13 +72,13 @@ export const memoryCommand: SlashCommand = {
     },
     {
       name: 'refresh',
-      description: 'Refresh the memory from the source.',
+      description: 'Refresh instructions from context file.',
       kind: CommandKind.BUILT_IN,
       action: async (context) => {
         context.ui.addItem(
           {
             type: MessageType.INFO,
-            text: 'Refreshing memory from source files...',
+            text: 'Refreshing instructions from context file...',
           },
           Date.now(),
         );
@@ -104,8 +104,8 @@ export const memoryCommand: SlashCommand = {
 
             const successMessage =
               memoryContent.length > 0
-                ? `Memory refreshed successfully. Loaded ${memoryContent.length} characters from ${fileCount} file(s).`
-                : 'Memory refreshed successfully. No memory content found.';
+                ? `Instructions refreshed successfully. Loaded ${memoryContent.length} characters from ${fileCount} file(s).`
+                : 'Instructions refreshed successfully. No instructions content found.';
 
             context.ui.addItem(
               {
@@ -120,7 +120,7 @@ export const memoryCommand: SlashCommand = {
           context.ui.addItem(
             {
               type: MessageType.ERROR,
-              text: `Error refreshing memory: ${errorMessage}`,
+              text: `Error refreshing instructions: ${errorMessage}`,
             },
             Date.now(),
           );

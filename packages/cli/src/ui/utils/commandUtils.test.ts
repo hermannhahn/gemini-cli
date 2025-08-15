@@ -89,7 +89,7 @@ describe('commandUtils', () => {
   describe('isSlashCommand', () => {
     it('should return true when query starts with /', () => {
       expect(isSlashCommand('/help')).toBe(true);
-      expect(isSlashCommand('/memory show')).toBe(true);
+      expect(isSlashCommand('/instruction show')).toBe(true);
       expect(isSlashCommand('/clear')).toBe(true);
       expect(isSlashCommand('/')).toBe(true);
     });

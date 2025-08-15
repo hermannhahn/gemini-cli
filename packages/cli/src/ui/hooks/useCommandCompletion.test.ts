@@ -421,7 +421,7 @@ describe('useCommandCompletion', () => {
   describe('handleAutocomplete', () => {
     it('should complete a partial command', async () => {
       setupMocks({
-        slashSuggestions: [{ label: 'memory', value: 'memory' }],
+        slashSuggestions: [{ label: 'instruction', value: 'instruction' }],
         slashCompletionRange: { completionStart: 1, completionEnd: 4 },
       });
 
@@ -447,7 +447,7 @@ describe('useCommandCompletion', () => {
         result.current.handleAutocomplete(0);
       });
 
-      expect(result.current.textBuffer.text).toBe('/memory ');
+      expect(result.current.textBuffer.text).toBe('/instruction ');
     });
 
     it('should complete a file path', async () => {

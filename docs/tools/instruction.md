@@ -1,4 +1,4 @@
-# Memory Tool (`save_instruction`)
+# Instruction Tool (`save_instruction`)
 
 This document describes the `save_instruction` tool for the Gemini CLI.
 
@@ -15,6 +15,8 @@ Use `save_instruction` to save and recall information across your Gemini CLI ses
 ## How to use `save_instruction` with the Gemini CLI
 
 The tool appends the provided `instruction` to a special `GEMINI.md` file located in the user's home directory (`~/.gemini/GEMINI.md`). This file can be configured to have a different name.
+
+From the CLI, this tool is invoked by the `/instruction add` command.
 
 Once added, the instructions are stored under a `## Gemini Added Instructions` section. This file is loaded as context in subsequent sessions, allowing the CLI to recall the saved information.
 
@@ -41,4 +43,4 @@ save_instruction(instruction="The project I'm currently working on is called 'ge
 ## Important notes
 
 - **General usage:** This tool should be used for concise, important instructions. It is not intended for storing large amounts of data or conversational history.
-- **Memory file:** The memory file is a plain text Markdown file, so you can view and edit it manually if needed.
+- **Context file:** The context file is a plain text Markdown file, so you can view and edit it manually if needed.

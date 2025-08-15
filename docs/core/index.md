@@ -5,7 +5,7 @@ Gemini CLI's core package (`packages/core`) is the backend portion of Gemini CLI
 ## Navigating this section
 
 - **[Core tools API](./tools-api.md):** Information on how tools are defined, registered, and used by the core.
-- **[Memory Import Processor](./memport.md):** Documentation for the modular GEMINI.md import feature using @file.md syntax.
+- **[Context Import Processor](./memport.md):** Documentation for the modular GEMINI.md import feature using @file.md syntax.
 
 ## Role of the core
 
@@ -46,10 +46,10 @@ If you are using the default "pro" model and the CLI detects that you are being 
 
 The file discovery service is responsible for finding files in the project that are relevant to the current context. It is used by the `@` command and other tools that need to access files.
 
-## Memory discovery service
+## Context discovery service
 
-The memory discovery service is responsible for finding and loading the `GEMINI.md` files that provide context to the model. It searches for these files in a hierarchical manner, starting from the current working directory and moving up to the project root and the user's home directory. It also searches in subdirectories.
+The context discovery service is responsible for finding and loading the `GEMINI.md` files that provide context to the model. It searches for these files in a hierarchical manner, starting from the current working directory and moving up to the project root and the user's home directory. It also searches in subdirectories.
 
 This allows you to have global, project-level, and component-level context files, which are all combined to provide the model with the most relevant information.
 
-You can use the [`/memory` command](../cli/commands.md) to `show`, `add`, and `refresh` the content of loaded `GEMINI.md` files.
+You can use the [`/instruction` command](../cli/commands.md) to `show`, `add`, and `refresh` the content of loaded `GEMINI.md` files.

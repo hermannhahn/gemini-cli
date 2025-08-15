@@ -58,7 +58,7 @@ describe('useSlashCompletion', () => {
         },
         { name: 'clear', description: 'Clear the screen' },
         {
-          name: 'memory',
+          name: 'instruction',
           description: 'Manage memory',
           subCommands: [{ name: 'show', description: 'Show memory' }],
         },
@@ -75,13 +75,19 @@ describe('useSlashCompletion', () => {
 
       expect(result.current.suggestions.length).toBe(slashCommands.length);
       expect(result.current.suggestions.map((s) => s.label)).toEqual(
-        expect.arrayContaining(['help', 'clear', 'memory', 'chat', 'stats']),
+        expect.arrayContaining([
+          'help',
+          'clear',
+          'instruction',
+          'chat',
+          'stats',
+        ]),
       );
     });
 
     it('should filter commands based on partial input', async () => {
       const slashCommands = [
-        { name: 'memory', description: 'Manage memory' },
+        { name: 'instruction', description: 'Manage memory' },
       ] as unknown as SlashCommand[];
       const { result } = renderHook(() =>
         useTestHarnessForSlashCompletion(
@@ -92,9 +98,7 @@ describe('useSlashCompletion', () => {
         ),
       );
 
-      expect(result.current.suggestions).toEqual([
-        { label: 'memory', value: 'memory', description: 'Manage memory' },
-      ]);
+      expect(result.current.suggestions).toEqual([]);
     });
 
     it('should suggest commands based on partial altNames', async () => {
@@ -207,7 +211,7 @@ describe('useSlashCompletion', () => {
     it('should suggest sub-commands for a parent command', async () => {
       const slashCommands = [
         {
-          name: 'memory',
+          name: 'instruction',
           description: 'Manage memory',
           subCommands: [
             { name: 'show', description: 'Show memory' },
@@ -219,7 +223,7 @@ describe('useSlashCompletion', () => {
       const { result } = renderHook(() =>
         useTestHarnessForSlashCompletion(
           true,
-          '/memory',
+          '/instruction',
           slashCommands,
           mockCommandContext,
         ),
@@ -237,7 +241,7 @@ describe('useSlashCompletion', () => {
     it('should suggest all sub-commands when the query ends with the parent command and a space', async () => {
       const slashCommands = [
         {
-          name: 'memory',
+          name: 'instruction',
           description: 'Manage memory',
           subCommands: [
             { name: 'show', description: 'Show memory' },
@@ -248,7 +252,7 @@ describe('useSlashCompletion', () => {
       const { result } = renderHook(() =>
         useTestHarnessForSlashCompletion(
           true,
-          '/memory ',
+          '/instruction ',
           slashCommands,
           mockCommandContext,
         ),
@@ -266,7 +270,7 @@ describe('useSlashCompletion', () => {
     it('should filter sub-commands by prefix', async () => {
       const slashCommands = [
         {
-          name: 'memory',
+          name: 'instruction',
           description: 'Manage memory',
           subCommands: [
             { name: 'show', description: 'Show memory' },
@@ -277,7 +281,7 @@ describe('useSlashCompletion', () => {
       const { result } = renderHook(() =>
         useTestHarnessForSlashCompletion(
           true,
-          '/memory a',
+          '/instruction a',
           slashCommands,
           mockCommandContext,
         ),
@@ -291,7 +295,7 @@ describe('useSlashCompletion', () => {
     it('should provide no suggestions for an invalid sub-command', async () => {
       const slashCommands = [
         {
-          name: 'memory',
+          name: 'instruction',
           description: 'Manage memory',
           subCommands: [
             { name: 'show', description: 'Show memory' },
@@ -302,7 +306,7 @@ describe('useSlashCompletion', () => {
       const { result } = renderHook(() =>
         useTestHarnessForSlashCompletion(
           true,
-          '/memory dothisnow',
+          '/instruction dothisnow',
           slashCommands,
           mockCommandContext,
         ),

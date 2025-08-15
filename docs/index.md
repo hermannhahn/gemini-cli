@@ -29,7 +29,7 @@ This documentation is organized into the following sections:
   - **[Shell Tool](./tools/shell.md):** Documentation for the `run_shell_command` tool.
   - **[Web Fetch Tool](./tools/web-fetch.md):** Documentation for the `web_fetch` tool.
   - **[Web Search Tool](./tools/web-search.md):** Documentation for the `google_web_search` tool.
-  - **[Memory Tool](./tools/memory.md):** Documentation for the `save_instruction` tool.
+  - **[Instruction Tool](./tools/instruction.md):** Documentation for the `save_instruction` tool.
 - **[Contributing & Development Guide](../CONTRIBUTING.md):** Information for contributors and developers, including setup, building, testing, and coding conventions.
 - **[NPM Workspaces and Publishing](./npm.md):** Details on how the project's packages are managed and published.
 - **[Troubleshooting Guide](./troubleshooting.md):** Find solutions to common problems and FAQs.

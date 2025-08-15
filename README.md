@@ -12,12 +12,30 @@ Perfect for: Developers, researchers, content creators, and anyone who wants a w
 
 - Create `GEMINI.md` files or make a simple request to permanently save instructions in Gemini's context file.
 
+### Managing Instructions and Context Files
+
+The Gemini CLI allows you to provide the AI with specific instructions and context through `GEMINI.md` files. These files act as a hierarchical knowledge base for the AI, influencing its responses and behavior. You can manage this instructional context using the `/instruction` command:
+
+- **`/instruction show`**: Displays the combined content of all `GEMINI.md` files currently loaded as instructional context. This is useful for verifying what information the AI is currently using.
+  ```bash
+  /instruction show
+  ```
+- **`/instruction add <text>`**: Adds a new instruction to your personal `GEMINI.md` context file. This is useful for providing the AI with persistent, user-specific guidelines or facts.
+  ```bash
+  /instruction add "Always use TypeScript for new code."
+  ```
+- **`/instruction refresh`**: Forces the CLI to re-scan and reload all `GEMINI.md` files from configured locations. Use this after you've made manual changes to your `GEMINI.md` files to ensure the AI has the latest instructions.
+  `bash
+/instruction refresh
+`
+  For more detailed information on how context files work and their hierarchical loading, refer to the [CLI Configuration documentation](./docs/cli/configuration.md#context-files-hierarchical-instructional-context).
+
 ## 🦾 Custom Features
 
 ✨ Geminid includes the following custom features:
 
 - 🗣️ **Narrator** Provides audio feedback to the CLI, with modes for AI thinking, responses, or off (default).
-- 🗃️ **Short-Term Memory (STM)** Request Gemini to remember things, then ask Gemini to recall them later.
+- 🗃️ **Memory** Request Gemini to remember things, then ask Gemini to recall them later.
 - 📡 **Upstream Updates** Regularly synchronized with the official Gemini CLI to incorporate the latest features and improvements.
 
 ## 📌 Next Steps

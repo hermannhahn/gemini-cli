@@ -6,10 +6,10 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
-  AddStmTool,
-  SearchStmTool,
-  DeleteStmTool,
-  ClearStmTool,
+  AddMemoryTool,
+  SearchMemoryTool,
+  DeleteMemoryTool,
+  ClearMemoryTool,
   StmEntry,
 } from './stm.js';
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
@@ -92,9 +92,9 @@ describe('Memory Tools', () => {
     vi.useRealTimers();
   });
 
-  describe('AddStmTool', () => {
+  describe('AddMemoryTool', () => {
     it('should add a new entry to an empty memory file', async () => {
-      const tool = new AddStmTool();
+      const tool = new AddMemoryTool();
       const content = 'test content 1';
       const result = await tool.execute(
         { content },
@@ -119,7 +119,7 @@ describe('Memory Tools', () => {
       expect(mockStmContent[0].id).toMatch(/^00000000-0000-4000-8000-/); // Check UUID format
       expect(result.llmContent).toBe(
         process.env.STM_SHOW_STATUS === 'TRUE'
-          ? `memory entry added: id='${mockStmContent[0].id}'`
+          ? `Memory entry added: id='${mockStmContent[0].id}'`
           : '',
       );
     });
@@ -136,7 +136,7 @@ describe('Memory Tools', () => {
       ];
       vi.mocked(existsSync).mockReturnValue(true);
 
-      const tool = new AddStmTool();
+      const tool = new AddMemoryTool();
       const content = 'test content 2';
       const result = await tool.execute(
         { content },
@@ -186,7 +186,7 @@ describe('Memory Tools', () => {
       );
       expect(result.llmContent).toBe(
         process.env.STM_SHOW_STATUS === 'TRUE'
-          ? `memory entry added: id='${mockStmContent[1].id}'`
+          ? `Memory entry added: id='${mockStmContent[1].id}'`
           : '',
       );
     });
@@ -198,7 +198,7 @@ describe('Memory Tools', () => {
         return true;
       });
 
-      const tool = new AddStmTool();
+      const tool = new AddMemoryTool();
       const content = 'test content 3';
       await tool.execute({ content }, new AbortController().signal);
 
@@ -209,7 +209,7 @@ describe('Memory Tools', () => {
     });
   });
 
-  describe('SearchStmTool', () => {
+  describe('SearchMemoryTool', () => {
     beforeEach(() => {
       vi.setSystemTime(new Date('2024-01-01T00:00:00.000Z'));
       mockStmContent = [
@@ -250,7 +250,7 @@ describe('Memory Tools', () => {
     });
 
     it('should return error if no query or id is provided', async () => {
-      const tool = new SearchStmTool();
+      const tool = new SearchMemoryTool();
       const result = await tool.execute({}, new AbortController().signal);
       expect(result.llmContent).toBe(
         process.env.STM_SHOW_STATUS === 'TRUE'
@@ -261,7 +261,7 @@ describe('Memory Tools', () => {
 
     it('should return no entries if memory file does not exist', async () => {
       vi.mocked(existsSync).mockReturnValue(false);
-      const tool = new SearchStmTool();
+      const tool = new SearchMemoryTool();
       const result = await tool.execute(
         { query: 'test' },
         new AbortController().signal,
@@ -272,7 +272,7 @@ describe('Memory Tools', () => {
     });
 
     it('should search by id and update viewed_at', async () => {
-      const tool = new SearchStmTool();
+      const tool = new SearchMemoryTool();
 
       vi.advanceTimersByTime(1000); // Advance time to ensure viewed_at is updated
 
@@ -295,7 +295,7 @@ describe('Memory Tools', () => {
     });
 
     it('should search by query and return top 3 relevant entries and update viewed_at', async () => {
-      const tool = new SearchStmTool();
+      const tool = new SearchMemoryTool();
 
       vi.advanceTimersByTime(1000); // Advance time to ensure viewed_at is updated
 
@@ -328,19 +328,19 @@ describe('Memory Tools', () => {
     });
 
     it('should return no matching entries found', async () => {
-      const tool = new SearchStmTool();
+      const tool = new SearchMemoryTool();
       const result = await tool.execute(
         { query: 'xyz' },
         new AbortController().signal,
       );
       expect(result.llmContent).toBe(
-        'No matching memories entries found. The search returns occurrences containing all query words, case-insensitive. Consider trying broader terms or alternative queries to locate the memory.',
+        'No matching memory entries found. The search returns occurrences containing all query words, case-insensitive. Consider trying broader terms or alternative queries to locate the memory.',
       );
     });
 
     it('should return llmContent even when memory_SHOW_STATUS is FALSE', async () => {
       process.env.STM_SHOW_STATUS = 'FALSE';
-      const tool = new SearchStmTool();
+      const tool = new SearchMemoryTool();
       const result = await tool.execute(
         { query: 'apple' },
         new AbortController().signal,
@@ -375,7 +375,7 @@ describe('Memory Tools', () => {
           viewed_at: formatDateToYYYYMMDD(new Date()),
         },
       ];
-      const tool = new SearchStmTool();
+      const tool = new SearchMemoryTool();
       const result = await tool.execute(
         { query: 'color blue' },
         new AbortController().signal,
@@ -386,7 +386,7 @@ describe('Memory Tools', () => {
     });
   });
 
-  describe('DeleteStmTool', () => {
+  describe('DeleteMemoryTool', () => {
     beforeEach(() => {
       mockStmContent = [
         {
@@ -406,7 +406,7 @@ describe('Memory Tools', () => {
     });
 
     it('should delete an existing entry by ID', async () => {
-      const tool = new DeleteStmTool();
+      const tool = new DeleteMemoryTool();
       const result = await tool.execute(
         { id: 'id-1' },
         new AbortController().signal,
@@ -439,7 +439,7 @@ describe('Memory Tools', () => {
 
     it('should return message if memory file does not exist', async () => {
       vi.mocked(existsSync).mockReturnValue(false);
-      const tool = new DeleteStmTool();
+      const tool = new DeleteMemoryTool();
       const result = await tool.execute(
         { id: 'id-1' },
         new AbortController().signal,
@@ -450,7 +450,7 @@ describe('Memory Tools', () => {
     });
 
     it('should return message if entry not found', async () => {
-      const tool = new DeleteStmTool();
+      const tool = new DeleteMemoryTool();
       const result = await tool.execute(
         { id: 'non-existent-id' },
         new AbortController().signal,
@@ -464,7 +464,7 @@ describe('Memory Tools', () => {
     });
   });
 
-  describe('ClearStmTool', () => {
+  describe('ClearMemoryTool', () => {
     beforeEach(() => {
       // Set up mockStmContent with entries of varying ages
       const now = new Date();
@@ -513,7 +513,7 @@ describe('Memory Tools', () => {
     });
 
     it('should clear entries older than 35 days based on viewed_at', async () => {
-      const tool = new ClearStmTool();
+      const tool = new ClearMemoryTool();
       await tool.execute();
 
       expect(writeFileSync).toHaveBeenCalledOnce();
@@ -527,7 +527,7 @@ describe('Memory Tools', () => {
 
     it('should do nothing if memory file does not exist', async () => {
       vi.mocked(existsSync).mockReturnValue(false);
-      const tool = new ClearStmTool();
+      const tool = new ClearMemoryTool();
       await tool.execute();
 
       expect(writeFileSync).not.toHaveBeenCalled();
@@ -552,7 +552,7 @@ describe('Memory Tools', () => {
       };
       mockStmContent = [recentEntry1, recentEntry2];
 
-      const tool = new ClearStmTool();
+      const tool = new ClearMemoryTool();
       await tool.execute();
 
       expect(writeFileSync).not.toHaveBeenCalled();

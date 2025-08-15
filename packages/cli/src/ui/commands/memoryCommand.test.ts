@@ -39,12 +39,12 @@ describe('memoryCommand', () => {
       (cmd) => cmd.name === name,
     );
     if (!subCommand) {
-      throw new Error(`/memory ${name} command not found.`);
+      throw new Error(`/instruction ${name} command not found.`);
     }
     return subCommand;
   };
 
-  describe('/memory show', () => {
+  describe('/instruction show', () => {
     let showCommand: SlashCommand;
     let mockGetUserMemory: Mock;
     let mockGetGeminiMdFileCount: Mock;
@@ -76,7 +76,7 @@ describe('memoryCommand', () => {
       expect(mockContext.ui.addItem).toHaveBeenCalledWith(
         {
           type: MessageType.INFO,
-          text: 'Memory is currently empty.',
+          text: 'No instructions found.',
         },
         expect.any(Number),
       );
@@ -95,14 +95,18 @@ describe('memoryCommand', () => {
       expect(mockContext.ui.addItem).toHaveBeenCalledWith(
         {
           type: MessageType.INFO,
-          text: `Current memory content from 1 file(s):\n\n---\n${memoryContent}\n---`,
+          text: `Current instructions content from 1 file(s):
+
+---
+${memoryContent}
+---`,
         },
         expect.any(Number),
       );
     });
   });
 
-  describe('/memory add', () => {
+  describe('/instruction add', () => {
     let addCommand: SlashCommand;
 
     beforeEach(() => {
@@ -117,7 +121,7 @@ describe('memoryCommand', () => {
       expect(result).toEqual({
         type: 'message',
         messageType: 'error',
-        content: 'Usage: /memory add <text to remember>',
+        content: 'Usage: /instruction add <text to remember>',
       });
 
       expect(mockContext.ui.addItem).not.toHaveBeenCalled();
@@ -132,7 +136,7 @@ describe('memoryCommand', () => {
       expect(mockContext.ui.addItem).toHaveBeenCalledWith(
         {
           type: MessageType.INFO,
-          text: `Attempting to save to memory: "${instruction}"`,
+          text: `Attempting to save instruction: "${instruction}"`,
         },
         expect.any(Number),
       );
@@ -145,7 +149,7 @@ describe('memoryCommand', () => {
     });
   });
 
-  describe('/memory refresh', () => {
+  describe('/instruction refresh', () => {
     let refreshCommand: SlashCommand;
     let mockSetUserMemory: Mock;
     let mockSetGeminiMdFileCount: Mock;
@@ -198,7 +202,7 @@ describe('memoryCommand', () => {
       expect(mockContext.ui.addItem).toHaveBeenCalledWith(
         {
           type: MessageType.INFO,
-          text: 'Refreshing memory from source files...',
+          text: 'Refreshing instructions from context file...',
         },
         expect.any(Number),
       );
@@ -214,7 +218,7 @@ describe('memoryCommand', () => {
       expect(mockContext.ui.addItem).toHaveBeenCalledWith(
         {
           type: MessageType.INFO,
-          text: 'Memory refreshed successfully. Loaded 18 characters from 2 file(s).',
+          text: 'Instructions refreshed successfully. Loaded 18 characters from 2 file(s).',
         },
         expect.any(Number),
       );
@@ -235,7 +239,7 @@ describe('memoryCommand', () => {
       expect(mockContext.ui.addItem).toHaveBeenCalledWith(
         {
           type: MessageType.INFO,
-          text: 'Memory refreshed successfully. No memory content found.',
+          text: 'Instructions refreshed successfully. No instructions content found.',
         },
         expect.any(Number),
       );
@@ -256,7 +260,7 @@ describe('memoryCommand', () => {
       expect(mockContext.ui.addItem).toHaveBeenCalledWith(
         {
           type: MessageType.ERROR,
-          text: `Error refreshing memory: ${error.message}`,
+          text: `Error refreshing instructions: ${error.message}`,
         },
         expect.any(Number),
       );
@@ -278,7 +282,7 @@ describe('memoryCommand', () => {
       expect(nullConfigContext.ui.addItem).toHaveBeenCalledWith(
         {
           type: MessageType.INFO,
-          text: 'Refreshing memory from source files...',
+          text: 'Refreshing instructions from context file...',
         },
         expect.any(Number),
       );
