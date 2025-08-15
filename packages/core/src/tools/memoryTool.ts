@@ -5,11 +5,12 @@
  */
 
 import {
-  BaseTool,
   ToolResult,
   ToolEditConfirmationDetails,
   ToolConfirmationOutcome,
   Icon,
+  DeclarativeTool,
+  ToolInvocation,
 } from './tools.js';
 import { FunctionDeclaration } from '@google/genai';
 import * as fs from 'fs/promises';
@@ -23,7 +24,7 @@ import { ModifiableDeclarativeTool, ModifyContext } from './modifiable-tool.js';
 const memoryToolSchemaData: FunctionDeclaration = {
   name: 'save_memory',
   description:
-    'Saves a permanent, immutable instruction for long-term memory. Use for general, lasting guidelines that shape behavior across all future sessions. Not for temporary or project-specific details; use STM for those.',
+    'Saves a permanent, immutable instruction for long-term memory. Use for general, lasting guidelines that shape behavior across all future sessions. Not for temporary or project-specific details; use memory for those.',
   parametersJsonSchema: {
     type: 'object',
     properties: {
@@ -47,7 +48,7 @@ Use this tool:
 
 Do NOT use this tool:
 
-- For temporary or project-specific details; use STM tools ('add_stm', 'search_stm', 'delete_stm') for those.
+- For temporary or project-specific details; use memory tools ('add_memory', 'search_memory', 'delete_memory') for those.
 - To store conversational context.
 - To save long, complex, or rambling texts.
 
@@ -113,11 +114,11 @@ function ensureNewlineSeparation(currentContent: string): string {
 }
 
 export class MemoryTool
-  extends BaseTool<SaveMemoryParams, ToolResult>
+  extends DeclarativeTool<SaveMemoryParams, ToolResult>
   implements ModifiableDeclarativeTool<SaveMemoryParams>
 {
   private static readonly allowlist: Set<string> = new Set();
-
+  // DeclarativeTool already has these properties, so they are not explicitly defined here.
   static readonly Name: string = memoryToolSchemaData.name!;
   constructor() {
     super(
@@ -132,6 +133,12 @@ export class MemoryTool
   getDescription(_params: SaveMemoryParams): string {
     const memoryFilePath = getGlobalMemoryFilePath();
     return `in ${tildeifyPath(memoryFilePath)}`;
+  }
+
+  build(
+    _params: SaveMemoryParams,
+  ): ToolInvocation<SaveMemoryParams, ToolResult> {
+    throw new Error('Method not implemented.');
   }
 
   /**

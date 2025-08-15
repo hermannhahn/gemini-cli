@@ -174,9 +174,9 @@ describe('ToolRegistry', () => {
 
       // Assert that the returned array is sorted by displayName
       expect(displayNames).toEqual([
-        'Add memories',
-        'Delete memories',
-        'Search for memories',
+        'Add memory',
+        'Delete memory',
+        'Search for memory',
         'Tool A',
         'Tool B',
         'Tool C',

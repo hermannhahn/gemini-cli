@@ -54,7 +54,7 @@ vi.mock('crypto', async (importOriginal) => {
   };
 });
 
-describe('STM Tools', () => {
+describe('Memory Tools', () => {
   const mockStmFilePath = '/mock/path/to/stm.json';
   let mockStmContent: StmEntry[] = [];
 
@@ -93,7 +93,7 @@ describe('STM Tools', () => {
   });
 
   describe('AddStmTool', () => {
-    it('should add a new entry to an empty STM file', async () => {
+    it('should add a new entry to an empty memory file', async () => {
       const tool = new AddStmTool();
       const content = 'test content 1';
       const result = await tool.execute(
@@ -124,7 +124,7 @@ describe('STM Tools', () => {
       );
     });
 
-    it('should add a new entry to an existing STM file', async () => {
+    it('should add a new entry to an existing memory file', async () => {
       // Set up mockStmContent with an existing entry
       mockStmContent = [
         {
@@ -254,12 +254,12 @@ describe('STM Tools', () => {
       const result = await tool.execute({}, new AbortController().signal);
       expect(result.llmContent).toBe(
         process.env.STM_SHOW_STATUS === 'TRUE'
-          ? `Invalid arguments for search_stm. Please provide either 'query', 'id', or 'date'.`
+          ? `Invalid arguments for search_memory. Please provide either 'query', 'id', or 'date'.`
           : '',
       );
     });
 
-    it('should return no entries if STM file does not exist', async () => {
+    it('should return no entries if memory file does not exist', async () => {
       vi.mocked(existsSync).mockReturnValue(false);
       const tool = new SearchStmTool();
       const result = await tool.execute(
@@ -338,7 +338,7 @@ describe('STM Tools', () => {
       );
     });
 
-    it('should return llmContent even when STM_SHOW_STATUS is FALSE', async () => {
+    it('should return llmContent even when memory_SHOW_STATUS is FALSE', async () => {
       process.env.STM_SHOW_STATUS = 'FALSE';
       const tool = new SearchStmTool();
       const result = await tool.execute(
@@ -430,14 +430,14 @@ describe('STM Tools', () => {
       );
       expect(result.llmContent).toBe(
         process.env.STM_SHOW_STATUS === 'TRUE'
-          ? 'STM entry with ID id-1 deleted successfully.'
+          ? 'Memory entry with ID id-1 deleted successfully.'
           : '',
       );
       expect(mockStmContent).toHaveLength(1);
       expect(mockStmContent[0].id).toBe('id-2');
     });
 
-    it('should return message if STM file does not exist', async () => {
+    it('should return message if memory file does not exist', async () => {
       vi.mocked(existsSync).mockReturnValue(false);
       const tool = new DeleteStmTool();
       const result = await tool.execute(
@@ -457,7 +457,7 @@ describe('STM Tools', () => {
       );
       expect(result.llmContent).toBe(
         process.env.STM_SHOW_STATUS === 'TRUE'
-          ? 'No STM entry found with ID: non-existent-id'
+          ? 'No memory entry found with ID: non-existent-id'
           : '',
       );
       expect(writeFileSync).not.toHaveBeenCalled(); // No write operation if no change
@@ -522,17 +522,17 @@ describe('STM Tools', () => {
         'recent-1',
         '30-days-ago',
       ]);
-      expect(console.log).toHaveBeenCalledWith('Cleared 2 old STM entries.');
+      expect(console.log).toHaveBeenCalledWith('Cleared 2 old memory entries.');
     });
 
-    it('should do nothing if STM file does not exist', async () => {
+    it('should do nothing if memory file does not exist', async () => {
       vi.mocked(existsSync).mockReturnValue(false);
       const tool = new ClearStmTool();
       await tool.execute();
 
       expect(writeFileSync).not.toHaveBeenCalled();
       expect(console.log).toHaveBeenCalledWith(
-        'STM file does not exist. No entries to clear.',
+        'Memory file does not exist. No entries to clear.',
       );
     });
 
@@ -558,7 +558,7 @@ describe('STM Tools', () => {
       expect(writeFileSync).not.toHaveBeenCalled();
       expect(mockStmContent).toHaveLength(2);
       expect(console.log).toHaveBeenCalledWith(
-        'No STM entries older than 35 days found to clear.',
+        'No memory entries older than 35 days found to clear.',
       );
     });
   });

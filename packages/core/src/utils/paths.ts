@@ -184,9 +184,9 @@ export function getProjectTempDir(projectRoot: string): string {
 }
 
 /**
- * Returns the absolute path to the Short-Term Memory (STM) file.
- * The STM file is located in the user's home directory, inside the .gemini directory.
- * @returns The absolute path to the STM file.
+ * Returns the absolute path to the Short-Term Memory (Memory) file.
+ * The memory file is located in the user's home directory, inside the .gemini directory.
+ * @returns The absolute path to the memory file.
  */
 export function getProjectStmFile(): string {
   return path.join(os.homedir(), GEMINI_DIR, 'stm.json');

@@ -4,11 +4,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BaseTool, Icon, ToolResult } from './tools.js';
+import { DeclarativeTool, Icon, ToolResult } from './tools.js';
 import { getProjectStmFile } from '../utils/paths.js';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
 import { Type } from '@google/genai';
+import { ToolInvocation } from './tools.js';
 import * as crypto from 'crypto';
 
 function formatDateToYYYYMMDD(date: Date): string {
@@ -28,11 +29,14 @@ export interface StmEntry {
 /**
  * Adds a new entry to the Short-Term Memory (STM) file.
  */
-export class AddStmTool extends BaseTool<{ content: string }, ToolResult> {
+export class AddStmTool extends DeclarativeTool<
+  { content: string },
+  ToolResult
+> {
   constructor() {
     super(
-      'add_stm',
-      'Add memories',
+      'add_memory',
+      'Add memory',
       'Saves memories to maintain context and enhance future interactions. Proactively record user preferences, project details, or key instructions. For optimal retrieval, use a `Key: Value` format (e.g., `User Name: John Doe`).',
       Icon.LightBulb,
       {
@@ -41,7 +45,7 @@ export class AddStmTool extends BaseTool<{ content: string }, ToolResult> {
           content: {
             type: Type.STRING,
             description:
-              'The memory content. Prefer `Key: Value` format (e.g., `User Name: Hermann Hahn`, `Project Context: Gemini CLI fork`)',
+              'The memory content. Prefer `Key: Value` format (e.g., `User Name: John Doe`, `Project Context: Gemini CLI fork`)',
           },
         },
         required: ['content'],
@@ -49,6 +53,12 @@ export class AddStmTool extends BaseTool<{ content: string }, ToolResult> {
       false, // isOutputMarkdown
       false, // canUpdateOutput
     );
+  }
+
+  build(_params: {
+    content: string;
+  }): ToolInvocation<{ content: string }, ToolResult> {
+    throw new Error('Method not implemented.');
   }
 
   async execute(
@@ -94,14 +104,14 @@ export class AddStmTool extends BaseTool<{ content: string }, ToolResult> {
 /**
  * Searches for entries in the Short-Term Memory (STM) file.
  */
-export class SearchStmTool extends BaseTool<
+export class SearchStmTool extends DeclarativeTool<
   { query?: string; id?: string; date?: string },
   ToolResult
 > {
   constructor() {
     super(
-      'search_stm',
-      'Search for memories',
+      'search_memory',
+      'Search for memory',
       'Searches memories for context. Use when understanding is uncertain. If initial query fails, try broader terms or multiple single-term queries. `query` parameter performs literal string match; it does not support boolean operators (e.g., `OR`).',
       Icon.FileSearch,
       {
@@ -127,17 +137,27 @@ export class SearchStmTool extends BaseTool<
     );
   }
 
+  build(_params: {
+    query?: string;
+    id?: string;
+    date?: string;
+  }): ToolInvocation<
+    { query?: string; id?: string; date?: string },
+    ToolResult
+  > {
+    throw new Error('Method not implemented.');
+  }
   async execute(
     args: { query?: string; id?: string; date?: string },
     _signal: AbortSignal,
   ): Promise<ToolResult> {
     if (!args.query && !args.id && !args.date) {
-      let returnDisplay = `Invalid arguments for search_stm. Please provide either 'query', 'id', or 'date'.`;
+      let returnDisplay = `Invalid arguments for search_memory. Please provide either 'query', 'id', or 'date'.`;
       if (process.env.STM_SHOW_STATUS !== 'TRUE') {
         returnDisplay = '';
       }
       return {
-        llmContent: `Invalid arguments for search_stm. Please provide either 'query', 'id', or 'date'.`,
+        llmContent: `Invalid arguments for search_memory. Please provide either 'query', 'id', or 'date'.`,
         returnDisplay,
       };
     }
@@ -236,11 +256,11 @@ export class SearchStmTool extends BaseTool<
 /**
  * Deletes an entry from the Short-Term Memory (STM) file by ID.
  */
-export class DeleteStmTool extends BaseTool<{ id: string }, ToolResult> {
+export class DeleteStmTool extends DeclarativeTool<{ id: string }, ToolResult> {
   constructor() {
     super(
-      'delete_stm',
-      'Delete memories',
+      'delete_memory',
+      'Delete memory',
       'Deletes a memory entry by its ID. Use for irrelevant/outdated entries or user-requested deletion.',
       Icon.Trash,
       {
@@ -256,6 +276,10 @@ export class DeleteStmTool extends BaseTool<{ id: string }, ToolResult> {
       false, // isOutputMarkdown
       false, // canUpdateOutput
     );
+  }
+
+  build(_params: { id: string }): ToolInvocation<{ id: string }, ToolResult> {
+    throw new Error('Method not implemented.');
   }
 
   async execute(
@@ -279,11 +303,11 @@ export class DeleteStmTool extends BaseTool<{ id: string }, ToolResult> {
     let llmContent: string;
     let returnDisplay: string;
     if (stmEntries.length === initialLength) {
-      llmContent = `No STM entry found with ID: ${args.id}`;
-      returnDisplay = `No STM entry found with ID: ${args.id}`;
+      llmContent = `No memory entry found with ID: ${args.id}`;
+      returnDisplay = `No memory entry found with ID: ${args.id}`;
     } else {
-      llmContent = `STM entry with ID ${args.id} deleted successfully.`;
-      returnDisplay = `STM entry with ID ${args.id} deleted successfully.`;
+      llmContent = `Memory entry with ID ${args.id} deleted successfully.`;
+      returnDisplay = `Memory entry with ID ${args.id} deleted successfully.`;
       writeFileSync(stmFilePath, JSON.stringify(stmEntries, null, 2), 'utf-8');
     }
 
@@ -307,7 +331,7 @@ export class ClearStmTool {
     const stmFilePath = getProjectStmFile();
 
     if (!existsSync(stmFilePath)) {
-      console.log('STM file does not exist. No entries to clear.');
+      console.log('Memory file does not exist. No entries to clear.');
       return;
     }
 
@@ -323,13 +347,13 @@ export class ClearStmTool {
     );
 
     if (stmEntries.length === initialLength) {
-      console.log('No STM entries older than 35 days found to clear.');
+      console.log('No memory entries older than 35 days found to clear.');
       return;
     }
 
     writeFileSync(stmFilePath, JSON.stringify(stmEntries, null, 2), 'utf-8');
     console.log(
-      `Cleared ${initialLength - stmEntries.length} old STM entries.`,
+      `Cleared ${initialLength - stmEntries.length} old memory entries.`,
     );
   }
 }

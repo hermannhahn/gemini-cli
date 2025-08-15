@@ -2,6 +2,30 @@
 
 ## Erros
 
+### Falha na Conexão com a Extensão IDE Companion do VS Code
+
+**General Status**: In Progress
+
+**Main Objective**: Resolver o erro "[ERROR] [IDEClient] Failed to connect to IDE companion extension for VS Code. Please ensure the extension is running and try restarting your terminal. To install the extension, run /ide install."
+
+**Resolution Attempts**:
+
+- **Attempt 1**:
+  - **Action Plan**:
+    1. Executar o comando `/ide install` para garantir que a extensão esteja instalada e configurada corretamente.
+    2. Após a instalação, instruir o usuário a reiniciar o VS Code e o terminal para que as alterações entrem em vigor.
+  - **Attempt Status**: In Progress
+  - **Result**: O comando `/ide install` falhou com o erro "bash: line 1: /ide: No such file or directory", indicando que o comando não foi encontrado. Isso sugere que `/ide` não é um executável diretamente acessível no PATH do shell.
+
+- **Attempt 2**:
+  - **Action Plan**:
+    1. Investigar como o comando `/ide install` deve ser executado no contexto deste projeto. Isso pode envolver verificar o `package.json` para scripts, ou procurar por documentação sobre como os comandos do CLI são invocados.
+    2. Tentar executar o comando usando `npm run` ou `npx` se for um script Node.js.
+  - **Attempt Status**: In Progress
+  - **Result**: ""
+
+
+
 ### Problema de Publicação Nightly no NPM
 
 **General Status**: Resolved
