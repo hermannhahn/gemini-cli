@@ -120,6 +120,11 @@ if (
   console.log('🔁 Checking out to development branch...');
   run('git checkout hermannhahn/develop');
 
+  // Pull
+  console.log('📥 Pulling main branch.');
+  run('git pull');
+  console.log('✅ Pulled main branch.');
+
   // Merge into development branch
   console.log('🔀 Merging into development branch...');
   run(
