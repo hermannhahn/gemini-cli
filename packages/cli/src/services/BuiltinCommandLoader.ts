@@ -33,6 +33,7 @@ import { toolsCommand } from '../ui/commands/toolsCommand.js';
 import { settingsCommand } from '../ui/commands/settingsCommand.js';
 import { vimCommand } from '../ui/commands/vimCommand.js';
 import { setupGithubCommand } from '../ui/commands/setupGithubCommand.js';
+import { terminalSetupCommand } from '../ui/commands/terminalSetupCommand.js';
 import { narratorCommand } from '../ui/commands/narratorCommand.js';
 
 /**
@@ -77,6 +78,7 @@ export class BuiltinCommandLoader implements ICommandLoader {
       settingsCommand,
       vimCommand,
       setupGithubCommand,
+      terminalSetupCommand,
       narratorCommand,
     ];
 

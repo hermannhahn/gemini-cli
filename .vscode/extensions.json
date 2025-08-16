@@ -2,7 +2,6 @@
   "recommendations": [
     "vitest.explorer",
     "esbenp.prettier-vscode",
-    "google.gemini-cli-vscode-ide-companion",
-    "google.geminicodeassist"
+    "dbaeumer.vscode-eslint"
   ]
 }

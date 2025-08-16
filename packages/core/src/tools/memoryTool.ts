@@ -5,12 +5,12 @@
  */
 
 import {
-  ToolResult,
+  BaseDeclarativeTool,
+  BaseToolInvocation,
+  Kind,
   ToolEditConfirmationDetails,
   ToolConfirmationOutcome,
-  Icon,
-  DeclarativeTool,
-  ToolInvocation,
+  ToolResult,
 } from './tools.js';
 import { FunctionDeclaration } from '@google/genai';
 import * as fs from 'fs/promises';
@@ -20,6 +20,7 @@ import * as Diff from 'diff';
 import { DEFAULT_DIFF_OPTIONS } from './diffOptions.js';
 import { tildeifyPath } from '../utils/paths.js';
 import { ModifiableDeclarativeTool, ModifyContext } from './modifiable-tool.js';
+import { SchemaValidator } from '../utils/schemaValidator.js';
 
 const memoryToolSchemaData: FunctionDeclaration = {
   name: 'save_memory',
@@ -141,18 +142,18 @@ export class MemoryTool
     throw new Error('Method not implemented.');
   }
 
-  /**
-   * Reads the current content of the memory file
-   */
-  private async readMemoryFileContent(): Promise<string> {
-    try {
-      return await fs.readFile(getGlobalMemoryFilePath(), 'utf-8');
-    } catch (err) {
-      const error = err as Error & { code?: string };
-      if (!(error instanceof Error) || error.code !== 'ENOENT') throw err;
-      return '';
-    }
+/**
+ * Reads the current content of the memory file
+ */
+async function readMemoryFileContent(): Promise<string> {
+  try {
+    return await fs.readFile(getGlobalMemoryFilePath(), 'utf-8');
+  } catch (err) {
+    const error = err as Error & { code?: string };
+    if (!(error instanceof Error) || error.code !== 'ENOENT') throw err;
+    return '';
   }
+}
 
   /**
    * Computes the new content that would result from adding a memory entry
@@ -165,50 +166,60 @@ export class MemoryTool
     processedText = processedText.replace(/^(-+\s*)+/, '').trim();
     const newMemoryItem = `- ${processedText}`;
 
-    const headerIndex = currentContent.indexOf(MEMORY_SECTION_HEADER);
+  const headerIndex = currentContent.indexOf(MEMORY_SECTION_HEADER);
 
-    if (headerIndex === -1) {
-      // Header not found, append header and then the entry
-      const separator = ensureNewlineSeparation(currentContent);
-      return (
-        currentContent +
-        `${separator}${MEMORY_SECTION_HEADER}\n${newMemoryItem}\n`
-      );
-    } else {
-      // Header found, find where to insert the new memory entry
-      const startOfSectionContent = headerIndex + MEMORY_SECTION_HEADER.length;
-      let endOfSectionIndex = currentContent.indexOf(
-        '\n## ',
-        startOfSectionContent,
-      );
-      if (endOfSectionIndex === -1) {
-        endOfSectionIndex = currentContent.length; // End of file
-      }
-
-      const beforeSectionMarker = currentContent
-        .substring(0, startOfSectionContent)
-        .trimEnd();
-      let sectionContent = currentContent
-        .substring(startOfSectionContent, endOfSectionIndex)
-        .trimEnd();
-      const afterSectionMarker = currentContent.substring(endOfSectionIndex);
-
-      sectionContent += `\n${newMemoryItem}`;
-      return (
-        `${beforeSectionMarker}\n${sectionContent.trimStart()}\n${afterSectionMarker}`.trimEnd() +
-        '\n'
-      );
+  if (headerIndex === -1) {
+    // Header not found, append header and then the entry
+    const separator = ensureNewlineSeparation(currentContent);
+    return (
+      currentContent +
+      `${separator}${MEMORY_SECTION_HEADER}\n${newMemoryItem}\n`
+    );
+  } else {
+    // Header found, find where to insert the new memory entry
+    const startOfSectionContent = headerIndex + MEMORY_SECTION_HEADER.length;
+    let endOfSectionIndex = currentContent.indexOf(
+      '\n## ',
+      startOfSectionContent,
+    );
+    if (endOfSectionIndex === -1) {
+      endOfSectionIndex = currentContent.length; // End of file
     }
+
+    const beforeSectionMarker = currentContent
+      .substring(0, startOfSectionContent)
+      .trimEnd();
+    let sectionContent = currentContent
+      .substring(startOfSectionContent, endOfSectionIndex)
+      .trimEnd();
+    const afterSectionMarker = currentContent.substring(endOfSectionIndex);
+
+    sectionContent += `\n${newMemoryItem}`;
+    return (
+      `${beforeSectionMarker}\n${sectionContent.trimStart()}\n${afterSectionMarker}`.trimEnd() +
+      '\n'
+    );
+  }
+}
+
+class MemoryToolInvocation extends BaseToolInvocation<
+  SaveMemoryParams,
+  ToolResult
+> {
+  private static readonly allowlist: Set<string> = new Set();
+
+  getDescription(): string {
+    const memoryFilePath = getGlobalMemoryFilePath();
+    return `in ${tildeifyPath(memoryFilePath)}`;
   }
 
-  async shouldConfirmExecute(
-    params: SaveMemoryParams,
+  override async shouldConfirmExecute(
     _abortSignal: AbortSignal,
   ): Promise<ToolEditConfirmationDetails | false> {
     const memoryFilePath = getGlobalMemoryFilePath();
     const allowlistKey = memoryFilePath;
 
-    if (MemoryTool.allowlist.has(allowlistKey)) {
+    if (MemoryToolInvocation.allowlist.has(allowlistKey)) {
       return false;
     }
 
@@ -241,11 +252,105 @@ export class MemoryTool
       newContent,
       onConfirm: async (outcome: ToolConfirmationOutcome) => {
         if (outcome === ToolConfirmationOutcome.ProceedAlways) {
-          MemoryTool.allowlist.add(allowlistKey);
+          MemoryToolInvocation.allowlist.add(allowlistKey);
         }
       },
     };
     return confirmationDetails;
+  }
+
+  async execute(_signal: AbortSignal): Promise<ToolResult> {
+    const { instruction, modified_by_user, modified_content } = this.params;
+
+    try {
+      if (modified_by_user && modified_content !== undefined) {
+        // User modified the content in external editor, write it directly
+        await fs.mkdir(path.dirname(getGlobalMemoryFilePath()), {
+          recursive: true,
+        });
+        await fs.writeFile(
+          getGlobalMemoryFilePath(),
+          modified_content,
+          'utf-8',
+        );
+        const successMessage = `Okay, I've updated the memory file with your modifications.`;
+        return {
+          llmContent: JSON.stringify({
+            success: true,
+            message: successMessage,
+          }),
+          returnDisplay: successMessage,
+        };
+      } else {
+        // Use the normal memory entry logic
+        await MemoryTool.performAddMemoryEntry(
+          instruction,
+          getGlobalMemoryFilePath(),
+          {
+            readFile: fs.readFile,
+            writeFile: fs.writeFile,
+            mkdir: fs.mkdir,
+          },
+        );
+        const successMessage = `Okay, I've remembered that: "${instruction}"`;
+        return {
+          llmContent: JSON.stringify({
+            success: true,
+            message: successMessage,
+          }),
+          returnDisplay: successMessage,
+        };
+      }
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      console.error(
+        `[MemoryTool] Error executing save_memory for instruction "${instruction}": ${errorMessage}`,
+      );
+      return {
+        llmContent: JSON.stringify({
+          success: false,
+          error: `Failed to save memory. Detail: ${errorMessage}`,
+        }),
+        returnDisplay: `Error saving memory: ${errorMessage}`,
+      };
+    }
+  }
+}
+
+export class MemoryTool
+  extends BaseDeclarativeTool<SaveMemoryParams, ToolResult>
+  implements ModifiableDeclarativeTool<SaveMemoryParams>
+{
+  static readonly Name: string = memoryToolSchemaData.name!;
+  constructor() {
+    super(
+      MemoryTool.Name,
+      'Save Memory',
+      memoryToolDescription,
+      Kind.Think,
+      memoryToolSchemaData.parametersJsonSchema as Record<string, unknown>,
+    );
+  }
+
+  override validateToolParams(params: SaveMemoryParams): string | null {
+    const errors = SchemaValidator.validate(
+      this.schema.parametersJsonSchema,
+      params,
+    );
+    if (errors) {
+      return errors;
+    }
+
+    if (params.instruction.trim() === '') {
+      return 'Parameter "instruction" must be a non-empty string.';
+    }
+
+    return null;
+  }
+
+  protected createInvocation(params: SaveMemoryParams) {
+    return new MemoryToolInvocation(params);
   }
 
   static async performAddMemoryEntry(
@@ -318,85 +423,11 @@ export class MemoryTool
     }
   }
 
-  async execute(
-    params: SaveMemoryParams,
-    _signal: AbortSignal,
-  ): Promise<ToolResult> {
-    const { instruction, modified_by_user, modified_content } = params;
-
-    if (
-      !instruction ||
-      typeof instruction !== 'string' ||
-      instruction.trim() === ''
-    ) {
-      const errorMessage =
-        'Parameter "instruction" must be a non-empty string.';
-      return {
-        llmContent: JSON.stringify({ success: false, error: errorMessage }),
-        returnDisplay: `Error: ${errorMessage}`,
-      };
-    }
-
-    try {
-      if (modified_by_user && modified_content !== undefined) {
-        // User modified the content in external editor, write it directly
-        await fs.mkdir(path.dirname(getGlobalMemoryFilePath()), {
-          recursive: true,
-        });
-        await fs.writeFile(
-          getGlobalMemoryFilePath(),
-          modified_content,
-          'utf-8',
-        );
-        const successMessage = `Okay, I've updated the memory file with your modifications.`;
-        return {
-          llmContent: JSON.stringify({
-            success: true,
-            message: successMessage,
-          }),
-          returnDisplay: successMessage,
-        };
-      } else {
-        // Use the normal memory entry logic
-        await MemoryTool.performAddMemoryEntry(
-          instruction,
-          getGlobalMemoryFilePath(),
-          {
-            readFile: fs.readFile,
-            writeFile: fs.writeFile,
-            mkdir: fs.mkdir,
-          },
-        );
-        const successMessage = `Okay, I've remembered that: "${instruction}"`;
-        return {
-          llmContent: JSON.stringify({
-            success: true,
-            message: successMessage,
-          }),
-          returnDisplay: successMessage,
-        };
-      }
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : String(error);
-      console.error(
-        `[MemoryTool] Error executing save_instruction for instruction "${instruction}": ${errorMessage}`,
-      );
-      return {
-        llmContent: JSON.stringify({
-          success: false,
-          error: `Failed to Save Instruction. Detail: ${errorMessage}`,
-        }),
-        returnDisplay: `Error saving instruction: ${errorMessage}`,
-      };
-    }
-  }
-
   getModifyContext(_abortSignal: AbortSignal): ModifyContext<SaveMemoryParams> {
     return {
       getFilePath: (_params: SaveMemoryParams) => getGlobalMemoryFilePath(),
       getCurrentContent: async (_params: SaveMemoryParams): Promise<string> =>
-        this.readMemoryFileContent(),
+        readMemoryFileContent(),
       getProposedContent: async (params: SaveMemoryParams): Promise<string> => {
         const currentContent = await this.readMemoryFileContent();
         return this.computeNewContent(currentContent, params.instruction);
