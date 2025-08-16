@@ -85,7 +85,7 @@ export async function parseArguments(): Promise<CliArgs> {
           alias: 'm',
           type: 'string',
           description: `Model`,
-          default: process.env.GEMINI_MODEL,
+          default: process.env.GEMINI_MODEL || DEFAULT_GEMINI_MODEL,
         })
         .option('narrator', {
           type: 'string',
