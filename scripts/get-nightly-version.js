@@ -21,16 +21,11 @@ function getShortSha() {
 export function getNightlyTagName() {
   const version = getPackageVersion();
 
-  const now = new Date();
-  const year = now.getUTCFullYear().toString().slice(-2);
-  const month = (now.getUTCMonth() + 1).toString().padStart(2, '0');
-  const day = now.getUTCDate().toString().padStart(2, '0');
-  const date = `${year}${month}${day}`;
   const sha = getShortSha();
 
-  let releaseTag = `v${version}-nightly.${date}.${sha}`;
+  let releaseTag = `v${version}-nightly.${sha}`;
 
-  const releaseVersion = `${version}-nightly-${date}-${sha}`;
+  const releaseVersion = `${version}-nightly.${sha}`;
   let npmTag = 'nightly';
   if (releaseVersion.includes('-')) {
     npmTag = releaseVersion.split('-')[1].split('.')[0];
