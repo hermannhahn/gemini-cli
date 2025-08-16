@@ -14,7 +14,7 @@
     "url": "git+https://github.com/hermannhahn/gemini-cli.git"
   },
   "config": {
-    "sandboxImageUri": "us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox:0.1.19"
+    "sandboxImageUri": "us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox:0.1.37"
   },
   "scripts": {
     "start": "node scripts/start.js --narrator response",
@@ -100,7 +100,7 @@
   "dependencies": {
     "node-fetch": "^3.3.2"
   },
-  "version": "0.1.36",
+  "version": "0.1.37",
   "license": "MIT",
   "author": "Hermann Hahn",
   "homepage": "https://github.com/hermannhahn/gemini-cli"
