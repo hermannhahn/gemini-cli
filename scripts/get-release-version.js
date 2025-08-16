@@ -20,14 +20,9 @@ function getShortSha() {
 
 export function getNightlyTagName() {
   const version = getPackageVersion();
-  const now = new Date();
-  const year = now.getUTCFullYear().toString().slice(-2);
-  const month = (now.getUTCMonth() + 1).toString().padStart(2, '0');
-  const day = now.getUTCDate().toString().padStart(2, '0');
-  const date = `${year}${month}${day}`;
 
   const sha = getShortSha();
-  return `v${version}-nightly.${date}.${sha}`;
+  return `v${version}-nightly.${sha}`;
 }
 
 export function getReleaseVersion() {
