@@ -47,4 +47,4 @@ RUN npm install -g /usr/local/share/npm-global/gemini-cli.tgz /usr/local/share/n
   && rm -f /usr/local/share/npm-global/gemini-{cli,core}.tgz
 
 # default entrypoint when none specified
-CMD ["gemini"]
+CMD ["geminid"]
