@@ -1,7 +1,7 @@
 name: 'Deploy GitHub Pages'
 
 on:
-  pull_request:
+  push:
     branches: [hermannhahn/main]
   repository_dispatch:
     types: [run-docs-build]
