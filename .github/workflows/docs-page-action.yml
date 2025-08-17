@@ -1,8 +1,6 @@
 name: 'Deploy GitHub Pages'
 
 on:
-  push:
-    branches: ['hermannhahn/release']
   repository_dispatch:
     types: ['run-docs-build']
   workflow_dispatch:
