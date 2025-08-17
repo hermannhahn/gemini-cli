@@ -19,7 +19,7 @@ jobs:
     environment:
       name: '${{ github.event.client_payload.version }}'
       url: '${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ steps.version.outputs.RELEASE_TAG }}'
-    if: '"${{ github.repository }}" == "hermannhahn/gemini-cli"'
+    if: ${{ github.repository == 'hermannhahn/gemini-cli' }}
     permissions:
       contents: 'write'
       packages: 'write'
@@ -54,7 +54,7 @@ jobs:
           echo "NPM_TAG=$(echo "$VERSION_JSON" | jq -r .npmTag)" >> "$GITHUB_OUTPUT"
 
       - name: 'Run Tests'
-        if: '"${{ github.event.inputs.force_skip_tests }}" != true'
+        if: ${{ github.event.inputs.force_skip_tests != true }}
         run: |
           npm run preflight
         env:
