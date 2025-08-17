@@ -22,7 +22,7 @@ jobs:
           ref: '${{ github.sha }}'
 
       - name: 'Get the version'
-        id: version
+        id: 'version'
         run: |
           VERSION_JSON=$(node scripts/get-nightly-version.js)
           echo "RELEASE_TAG=$(echo "$VERSION_JSON" | jq -r .releaseTag)" >> "$GITHUB_OUTPUT"
@@ -30,7 +30,7 @@ jobs:
           echo "NPM_TAG=$(echo "$VERSION_JSON" | jq -r .npmTag)" >> "$GITHUB_OUTPUT"
 
       - name: 'Dispatch Nightly Release Workflow'
-        uses: 'peter-evans/repository-dispatch@v2'
+        uses: 'peter-evans/repository-dispatch@26b39ed'
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
           repository: '${{ github.repository }}'
