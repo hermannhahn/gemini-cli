@@ -1,4 +1,4 @@
-name: Trigger Release
+name: 'Trigger Release'
 
 on:
   push:
@@ -13,41 +13,29 @@ on:
 
 jobs:
   wait_for_ci:
-    runs-on: ubuntu-latest
+    runs-on: 'ubuntu-latest'
     steps:
-      - name: Wait for GitHub Actions CI
-        uses: convictional/trigger-workflow-and-wait@v1.3.0
+      - name: 'Wait for GitHub Actions CI'
+        uses: 'convictional/trigger-workflow-and-wait@v1.3.0'
         with:
           workflow_file_name: 'ci.yml'
-          owner: ${{ github.repository_owner }}
-          repo: ${{ github.event.repository.name }}
-          ref: hermannhahn/release
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          owner: '${{ github.repository_owner }}'
+          repo: '${{ github.event.repository.name }}'
+          ref: 'hermannhahn/release'
+          github_token: '${{ secrets.GITHUB_TOKEN }}'
           propagate_failure: true
-  wait_for_docs:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Wait for GitHub Docs Page Action
-        uses: convictional/trigger-workflow-and-wait@v1.3.0
-        with:
-          workflow_file_name: 'docs-page-action.yml'
-          owner: ${{ github.repository_owner }}
-          repo: ${{ github.event.repository.name }}
-          ref: hermannhahn/release
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          propagate_failure: false
 
   dispatch_release:
-    runs-on: ubuntu-latest
-    needs: [wait_for_ci, wait_for_docs]
+    runs-on: 'ubuntu-latest'
+    needs: [wait_for_ci]
     if: ${{ always() && needs.wait_for_ci.result == 'success' }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: 'Checkout code'
+        uses: 'actions/checkout@v4'
         with:
-          ref: ${{ github.sha }}
+          ref: '${{ github.sha }}'
 
-      - name: Get the version
+      - name: 'Get the version'
         id: version
         run: |
           VERSION_JSON=$(node scripts/get-release-version.js)
@@ -55,10 +43,10 @@ jobs:
           echo "RELEASE_VERSION=$(echo $VERSION_JSON | jq -r .releaseVersion)" >> $GITHUB_OUTPUT
           echo "NPM_TAG=$(echo $VERSION_JSON | jq -r .npmTag)" >> $GITHUB_OUTPUT
 
-      - name: Dispatch Release Workflow
-        uses: peter-evans/repository-dispatch@v2
+      - name: 'Dispatch Release Workflow'
+        uses: 'peter-evans/repository-dispatch@v2'
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: ${{ github.repository }}
-          event-type: run-release
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          repository: '${{ github.repository }}'
+          event-type: 'run-release'
           client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "${{ steps.version.outputs.RELEASE_VERSION }}"}'
