@@ -7,9 +7,9 @@ on:
     inputs:
       force_skip_tests:
         description: 'Select to skip the "Run Tests" step in testing. Prod releases should run tests'
-        required: false
-        type: boolean
-        default: false
+        required: 'false'
+        type: 'boolean'
+        default: 'false'
 
 jobs:
   wait_for_ci:
@@ -23,7 +23,7 @@ jobs:
           repo: '${{ github.event.repository.name }}'
           ref: 'hermannhahn/release'
           github_token: '${{ secrets.GITHUB_TOKEN }}'
-          propagate_failure: true
+          propagate_failure: 'true'
 
   dispatch_release:
     runs-on: 'ubuntu-latest'
@@ -39,9 +39,9 @@ jobs:
         id: version
         run: |
           VERSION_JSON=$(node scripts/get-release-version.js)
-          echo "RELEASE_TAG=$(echo $VERSION_JSON | jq -r .releaseTag)" >> $GITHUB_OUTPUT
-          echo "RELEASE_VERSION=$(echo $VERSION_JSON | jq -r .releaseVersion)" >> $GITHUB_OUTPUT
-          echo "NPM_TAG=$(echo $VERSION_JSON | jq -r .npmTag)" >> $GITHUB_OUTPUT
+          echo "RELEASE_TAG=$(echo "$VERSION_JSON" | jq -r .releaseTag)" >> "$GITHUB_OUTPUT"
+          echo "RELEASE_VERSION=$(echo "$VERSION_JSON" | jq -r .releaseVersion)" >> "$GITHUB_OUTPUT"
+          echo "NPM_TAG=$(echo "$VERSION_JSON" | jq -r .npmTag)" >> "$GITHUB_OUTPUT"
 
       - name: 'Dispatch Release Workflow'
         uses: 'peter-evans/repository-dispatch@v2'

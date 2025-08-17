@@ -7,9 +7,9 @@ on:
     inputs:
       force_skip_tests:
         description: 'Select to skip the "Run Tests" step in testing. Prod releases should run tests'
-        required: false
-        type: boolean
-        default: false
+        required: 'false'
+        type: 'boolean'
+        default: 'false'
 
 run-name: 'Release v${{ github.event.client_payload.version }}'
 
@@ -32,7 +32,7 @@ jobs:
         uses: 'actions/checkout@v4'
         with:
           ref: '${{ github.sha }}' # Checkout a specific commit
-          fetch-depth: 0 # Required for notes generation
+          fetch-depth: '0' # Required for notes generation
 
       - name: 'Setup Node.js and npm'
         uses: 'actions/setup-node@v4'
@@ -49,9 +49,9 @@ jobs:
         id: version
         run: |
           VERSION_JSON=$(node scripts/get-release-version.js)
-          echo "RELEASE_TAG=$(echo $VERSION_JSON | jq -r .releaseTag)" >> $GITHUB_OUTPUT
-          echo "RELEASE_VERSION=$(echo $VERSION_JSON | jq -r .releaseVersion)" >> $GITHUB_OUTPUT
-          echo "NPM_TAG=$(echo $VERSION_JSON | jq -r .npmTag)" >> $GITHUB_OUTPUT
+          echo "RELEASE_TAG=$(echo "$VERSION_JSON" | jq -r .releaseTag)" >> "$GITHUB_OUTPUT"
+          echo "RELEASE_VERSION=$(echo "$VERSION_JSON" | jq -r .releaseVersion)" >> "$GITHUB_OUTPUT"
+          echo "NPM_TAG=$(echo "$VERSION_JSON" | jq -r .npmTag)" >> "$GITHUB_OUTPUT"
 
       - name: 'Run Tests'
         if: github.event.inputs.force_skip_tests != 'true'
