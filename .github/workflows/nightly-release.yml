@@ -28,7 +28,7 @@ jobs:
       NPM_TAG: '${{ steps.version.outputs.NPM_TAG }}'
 
     steps:
-      - name: Checkout code
+      - name: 'Checkout code'
         uses: 'actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8' # ratchet:actions/checkout@v5
         with:
           ref: '${{ github.sha }}' # Checkout a specific commit
@@ -54,7 +54,7 @@ jobs:
           echo "NPM_TAG=$(echo "$VERSION_JSON" | jq -r .npmTag)" >> "$GITHUB_OUTPUT"
 
       - name: 'Run Tests'
-        if: "'${{ github.event.inputs.force_skip_tests }}' != true"
+        if: '${{ github.event.inputs.force_skip_tests }} != true'
         run: |
           'npm run preflight'
         env:
