@@ -24,22 +24,10 @@ jobs:
           ref: 'hermannhahn/release'
           github_token: '${{ secrets.GITHUB_TOKEN }}'
           propagate_failure: true
-  wait_for_docs:
-    runs-on: 'ubuntu-latest'
-    steps:
-      - name: 'Wait for GitHub Docs Page Action'
-        uses: 'convictional/trigger-workflow-and-wait@v1.3.0'
-        with:
-          workflow_file_name: 'docs-page-action.yml'
-          owner: '${{ github.repository_owner }}'
-          repo: '${{ github.event.repository.name }}'
-          ref: 'hermannhahn/release'
-          github_token: '${{ secrets.GITHUB_TOKEN }}'
-          propagate_failure: false
 
   dispatch_release:
     runs-on: 'ubuntu-latest'
-    needs: [wait_for_ci, wait_for_docs]
+    needs: [wait_for_ci]
     if: ${{ always() && needs.wait_for_ci.result == 'success' }}
     steps:
       - name: 'Checkout code'
