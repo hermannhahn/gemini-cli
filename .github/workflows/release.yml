@@ -35,7 +35,7 @@ jobs:
           fetch-depth: '0' # Required for notes generation
 
       - name: 'Setup Node.js and npm'
-        uses: 'actions/setup-node@v4'
+        uses: 'actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8'
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -71,24 +71,23 @@ jobs:
           npm run prepare:package
 
       - name: 'Publish @hahnd/gemini-cli-core'
-        run: npm publish --workspace=@hahnd/gemini-cli-core --tag=${{ steps.version.outputs.NPM_TAG }}
+        run: 'npm publish --workspace=@hahnd/gemini-cli-core --tag=${{ steps.version.outputs.NPM_TAG }}'
         env:
           NODE_AUTH_TOKEN: '${{ secrets.NPM_TOKEN }}'
 
       - name: 'Install latest core package'
-        run: npm install @hahnd/gemini-cli-core@${{ steps.version.outputs.RELEASE_VERSION }} --workspace=@hahnd/geminid --save-exact
+        run: 'npm install @hahnd/gemini-cli-core@${{ steps.version.outputs.RELEASE_VERSION }} --workspace=@hahnd/geminid --save-exact'
 
       - name: 'Publish @hahnd/geminid'
-        run: npm publish --workspace=@hahnd/geminid --tag=${{ steps.version.outputs.NPM_TAG }}
+        run: 'npm publish --workspace=@hahnd/geminid --tag=${{ steps.version.outputs.NPM_TAG }}'
         env:
           NODE_AUTH_TOKEN: '${{ secrets.NPM_TOKEN }}'
 
       - name: 'Create GitHub Release and Tag'
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-        run: |
-          gh release create ${{ steps.version.outputs.RELEASE_TAG }} \
-            bundle/geminid.js \
-            --target ${{ github.sha }} \
-            --title "Release ${{ steps.version.outputs.RELEASE_TAG }}" \
-            --generate-notes
+        run: 'gh release create ${{ steps.version.outputs.RELEASE_TAG }} \
+          bundle/geminid.js \
+          --target ${{ github.sha }} \
+          --title "Release ${{ steps.version.outputs.RELEASE_TAG }}" \
+          --generate-notes'
