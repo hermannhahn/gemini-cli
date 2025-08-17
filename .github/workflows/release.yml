@@ -1,4 +1,4 @@
-name: 'Release'
+name: "Release"
 
 on:
   repository_dispatch:
@@ -7,45 +7,45 @@ on:
     inputs:
       force_skip_tests:
         description: 'Select to skip the "Run Tests" step in testing. Prod releases should run tests'
-        required: 'false'
-        type: 'boolean'
-        default: 'false'
+        required: false
+        type: "boolean"
+        default: false
 
-run-name: 'Release v${{ github.event.client_payload.version }}'
+run-name: "Release v${{ github.event.client_payload.version }}"
 
 jobs:
   release:
-    runs-on: 'ubuntu-latest'
+    runs-on: "ubuntu-latest"
     environment:
-      name: 'release'
-      url: '${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ steps.version.outputs.RELEASE_TAG }}'
+      name: ${{ github.event.client_payload.version }}
+      url: "${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ steps.version.outputs.RELEASE_TAG }}"
     if: github.repository == 'hermannhahn/gemini-cli'
     permissions:
-      contents: 'write'
-      packages: 'write'
-      id-token: 'write'
+      contents: "write"
+      packages: "write"
+      id-token: "write"
     outputs:
-      RELEASE_TAG: '${{ steps.version.outputs.RELEASE_TAG }}'
+      RELEASE_TAG: "${{ steps.version.outputs.RELEASE_TAG }}"
 
     steps:
-      - name: 'Checkout code'
-        uses: 'actions/checkout@v4'
+      - name: "Checkout code"
+        uses: "actions/checkout@v4"
         with:
-          ref: '${{ github.sha }}' # Checkout a specific commit
-          fetch-depth: '0' # Required for notes generation
+          ref: "${{ github.sha }}" # Checkout a specific commit
+          fetch-depth: "0" # Required for notes generation
 
-      - name: 'Setup Node.js and npm'
-        uses: 'actions/setup-node@v4'
+      - name: "Setup Node.js and npm"
+        uses: "actions/setup-node@v4"
         with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-          registry-url: 'https://registry.npmjs.org/'
-          scope: '@hahnd'
+          node-version-file: ".nvmrc"
+          cache: "npm"
+          registry-url: "https://registry.npmjs.org/"
+          scope: "@hahnd"
 
-      - name: 'Install Dependencies'
+      - name: "Install Dependencies"
         run: npm ci
 
-      - name: 'Get the version'
+      - name: "Get the version"
         id: version
         run: |
           VERSION_JSON=$(node scripts/get-release-version.js)
@@ -53,39 +53,39 @@ jobs:
           echo "RELEASE_VERSION=$(echo "$VERSION_JSON" | jq -r .releaseVersion)" >> "$GITHUB_OUTPUT"
           echo "NPM_TAG=$(echo "$VERSION_JSON" | jq -r .npmTag)" >> "$GITHUB_OUTPUT"
 
-      - name: 'Run Tests'
-        if: github.event.inputs.force_skip_tests != 'true'
+      - name: "Run Tests"
+        if: github.event.inputs.force_skip_tests != true
         run: |
           npm run preflight
         env:
-          GEMINI_API_KEY: '${{ secrets.GEMINI_API_KEY }}'
+          GEMINI_API_KEY: "${{ secrets.GEMINI_API_KEY }}"
 
-      - name: 'Configure Git User'
+      - name: "Configure Git User"
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: 'Build and Prepare Packages'
+      - name: "Build and Prepare Packages"
         run: |
           npm run build:packages
           npm run prepare:package
 
-      - name: 'Publish @hahnd/gemini-cli-core'
+      - name: "Publish @hahnd/gemini-cli-core"
         run: npm publish --workspace=@hahnd/gemini-cli-core --tag=${{ steps.version.outputs.NPM_TAG }}
         env:
-          NODE_AUTH_TOKEN: '${{ secrets.NPM_TOKEN }}'
+          NODE_AUTH_TOKEN: "${{ secrets.NPM_TOKEN }}"
 
-      - name: 'Install latest core package'
+      - name: "Install latest core package"
         run: npm install @hahnd/gemini-cli-core@${{ steps.version.outputs.RELEASE_VERSION }} --workspace=@hahnd/geminid --save-exact
 
-      - name: 'Publish @hahnd/geminid'
+      - name: "Publish @hahnd/geminid"
         run: npm publish --workspace=@hahnd/geminid --tag=${{ steps.version.outputs.NPM_TAG }}
         env:
-          NODE_AUTH_TOKEN: '${{ secrets.NPM_TOKEN }}'
+          NODE_AUTH_TOKEN: "${{ secrets.NPM_TOKEN }}"
 
-      - name: 'Create GitHub Release and Tag'
+      - name: "Create GitHub Release and Tag"
         env:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         run: |
           gh release create ${{ steps.version.outputs.RELEASE_TAG }} \
             bundle/geminid.js \
