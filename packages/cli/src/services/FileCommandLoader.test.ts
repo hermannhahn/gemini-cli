@@ -5,6 +5,7 @@
  */
 
 import * as path from 'node:path';
+import * as os from 'os';
 import {
   Config,
   getProjectCommandsDir,
@@ -22,9 +23,8 @@ import {
   ConfirmationRequiredError,
   ShellProcessor,
 } from './prompt-processors/shellProcessor.js';
-import { ShorthandArgumentProcessor } from './prompt-processors/argumentProcessor.js';
-import path from 'path';
-import os from 'os';
+import { DefaultArgumentProcessor } from './prompt-processors/argumentProcessor.js';
+import { CommandContext } from '../ui/commands/types.js';
 
 const mockShellProcess = vi.hoisted(() => vi.fn());
 vi.mock('./prompt-processors/shellProcessor.js', () => ({
@@ -48,9 +48,6 @@ vi.mock('./prompt-processors/argumentProcessor.js', async (importOriginal) => {
       typeof import('./prompt-processors/argumentProcessor.js')
     >();
   return {
-    ShorthandArgumentProcessor: vi
-      .fn()
-      .mockImplementation(() => new original.ShorthandArgumentProcessor()),
     DefaultArgumentProcessor: vi
       .fn()
       .mockImplementation(() => new original.DefaultArgumentProcessor()),
@@ -77,7 +74,16 @@ describe('FileCommandLoader', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockShellProcess.mockImplementation((prompt) => Promise.resolve(prompt));
+    mockShellProcess.mockImplementation(
+      (prompt: string, context: CommandContext) => {
+        const userArgsRaw = context?.invocation?.args || '';
+        const processedPrompt = prompt.replaceAll(
+          SHORTHAND_ARGS_PLACEHOLDER,
+          userArgsRaw,
+        );
+        return Promise.resolve(processedPrompt);
+      },
+    );
   });
 
   afterEach(() => {
@@ -204,7 +210,7 @@ describe('FileCommandLoader', () => {
     const mockConfig = {
       getProjectRoot: vi.fn(() => '/path/to/project'),
       getExtensions: vi.fn(() => []),
-    } as Config;
+    } as unknown as Config;
     const loader = new FileCommandLoader(mockConfig);
     const commands = await loader.loadCommands(signal);
     expect(commands).toHaveLength(1);
@@ -245,7 +251,7 @@ describe('FileCommandLoader', () => {
     const mockConfig = {
       getProjectRoot: vi.fn(() => process.cwd()),
       getExtensions: vi.fn(() => []),
-    } as Config;
+    } as unknown as Config;
     const loader = new FileCommandLoader(mockConfig);
     const commands = await loader.loadCommands(signal);
 
@@ -385,6 +391,68 @@ describe('FileCommandLoader', () => {
     expect(command.name).toBe('legacy_command');
   });
 
+  describe('Processor Instantiation Logic', () => {
+    it('instantiates only DefaultArgumentProcessor if no {{args}} or !{} are present', async () => {
+      const userCommandsDir = getUserCommandsDir();
+      mock({
+        [userCommandsDir]: {
+          'simple.toml': `prompt = "Just a regular prompt"`,
+        },
+      });
+
+      const loader = new FileCommandLoader(null as unknown as Config);
+      await loader.loadCommands(signal);
+
+      expect(ShellProcessor).not.toHaveBeenCalled();
+      expect(DefaultArgumentProcessor).toHaveBeenCalledTimes(1);
+    });
+
+    it('instantiates only ShellProcessor if {{args}} is present (but not !{})', async () => {
+      const userCommandsDir = getUserCommandsDir();
+      mock({
+        [userCommandsDir]: {
+          'args.toml': `prompt = "Prompt with {{args}}"`,
+        },
+      });
+
+      const loader = new FileCommandLoader(null as unknown as Config);
+      await loader.loadCommands(signal);
+
+      expect(ShellProcessor).toHaveBeenCalledTimes(1);
+      expect(DefaultArgumentProcessor).not.toHaveBeenCalled();
+    });
+
+    it('instantiates ShellProcessor and DefaultArgumentProcessor if !{} is present (but not {{args}})', async () => {
+      const userCommandsDir = getUserCommandsDir();
+      mock({
+        [userCommandsDir]: {
+          'shell.toml': `prompt = "Prompt with !{cmd}"`,
+        },
+      });
+
+      const loader = new FileCommandLoader(null as unknown as Config);
+      await loader.loadCommands(signal);
+
+      expect(ShellProcessor).toHaveBeenCalledTimes(1);
+      expect(DefaultArgumentProcessor).toHaveBeenCalledTimes(1);
+    });
+
+    it('instantiates only ShellProcessor if both {{args}} and !{} are present', async () => {
+      const userCommandsDir = getUserCommandsDir();
+      mock({
+        [userCommandsDir]: {
+          'both.toml': `prompt = "Prompt with {{args}} and !{cmd}"`,
+        },
+      });
+
+      const loader = new FileCommandLoader(null as unknown as Config);
+      await loader.loadCommands(signal);
+
+      expect(ShellProcessor).toHaveBeenCalledTimes(1);
+      expect(DefaultArgumentProcessor).not.toHaveBeenCalled();
+    });
+  });
+
   describe('Extension Command Loading', () => {
     it('loads commands from active extensions', async () => {
       const userCommandsDir = getUserCommandsDir();
@@ -422,7 +490,7 @@ describe('FileCommandLoader', () => {
             path: extensionDir,
           },
         ]),
-      } as Config;
+      } as unknown as Config;
       const loader = new FileCommandLoader(mockConfig);
       const commands = await loader.loadCommands(signal);
 
@@ -471,7 +539,7 @@ describe('FileCommandLoader', () => {
             path: extensionDir,
           },
         ]),
-      } as Config;
+      } as unknown as Config;
       const loader = new FileCommandLoader(mockConfig);
       const commands = await loader.loadCommands(signal);
 
@@ -578,7 +646,7 @@ describe('FileCommandLoader', () => {
             path: extensionDir2,
           },
         ]),
-      } as Config;
+      } as unknown as Config;
       const loader = new FileCommandLoader(mockConfig);
       const commands = await loader.loadCommands(signal);
 
@@ -614,7 +682,7 @@ describe('FileCommandLoader', () => {
             path: extensionDir,
           },
         ]),
-      } as Config;
+      } as unknown as Config;
       const loader = new FileCommandLoader(mockConfig);
       const commands = await loader.loadCommands(signal);
       expect(commands).toHaveLength(0);
@@ -646,7 +714,7 @@ describe('FileCommandLoader', () => {
         getExtensions: vi.fn(() => [
           { name: 'a', version: '1.0.0', isActive: true, path: extensionDir },
         ]),
-      } as Config;
+      } as unknown as Config;
       const loader = new FileCommandLoader(mockConfig);
       const commands = await loader.loadCommands(signal);
 
@@ -677,7 +745,7 @@ describe('FileCommandLoader', () => {
     });
   });
 
-  describe('Shorthand Argument Processor Integration', () => {
+  describe('Argument Handling Integration (via ShellProcessor)', () => {
     it('correctly processes a command with {{args}}', async () => {
       const userCommandsDir = path.join(os.homedir(), '.gemini', 'commands');
       mock({
@@ -744,8 +812,21 @@ describe('FileCommandLoader', () => {
   });
 
   describe('Shell Processor Integration', () => {
+    it('instantiates ShellProcessor if {{args}} is present (even without shell trigger)', async () => {
+      const userCommandsDir = getUserCommandsDir();
+      mock({
+        [userCommandsDir]: {
+          'args_only.toml': `prompt = "Hello {{args}}"`,
+        },
+      });
+
+      const loader = new FileCommandLoader(null as unknown as Config);
+      await loader.loadCommands(signal);
+
+      expect(ShellProcessor).toHaveBeenCalledWith('args_only');
+    });
     it('instantiates ShellProcessor if the trigger is present', async () => {
-      const userCommandsDir = path.join(os.homedir(), '.gemini', 'commands');
+      const userCommandsDir = getUserCommandsDir();
       mock({
         [userCommandsDir]: {
           'shell.toml': `prompt = "Run this: ${SHELL_INJECTION_TRIGGER}echo hello}"`,
@@ -758,8 +839,8 @@ describe('FileCommandLoader', () => {
       expect(ShellProcessor).toHaveBeenCalledWith('shell');
     });
 
-    it('does not instantiate ShellProcessor if trigger is missing', async () => {
-      const userCommandsDir = path.join(os.homedir(), '.gemini', 'commands');
+    it('does not instantiate ShellProcessor if no triggers ({{args}} or !{}) are present', async () => {
+      const userCommandsDir = getUserCommandsDir();
       mock({
         [userCommandsDir]: {
           'regular.toml': `prompt = "Just a regular prompt"`,
@@ -858,32 +939,30 @@ describe('FileCommandLoader', () => {
         ),
       ).rejects.toThrow('Something else went wrong');
     });
-
-    it('assembles the processor pipeline in the correct order (Shell -> Argument)', async () => {
-      const userCommandsDir = path.join(os.homedir(), '.gemini', 'commands');
+    it('assembles the processor pipeline in the correct order (Shell -> Default)', async () => {
+      const userCommandsDir = getUserCommandsDir();
       mock({
         [userCommandsDir]: {
+          // This prompt uses !{} but NOT {{args}}, so both processors should be active.
           'pipeline.toml': `
-            prompt = "Shell says: ${SHELL_INJECTION_TRIGGER}echo foo} and user says: ${SHORTHAND_ARGS_PLACEHOLDER}"
-          `,
+              prompt = "Shell says: ${SHELL_INJECTION_TRIGGER}echo foo}."
+            `,
         },
       });
 
-      // Mock the process methods to track call order
-      const argProcessMock = vi
+      const defaultProcessMock = vi
         .fn()
-        .mockImplementation((p) => `${p}-arg-processed`);
+        .mockImplementation((p) => Promise.resolve(`${p}-default-processed`));
 
-      // Redefine the mock for this specific test
       mockShellProcess.mockImplementation((p) =>
         Promise.resolve(`${p}-shell-processed`),
       );
 
-      vi.mocked(ShorthandArgumentProcessor).mockImplementation(
+      vi.mocked(DefaultArgumentProcessor).mockImplementation(
         () =>
           ({
-            process: argProcessMock,
-          }) as unknown as ShorthandArgumentProcessor,
+            process: defaultProcessMock,
+          }) as unknown as DefaultArgumentProcessor,
       );
 
       const loader = new FileCommandLoader(null as unknown as Config);
@@ -891,7 +970,7 @@ describe('FileCommandLoader', () => {
       const command = commands.find((c) => c.name === 'pipeline');
       expect(command).toBeDefined();
 
-      await command!.action!(
+      const result = await command!.action!(
         createMockCommandContext({
           invocation: {
             raw: '/pipeline bar',
@@ -902,20 +981,27 @@ describe('FileCommandLoader', () => {
         'bar',
       );
 
-      // Verify that the shell processor was called before the argument processor
       expect(mockShellProcess.mock.invocationCallOrder[0]).toBeLessThan(
-        argProcessMock.mock.invocationCallOrder[0],
+        defaultProcessMock.mock.invocationCallOrder[0],
       );
 
-      // Also verify the flow of the prompt through the processors
+      // Verify the flow of the prompt through the processors
+      // 1. Shell processor runs first
       expect(mockShellProcess).toHaveBeenCalledWith(
-        expect.any(String),
+        expect.stringContaining(SHELL_INJECTION_TRIGGER),
         expect.any(Object),
       );
-      expect(argProcessMock).toHaveBeenCalledWith(
-        expect.stringContaining('-shell-processed'), // It receives the output of the shell processor
+      // 2. Default processor runs second
+      expect(defaultProcessMock).toHaveBeenCalledWith(
+        expect.stringContaining('-shell-processed'),
         expect.any(Object),
       );
+
+      if (result?.type === 'submit_prompt') {
+        expect(result.content).toContain('-shell-processed-default-processed');
+      } else {
+        assert.fail('Incorrect action type');
+      }
     });
   });
 });
