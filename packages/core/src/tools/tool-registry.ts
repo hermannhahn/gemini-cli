@@ -12,7 +12,6 @@ import {
   BaseDeclarativeTool,
   BaseToolInvocation,
   ToolInvocation,
-  Icon,
 } from './tools.js';
 import { AddMemoryTool, SearchMemoryTool, DeleteMemoryTool } from './stm.js';
 import { Config } from '../config/config.js';

@@ -334,7 +334,7 @@ describe('useSlashCommandProcessor', () => {
 
     it('sets isProcessing to false if the the input is not a command', async () => {
       const setMockIsProcessing = vi.fn();
-      const result = setupProcessorHook([], [], [], setMockIsProcessing);
+      const result = await setupProcessorHook([], [], [], setMockIsProcessing);
 
       await act(async () => {
         await result.current.handleSlashCommand('imnotacommand');
@@ -350,7 +350,7 @@ describe('useSlashCommandProcessor', () => {
         action: vi.fn().mockRejectedValue(new Error('oh no!')),
       });
 
-      const result = setupProcessorHook(
+      const result = await setupProcessorHook(
         [failCommand],
         [],
         [],
@@ -989,7 +989,7 @@ describe('useSlashCommandProcessor', () => {
     });
 
     it('logs nothing for a bogus command', async () => {
-      const result = setupProcessorHook(loggingTestCommands);
+      const result = await setupProcessorHook(loggingTestCommands);
       await waitFor(() =>
         expect(result.current.slashCommands.length).toBeGreaterThan(0),
       );
@@ -1001,7 +1001,7 @@ describe('useSlashCommandProcessor', () => {
     });
 
     it('logs a failure event for a failed command', async () => {
-      const result = setupProcessorHook(loggingTestCommands);
+      const result = await setupProcessorHook(loggingTestCommands);
       await waitFor(() =>
         expect(result.current.slashCommands.length).toBeGreaterThan(0),
       );
@@ -1020,7 +1020,7 @@ describe('useSlashCommandProcessor', () => {
     });
 
     it('should log a slash command with a subcommand', async () => {
-      const result = setupProcessorHook(loggingTestCommands);
+      const result = await setupProcessorHook(loggingTestCommands);
       await waitFor(() =>
         expect(result.current.slashCommands.length).toBeGreaterThan(0),
       );

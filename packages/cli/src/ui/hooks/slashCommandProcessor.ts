@@ -183,6 +183,7 @@ export const useSlashCommandProcessor = (
         setGeminiMdFileCount,
         reloadCommands,
         setNarratorMode,
+        refreshConfig,
       },
       session: {
         stats: session.stats,

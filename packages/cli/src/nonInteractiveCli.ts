@@ -13,6 +13,7 @@ import {
   isTelemetrySdkInitialized,
   GeminiEventType,
   ToolErrorType,
+  parseAndFormatApiError,
 } from '@hahnd/gemini-cli-core';
 import { Content, Part, FunctionCall } from '@google/genai';
 

@@ -21,12 +21,8 @@ import {
   getErrorMessage,
   isWithinRoot,
   getErrorStatus,
-<<<<<<< HEAD:packages/cli/src/acp/acpPeer.ts
-} from '@hahnd/gemini-cli-core';
-=======
   MCPServerConfig,
 } from '@google/gemini-cli-core';
->>>>>>> origin/main:packages/cli/src/zed-integration/zedIntegration.ts
 import * as acp from './acp.js';
 import { Readable, Writable } from 'node:stream';
 import { Content, Part, FunctionCall, PartListUnion } from '@google/genai';

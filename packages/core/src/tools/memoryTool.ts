@@ -114,37 +114,6 @@ function ensureNewlineSeparation(currentContent: string): string {
   return '\n\n';
 }
 
-export class MemoryTool
-  extends DeclarativeTool<SaveMemoryParams, ToolResult>
-  implements ModifiableDeclarativeTool<SaveMemoryParams>
-{
-  private static readonly allowlist: Set<string> = new Set();
-  // DeclarativeTool already has these properties, so they are not explicitly defined here.
-  static readonly Name: string = memoryToolSchemaData.name!;
-  constructor() {
-    super(
-      MemoryTool.Name,
-      'Save Instruction',
-      memoryToolDescription,
-      Icon.LightBulb,
-      memoryToolSchemaData.parametersJsonSchema as Record<string, unknown>,
-    );
-  }
-
-  getDescription(_params: SaveMemoryParams): string {
-    const memoryFilePath = getGlobalMemoryFilePath();
-    return `in ${tildeifyPath(memoryFilePath)}`;
-  }
-
-  build(
-    _params: SaveMemoryParams,
-  ): ToolInvocation<SaveMemoryParams, ToolResult> {
-    throw new Error('Method not implemented.');
-  }
-
-/**
- * Reads the current content of the memory file
- */
 async function readMemoryFileContent(): Promise<string> {
   try {
     return await fs.readFile(getGlobalMemoryFilePath(), 'utf-8');
@@ -155,50 +124,171 @@ async function readMemoryFileContent(): Promise<string> {
   }
 }
 
-  /**
-   * Computes the new content that would result from adding a memory entry
-   */
-  private computeNewContent(
-    currentContent: string,
-    instruction: string,
-  ): string {
+export class MemoryTool
+  extends BaseDeclarativeTool<SaveMemoryParams, ToolResult>
+  implements ModifiableDeclarativeTool<SaveMemoryParams>
+{
+  static readonly Name: string = memoryToolSchemaData.name!;
+  constructor() {
+    super(
+      MemoryTool.Name,
+      'Save Instruction',
+      memoryToolDescription,
+      Kind.Think,
+      memoryToolSchemaData.parametersJsonSchema as Record<string, unknown>,
+    );
+  }
+
+  override validateToolParams(params: SaveMemoryParams): string | null {
+    const errors = SchemaValidator.validate(
+      this.schema.parametersJsonSchema,
+      params,
+    );
+    if (errors) {
+      return errors;
+    }
+
+    if (params.instruction.trim() === '') {
+      return 'Parameter "instruction" must be a non-empty string.';
+    }
+
+    return null;
+  }
+
+  protected createInvocation(params: SaveMemoryParams) {
+    return new MemoryToolInvocation(params, this);
+  }
+
+  static async performAddMemoryEntry(
+    text: string,
+    memoryFilePath: string,
+    fsAdapter: {
+      readFile: (path: string, encoding: 'utf-8') => Promise<string>;
+      writeFile: (
+        path: string,
+        data: string,
+        encoding: 'utf-8',
+      ) => Promise<void>;
+      mkdir: (
+        path: string,
+        options: { recursive: boolean },
+      ) => Promise<string | undefined>;
+    },
+  ): Promise<void> {
+    let processedText = text.trim();
+    // Remove leading hyphens and spaces that might be misinterpreted as markdown list items
+    processedText = processedText.replace(/^(-+\s*)+/, '').trim();
+    const newMemoryItem = `- ${processedText}`;
+
+    try {
+      await fsAdapter.mkdir(path.dirname(memoryFilePath), { recursive: true });
+      let content = '';
+      try {
+        content = await fsAdapter.readFile(memoryFilePath, 'utf-8');
+      } catch (_e) {
+        // File doesn't exist, will be created with header and item.
+      }
+
+      const headerIndex = content.indexOf(INSTRUCTION_SECTION_HEADER);
+
+      if (headerIndex === -1) {
+        // Header not found, append header and then the entry
+        const separator = ensureNewlineSeparation(content);
+        content += `${separator}${INSTRUCTION_SECTION_HEADER}\n${newMemoryItem}\n`;
+      } else {
+        // Header found, find where to insert the new memory entry
+        const startOfSectionContent =
+          headerIndex + INSTRUCTION_SECTION_HEADER.length;
+        let endOfSectionIndex = content.indexOf('\n## ', startOfSectionContent);
+        if (endOfSectionIndex === -1) {
+          endOfSectionIndex = content.length; // End of file
+        }
+
+        const beforeSectionMarker = content
+          .substring(0, startOfSectionContent)
+          .trimEnd();
+        let sectionContent = content
+          .substring(startOfSectionContent, endOfSectionIndex)
+          .trimEnd();
+        const afterSectionMarker = content.substring(endOfSectionIndex);
+
+        sectionContent += `\n${newMemoryItem}`;
+        content =
+          `${beforeSectionMarker}\n${sectionContent.trimStart()}\n${afterSectionMarker}`.trimEnd() +
+          '\n';
+      }
+      await fsAdapter.writeFile(memoryFilePath, content, 'utf-8');
+    } catch (error) {
+      console.error(
+        `[MemoryTool] Error adding instruction entry to ${memoryFilePath}:`,
+        error,
+      );
+      throw new Error(
+        `[MemoryTool] Failed to add instruction entry: ${error instanceof Error ? error.message : String(error)}`,
+      );
+    }
+  }
+
+  getModifyContext(_abortSignal: AbortSignal): ModifyContext<SaveMemoryParams> {
+    return {
+      getFilePath: (_params: SaveMemoryParams) => getGlobalMemoryFilePath(),
+      getCurrentContent: async (_params: SaveMemoryParams): Promise<string> =>
+        readMemoryFileContent(),
+      getProposedContent: async (params: SaveMemoryParams): Promise<string> => {
+        const currentContent = await readMemoryFileContent();
+        return this.computeNewContent(currentContent, params.instruction);
+      },
+      createUpdatedParams: (
+        _oldContent: string,
+        modifiedProposedContent: string,
+        originalParams: SaveMemoryParams,
+      ): SaveMemoryParams => ({
+        ...originalParams,
+        modified_by_user: true,
+        modified_content: modifiedProposedContent,
+      }),
+    };
+  }
+
+  computeNewContent(currentContent: string, instruction: string): string {
     let processedText = instruction.trim();
     processedText = processedText.replace(/^(-+\s*)+/, '').trim();
     const newMemoryItem = `- ${processedText}`;
 
-  const headerIndex = currentContent.indexOf(MEMORY_SECTION_HEADER);
+    const headerIndex = currentContent.indexOf(MEMORY_SECTION_HEADER);
 
-  if (headerIndex === -1) {
-    // Header not found, append header and then the entry
-    const separator = ensureNewlineSeparation(currentContent);
-    return (
-      currentContent +
-      `${separator}${MEMORY_SECTION_HEADER}\n${newMemoryItem}\n`
-    );
-  } else {
-    // Header found, find where to insert the new memory entry
-    const startOfSectionContent = headerIndex + MEMORY_SECTION_HEADER.length;
-    let endOfSectionIndex = currentContent.indexOf(
-      '\n## ',
-      startOfSectionContent,
-    );
-    if (endOfSectionIndex === -1) {
-      endOfSectionIndex = currentContent.length; // End of file
+    if (headerIndex === -1) {
+      // Header not found, append header and then the entry
+      const separator = ensureNewlineSeparation(currentContent);
+      return (
+        currentContent +
+        `${separator}${MEMORY_SECTION_HEADER}\n${newMemoryItem}\n`
+      );
+    } else {
+      // Header found, find where to insert the new memory entry
+      const startOfSectionContent = headerIndex + MEMORY_SECTION_HEADER.length;
+      let endOfSectionIndex = currentContent.indexOf(
+        '\n## ',
+        startOfSectionContent,
+      );
+      if (endOfSectionIndex === -1) {
+        endOfSectionIndex = currentContent.length; // End of file
+      }
+
+      const beforeSectionMarker = currentContent
+        .substring(0, startOfSectionContent)
+        .trimEnd();
+      let sectionContent = currentContent
+        .substring(startOfSectionContent, endOfSectionIndex)
+        .trimEnd();
+      const afterSectionMarker = currentContent.substring(endOfSectionIndex);
+
+      sectionContent += `\n${newMemoryItem}`;
+      return (
+        `${beforeSectionMarker}\n${sectionContent.trimStart()}\n${afterSectionMarker}`.trimEnd() +
+        '\n'
+      );
     }
-
-    const beforeSectionMarker = currentContent
-      .substring(0, startOfSectionContent)
-      .trimEnd();
-    let sectionContent = currentContent
-      .substring(startOfSectionContent, endOfSectionIndex)
-      .trimEnd();
-    const afterSectionMarker = currentContent.substring(endOfSectionIndex);
-
-    sectionContent += `\n${newMemoryItem}`;
-    return (
-      `${beforeSectionMarker}\n${sectionContent.trimStart()}\n${afterSectionMarker}`.trimEnd() +
-      '\n'
-    );
   }
 }
 
@@ -207,6 +297,13 @@ class MemoryToolInvocation extends BaseToolInvocation<
   ToolResult
 > {
   private static readonly allowlist: Set<string> = new Set();
+
+  constructor(
+    params: SaveMemoryParams,
+    private readonly tool: MemoryTool,
+  ) {
+    super(params);
+  }
 
   getDescription(): string {
     const memoryFilePath = getGlobalMemoryFilePath();
@@ -224,12 +321,12 @@ class MemoryToolInvocation extends BaseToolInvocation<
     }
 
     // Read current content of the memory file
-    const currentContent = await this.readMemoryFileContent();
+    const currentContent = await readMemoryFileContent();
 
     // Calculate the new content that will be written to the memory file
-    const newContent = this.computeNewContent(
+    const newContent = this.tool.computeNewContent(
       currentContent,
-      params.instruction,
+      this.params.instruction,
     );
 
     const fileName = path.basename(memoryFilePath);
@@ -310,137 +407,10 @@ class MemoryToolInvocation extends BaseToolInvocation<
       return {
         llmContent: JSON.stringify({
           success: false,
-          error: `Failed to save memory. Detail: ${errorMessage}`,
+          error: `Failed to Save Instruction. Detail: ${errorMessage}`,
         }),
-        returnDisplay: `Error saving memory: ${errorMessage}`,
+        returnDisplay: `Error saving instruction: ${errorMessage}`,
       };
     }
-  }
-}
-
-export class MemoryTool
-  extends BaseDeclarativeTool<SaveMemoryParams, ToolResult>
-  implements ModifiableDeclarativeTool<SaveMemoryParams>
-{
-  static readonly Name: string = memoryToolSchemaData.name!;
-  constructor() {
-    super(
-      MemoryTool.Name,
-      'Save Memory',
-      memoryToolDescription,
-      Kind.Think,
-      memoryToolSchemaData.parametersJsonSchema as Record<string, unknown>,
-    );
-  }
-
-  override validateToolParams(params: SaveMemoryParams): string | null {
-    const errors = SchemaValidator.validate(
-      this.schema.parametersJsonSchema,
-      params,
-    );
-    if (errors) {
-      return errors;
-    }
-
-    if (params.instruction.trim() === '') {
-      return 'Parameter "instruction" must be a non-empty string.';
-    }
-
-    return null;
-  }
-
-  protected createInvocation(params: SaveMemoryParams) {
-    return new MemoryToolInvocation(params);
-  }
-
-  static async performAddMemoryEntry(
-    text: string,
-    memoryFilePath: string,
-    fsAdapter: {
-      readFile: (path: string, encoding: 'utf-8') => Promise<string>;
-      writeFile: (
-        path: string,
-        data: string,
-        encoding: 'utf-8',
-      ) => Promise<void>;
-      mkdir: (
-        path: string,
-        options: { recursive: boolean },
-      ) => Promise<string | undefined>;
-    },
-  ): Promise<void> {
-    let processedText = text.trim();
-    // Remove leading hyphens and spaces that might be misinterpreted as markdown list items
-    processedText = processedText.replace(/^(-+\s*)+/, '').trim();
-    const newMemoryItem = `- ${processedText}`;
-
-    try {
-      await fsAdapter.mkdir(path.dirname(memoryFilePath), { recursive: true });
-      let content = '';
-      try {
-        content = await fsAdapter.readFile(memoryFilePath, 'utf-8');
-      } catch (_e) {
-        // File doesn't exist, will be created with header and item.
-      }
-
-      const headerIndex = content.indexOf(INSTRUCTION_SECTION_HEADER);
-
-      if (headerIndex === -1) {
-        // Header not found, append header and then the entry
-        const separator = ensureNewlineSeparation(content);
-        content += `${separator}${INSTRUCTION_SECTION_HEADER}\n${newMemoryItem}\n`;
-      } else {
-        // Header found, find where to insert the new memory entry
-        const startOfSectionContent =
-          headerIndex + INSTRUCTION_SECTION_HEADER.length;
-        let endOfSectionIndex = content.indexOf('\n## ', startOfSectionContent);
-        if (endOfSectionIndex === -1) {
-          endOfSectionIndex = content.length; // End of file
-        }
-
-        const beforeSectionMarker = content
-          .substring(0, startOfSectionContent)
-          .trimEnd();
-        let sectionContent = content
-          .substring(startOfSectionContent, endOfSectionIndex)
-          .trimEnd();
-        const afterSectionMarker = content.substring(endOfSectionIndex);
-
-        sectionContent += `\n${newMemoryItem}`;
-        content =
-          `${beforeSectionMarker}\n${sectionContent.trimStart()}\n${afterSectionMarker}`.trimEnd() +
-          '\n';
-      }
-      await fsAdapter.writeFile(memoryFilePath, content, 'utf-8');
-    } catch (error) {
-      console.error(
-        `[MemoryTool] Error adding instruction entry to ${memoryFilePath}:`,
-        error,
-      );
-      throw new Error(
-        `[MemoryTool] Failed to add instruction entry: ${error instanceof Error ? error.message : String(error)}`,
-      );
-    }
-  }
-
-  getModifyContext(_abortSignal: AbortSignal): ModifyContext<SaveMemoryParams> {
-    return {
-      getFilePath: (_params: SaveMemoryParams) => getGlobalMemoryFilePath(),
-      getCurrentContent: async (_params: SaveMemoryParams): Promise<string> =>
-        readMemoryFileContent(),
-      getProposedContent: async (params: SaveMemoryParams): Promise<string> => {
-        const currentContent = await this.readMemoryFileContent();
-        return this.computeNewContent(currentContent, params.instruction);
-      },
-      createUpdatedParams: (
-        _oldContent: string,
-        modifiedProposedContent: string,
-        originalParams: SaveMemoryParams,
-      ): SaveMemoryParams => ({
-        ...originalParams,
-        modified_by_user: true,
-        modified_content: modifiedProposedContent,
-      }),
-    };
   }
 }

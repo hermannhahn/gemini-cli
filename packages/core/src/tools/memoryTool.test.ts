@@ -320,7 +320,7 @@ ${INSTRUCTION_SECTION_HEADER}
     beforeEach(() => {
       memoryTool = new MemoryTool();
       // Clear the allowlist before each test
-      const invocation = memoryTool.build({ fact: 'mock-fact' });
+      const invocation = memoryTool.build({ instruction: 'mock-instruction' });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (invocation.constructor as any).allowlist.clear();
       // Mock fs.readFile to return empty string (file doesn't exist)
