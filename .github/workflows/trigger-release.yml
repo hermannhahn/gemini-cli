@@ -32,7 +32,7 @@ jobs:
     steps:
       - name: 'Checkout code'
         uses: 'actions/checkout@v4'
-        with::
+        with:
           ref: '${{ github.sha }}'
 
       - name: 'Get the version'
