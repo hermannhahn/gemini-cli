@@ -24,6 +24,7 @@ jobs:
           ref: 'hermannhahn/release'
           github_token: '${{ secrets.GITHUB_TOKEN }}'
           propagate_failure: true
+          wait_interval: 15
 
   wait_for_release:
     runs-on: 'ubuntu-latest'
