@@ -1,7 +1,7 @@
 name: 'Nightly Release'
 on:
   repository_dispatch:
-    types: [run-nightly-release]
+    types: ['run-nightly-release']
   workflow_dispatch:
     inputs:
       force_skip_tests:
@@ -16,25 +16,25 @@ jobs:
     runs-on: 'ubuntu-latest'
     environment:
       name: '${{ github.event.client_payload.version }} (nightly)'
-      url: ${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ steps.version.outputs.RELEASE_TAG }}
-    if: github.repository == 'hermannhahn/gemini-cli'
+      url: '${{ github.server_url }}/${{ github.repository }}/releases/tag/${{ steps.version.outputs.RELEASE_TAG }}'
+    if: '${{ github.repository }} == hermannhahn/gemini-cli'
     permissions:
-      contents: write
-      packages: write
-      id-token: write
+      contents: 'write'
+      packages: 'write'
+      id-token: 'write'
     outputs:
-      RELEASE_TAG: ${{ steps.version.outputs.RELEASE_TAG }}
-      RELEASE_VERSION: ${{ steps.version.outputs.RELEASE_VERSION }}
-      NPM_TAG: ${{ steps.version.outputs.NPM_TAG }}
+      RELEASE_TAG: '${{ steps.version.outputs.RELEASE_TAG }}'
+      RELEASE_VERSION: '${{ steps.version.outputs.RELEASE_VERSION }}'
+      NPM_TAG: '${{ steps.version.outputs.NPM_TAG }}'
 
     steps:
       - name: Checkout code
         uses: 'actions/checkout@v4'
         with:
-          ref: ${{ github.sha }} # Checkout a specific commit
+          ref: '${{ github.sha }}' # Checkout a specific commit
           fetch-depth: '0' # Required for notes generation
 
-      - name: Setup Node.js and npm
+      - name: 'Setup Node.js and npm'
         uses: 'actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8'
         with:
           node-version-file: '.nvmrc'
@@ -42,60 +42,60 @@ jobs:
           registry-url: 'https://registry.npmjs.org/'
           scope: '@hahnd'
 
-      - name: Install Dependencies
-        run: npm ci
+      - name: 'Install Dependencies'
+        run: 'npm ci'
 
-      - name: Get the version
-        id: version
+      - name: 'Get the version'
+        id: 'version'
         run: |
           VERSION_JSON=$(node scripts/get-nightly-version.js)
           echo "RELEASE_TAG=$(echo "$VERSION_JSON" | jq -r .releaseTag)" >> "$GITHUB_OUTPUT"
           echo "RELEASE_VERSION=$(echo "$VERSION_JSON" | jq -r .releaseVersion)" >> "$GITHUB_OUTPUT"
           echo "NPM_TAG=$(echo "$VERSION_JSON" | jq -r .npmTag)" >> "$GITHUB_OUTPUT"
 
-      - name: Run Tests
-        if: github.event.inputs.force_skip_tests != true
+      - name: 'Run Tests'
+        if: "'${{ github.event.inputs.force_skip_tests }}' != true"
         run: |
-          npm run preflight
+          'npm run preflight'
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_API_KEY: '${{ secrets.GEMINI_API_KEY }}'
 
-      - name: Configure Git User
+      - name: 'Configure Git User'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Update @hahnd/gemini-cli-core package.json version
+      - name: 'Update @hahnd/gemini-cli-core package.json version'
         run: |
           PACKAGE_JSON_PATH="packages/core/package.json"
           echo "Updating version in $PACKAGE_JSON_PATH to ${{ steps.version.outputs.RELEASE_VERSION }}"
           jq ".version=\"${{ steps.version.outputs.RELEASE_VERSION }}\"" "$PACKAGE_JSON_PATH" > tmp.$.json && mv tmp.$.json "$PACKAGE_JSON_PATH"
 
-      - name: Update @hahnd/geminid cli package.json version
+      - name: 'Update @hahnd/geminid cli package.json version'
         run: |
           PACKAGE_JSON_PATH="packages/cli/package.json"
           echo "Updating version in $PACKAGE_JSON_PATH to ${{ steps.version.outputs.RELEASE_VERSION }}"
           jq ".version=\"${{ steps.version.outputs.RELEASE_VERSION }}\"" "$PACKAGE_JSON_PATH" > tmp.$.json && mv tmp.$.json "$PACKAGE_JSON_PATH"
 
-      - name: Update @hahnd/geminid package.json version
+      - name: 'Update @hahnd/geminid package.json version'
         run: |
           PACKAGE_JSON_PATH="package.json"
           echo "Updating version in $PACKAGE_JSON_PATH to ${{ steps.version.outputs.RELEASE_VERSION }}"
           jq ".version=\"${{ steps.version.outputs.RELEASE_VERSION }}\"" "$PACKAGE_JSON_PATH" > tmp.$.json && mv tmp.$.json "$PACKAGE_JSON_PATH"
 
-      - name: Build and Prepare Packages
+      - name: 'Build and Prepare Packages'
         run: |
           npm run build:packages
           npm run prepare:package
 
-      - name: Publish @hahnd/gemini-cli-core
+      - name: 'Publish @hahnd/gemini-cli-core'
         run: |
           echo "Attempting to publish @hahnd/gemini-cli-core with version ${{ steps.version.outputs.RELEASE_VERSION }} and tag ${{ steps.version.outputs.NPM_TAG }}"
           npm publish --workspace=@hahnd/gemini-cli-core --tag=${{ steps.version.outputs.NPM_TAG }}
         env:
           NODE_AUTH_TOKEN: '${{ secrets.NPM_TOKEN }}'
 
-      - name: Install latest core package
+      - name: 'Install latest core package'
         run: 'npm install @hahnd/gemini-cli-core@${{ steps.version.outputs.RELEASE_VERSION }} --workspace=@hahnd/geminid --save-exact'
 
       - name: 'Publish @hahnd/geminid'
