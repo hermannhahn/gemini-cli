@@ -1,27 +1,27 @@
-name: "Trigger Nightly Release"
+name: 'Trigger Nightly Release'
 
 on:
   schedule:
     # Runs every day at midnight UTC for the nightly release.
-    - cron: "0 0 * * *"
+    - cron: '0 0 * * *'
   workflow_dispatch:
     inputs:
       force_skip_tests:
         description: 'Select to skip the "Run Tests" step in testing. Prod releases should run tests'
         required: false
-        type: "boolean"
+        type: 'boolean'
         default: false
 
 jobs:
   dispatch_release:
-    runs-on: "ubuntu-latest"
+    runs-on: 'ubuntu-latest'
     steps:
-      - name: "Checkout code"
-        uses: "actions/checkout@v4"
+      - name: 'Checkout code'
+        uses: 'actions/checkout@v4'
         with:
-          ref: "${{ github.sha }}"
+          ref: '${{ github.sha }}'
 
-      - name: "Get the version"
+      - name: 'Get the version'
         id: version
         run: |
           VERSION_JSON=$(node scripts/get-nightly-version.js)
@@ -29,10 +29,10 @@ jobs:
           echo "RELEASE_VERSION=$(echo "$VERSION_JSON" | jq -r .releaseVersion)" >> "$GITHUB_OUTPUT"
           echo "NPM_TAG=$(echo "$VERSION_JSON" | jq -r .npmTag)" >> "$GITHUB_OUTPUT"
 
-      - name: "Dispatch Nightly Release Workflow"
-        uses: "peter-evans/repository-dispatch@v2"
+      - name: 'Dispatch Nightly Release Workflow'
+        uses: 'peter-evans/repository-dispatch@v2'
         with:
-          token: "${{ secrets.GITHUB_TOKEN }}"
-          repository: "${{ github.repository }}"
-          event-type: "run-nightly-release"
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          repository: '${{ github.repository }}'
+          event-type: 'run-nightly-release'
           client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "version": "${{ steps.version.outputs.RELEASE_VERSION }}", "force_skip_tests": "${{ github.event.inputs.force_skip_tests }}" }'
