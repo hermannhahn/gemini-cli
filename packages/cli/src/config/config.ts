@@ -35,6 +35,8 @@ import { getCliVersion } from '../utils/version.js';
 import { loadSandboxConfig } from './sandboxConfig.js';
 import { resolvePath } from '../utils/resolvePath.js';
 
+import { isWorkspaceTrusted } from './trustedFolders.js';
+
 // Simple console logger for now - replace with actual logger if available
 const logger = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -63,6 +65,7 @@ export interface CliArgs {
   checkpointing: boolean | undefined;
   telemetryTarget: string | undefined;
   telemetryOtlpEndpoint: string | undefined;
+  telemetryOtlpProtocol: string | undefined;
   telemetryLogPrompts: boolean | undefined;
   telemetryOutfile: string | undefined;
   allowedMcpServerNames: string[] | undefined;
@@ -85,7 +88,7 @@ export async function parseArguments(): Promise<CliArgs> {
           alias: 'm',
           type: 'string',
           description: `Model`,
-          default: process.env.GEMINI_MODEL,
+          default: process.env.GEMINI_MODEL || DEFAULT_GEMINI_MODEL,
         })
         .option('narrator', {
           type: 'string',
@@ -175,6 +178,12 @@ export async function parseArguments(): Promise<CliArgs> {
           type: 'string',
           description:
             'Set the OTLP endpoint for telemetry. Overrides environment variables and settings files.',
+        })
+        .option('telemetry-otlp-protocol', {
+          type: 'string',
+          choices: ['grpc', 'http'],
+          description:
+            'Set the OTLP protocol for telemetry (grpc or http). Overrides settings files.',
         })
         .option('telemetry-log-prompts', {
           type: 'boolean',
@@ -310,6 +319,7 @@ export async function loadCliConfig(
   extensions: Extension[],
   sessionId: string,
   argv: CliArgs,
+  cwd: string = process.cwd(),
 ): Promise<Config> {
   const debugMode =
     argv.debug ||
@@ -322,8 +332,9 @@ export async function loadCliConfig(
   const ideMode = settings.ideMode ?? false;
 
   const folderTrustFeature = settings.folderTrustFeature ?? false;
-  const folderTrustSetting = settings.folderTrust ?? false;
+  const folderTrustSetting = settings.folderTrust ?? true;
   const folderTrust = folderTrustFeature && folderTrustSetting;
+  const trustedFolder = isWorkspaceTrusted(settings);
 
   const allExtensions = annotateActiveExtensions(
     extensions,
@@ -349,7 +360,7 @@ export async function loadCliConfig(
     (e) => e.contextFiles,
   );
 
-  const fileService = new FileDiscoveryService(process.cwd());
+  const fileService = new FileDiscoveryService(cwd);
 
   const fileFiltering = {
     ...DEFAULT_MEMORY_FILE_FILTERING_OPTIONS,
@@ -362,7 +373,7 @@ export async function loadCliConfig(
 
   // Call the (now wrapper) loadHierarchicalGeminiMemory which calls the server's version
   const { memoryContent, fileCount } = await loadHierarchicalGeminiMemory(
-    process.cwd(),
+    cwd,
     settings.loadMemoryFromIncludeDirectories ? includeDirectories : [],
     debugMode,
     fileService,
@@ -404,7 +415,7 @@ export async function loadCliConfig(
     !!argv.promptInteractive || (process.stdin.isTTY && question.length === 0);
   // In non-interactive mode, exclude tools that require a prompt.
   const extraExcludes: string[] = [];
-  if (!interactive) {
+  if (!interactive && !argv.experimentalAcp) {
     switch (approvalMode) {
       case ApprovalMode.DEFAULT:
         // In default non-interactive mode, all tools that require approval are excluded.
@@ -463,7 +474,7 @@ export async function loadCliConfig(
     sessionId,
     embeddingModel: DEFAULT_GEMINI_EMBEDDING_MODEL,
     sandbox: sandboxConfig,
-    targetDir: process.cwd(),
+    targetDir: cwd,
     includeDirectories,
     loadMemoryFromIncludeDirectories:
       settings.loadMemoryFromIncludeDirectories || false,
@@ -493,6 +504,11 @@ export async function loadCliConfig(
         argv.telemetryOtlpEndpoint ??
         process.env.OTEL_EXPORTER_OTLP_ENDPOINT ??
         settings.telemetry?.otlpEndpoint,
+      otlpProtocol: (['grpc', 'http'] as const).find(
+        (p) =>
+          p ===
+          (argv.telemetryOtlpProtocol ?? settings.telemetry?.otlpProtocol),
+      ),
       logPrompts: argv.telemetryLogPrompts ?? settings.telemetry?.logPrompts,
       outfile: argv.telemetryOutfile ?? settings.telemetry?.outfile,
     },
@@ -511,13 +527,13 @@ export async function loadCliConfig(
       process.env.https_proxy ||
       process.env.HTTP_PROXY ||
       process.env.http_proxy,
-    cwd: process.cwd(),
+    cwd,
     fileDiscoveryService: fileService,
     bugCommand: settings.bugCommand,
     model: argv.model || settings.model || DEFAULT_GEMINI_MODEL,
     extensionContextFilePaths,
     maxSessionTurns: settings.maxSessionTurns ?? -1,
-    experimentalAcp: argv.experimentalAcp || false,
+    experimentalZedIntegration: argv.experimentalAcp || false,
     listExtensions: argv.listExtensions || false,
     extensions: allExtensions,
     blockedMcpServers,
@@ -528,6 +544,7 @@ export async function loadCliConfig(
     folderTrustFeature,
     folderTrust,
     interactive,
+    trustedFolder,
   });
 }
 

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DeclarativeTool, Icon, ToolResult } from './tools.js';
+import { DeclarativeTool, Kind, ToolResult } from './tools.js';
 import { getProjectStmFile } from '../utils/paths.js';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
@@ -38,7 +38,7 @@ export class AddMemoryTool extends DeclarativeTool<
       'add_memory',
       'Add memory',
       'Saves memories to maintain context and enhance future interactions. Proactively record user preferences, project details, or key instructions. For optimal retrieval, use a `Key: Value` format (e.g., `User Name: John Doe`).',
-      Icon.LightBulb,
+      Kind.Think,
       {
         type: Type.OBJECT,
         properties: {
@@ -113,7 +113,7 @@ export class SearchMemoryTool extends DeclarativeTool<
       'search_memory',
       'Search for memory',
       'Searches memories for context. Use when understanding is uncertain. If initial query fails, try broader terms or multiple single-term queries. `query` parameter performs literal string match; it does not support boolean operators (e.g., `OR`).',
-      Icon.FileSearch,
+      Kind.Search,
       {
         type: Type.OBJECT,
         properties: {
@@ -265,7 +265,7 @@ export class DeleteMemoryTool extends DeclarativeTool<
       'delete_memory',
       'Delete memory',
       'Deletes a memory entry by its ID. Use for irrelevant/outdated entries or user-requested deletion.',
-      Icon.Trash,
+      Kind.Delete,
       {
         type: Type.OBJECT,
         properties: {

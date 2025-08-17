@@ -5,8 +5,8 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
-import { narratorCommand } from './narratorCommand';
-import { CommandContext } from './types';
+import { narratorCommand } from './narratorCommand.js';
+import { CommandContext } from './types.js';
 
 describe('narratorCommand', () => {
   it('should set narrator mode to "thinking" when --narrator is passed without a value', () => {
@@ -19,7 +19,9 @@ describe('narratorCommand', () => {
       },
     } as unknown as CommandContext; // Cast to CommandContext to satisfy type checking
 
-    narratorCommand.action(mockCommandContext, 'thinking');
+    if (narratorCommand.action) {
+      narratorCommand.action(mockCommandContext, 'thinking');
+    }
     expect(setNarratorModeMock).toHaveBeenCalledWith('thinking');
   });
 
@@ -33,7 +35,9 @@ describe('narratorCommand', () => {
       },
     } as unknown as CommandContext;
 
-    narratorCommand.action(mockCommandContext, 'off');
+    if (narratorCommand.action) {
+      narratorCommand.action(mockCommandContext, 'off');
+    }
     expect(setNarratorModeMock).toHaveBeenCalledWith('off');
   });
 
@@ -47,7 +51,9 @@ describe('narratorCommand', () => {
       },
     } as unknown as CommandContext;
 
-    narratorCommand.action(mockCommandContext, '');
+    if (narratorCommand.action) {
+      narratorCommand.action(mockCommandContext, '');
+    }
     expect(setNarratorModeMock).not.toHaveBeenCalled();
   });
 });
