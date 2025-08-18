@@ -68,6 +68,6 @@
   "engines": {
     "node": ">=20"
   },
-  "version": "0.1.38",
+  "version": "0.1.39",
   "homepage": "https://hermannhahn.github.io/gemini-cli/"
 }
