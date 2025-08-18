@@ -24,7 +24,7 @@
     "dist"
   ],
   "config": {
-    "sandboxImageUri": "us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox:0.1.21"
+    "sandboxImageUri": "us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox:0.1.38"
   },
   "dependencies": {
     "@google/gemini-cli-core": "file:../core",
@@ -81,6 +81,6 @@
   "engines": {
     "node": ">=20"
   },
-  "version": "0.1.37",
+  "version": "0.1.38",
   "homepage": "https://hermannhahn.github.io/gemini-cli/"
 }
