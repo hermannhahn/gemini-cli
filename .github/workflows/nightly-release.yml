@@ -57,7 +57,7 @@ jobs:
       - name: 'Run Tests'
         if: '${{ github.event.inputs.force_skip_tests != true }}'
         run: |
-          'npm run preflight'
+          npm run preflight
         env:
           GEMINI_API_KEY: '${{ secrets.GEMINI_API_KEY }}'
 
