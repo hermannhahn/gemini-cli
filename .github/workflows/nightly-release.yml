@@ -55,7 +55,7 @@ jobs:
           echo "NPM_TAG=$(echo "$VERSION_JSON" | jq -r .npmTag)" >> "$GITHUB_OUTPUT"
 
       - name: 'Run Tests'
-        if: ${{ github.event.inputs.force_skip_tests != true }}
+        if: '${{ github.event.inputs.force_skip_tests != true }}'
         run: |
           'npm run preflight'
         env:
