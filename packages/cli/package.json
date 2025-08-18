@@ -24,10 +24,10 @@
     "dist"
   ],
   "config": {
-    "sandboxImageUri": "us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox:0.1.38"
+    "sandboxImageUri": "us-docker.pkg.dev/gemini-code-dev/gemini-cli/sandbox:0.1.39"
   },
   "dependencies": {
-    "@google/gemini-cli-core": "file:../core",
+    "@hahnd/gemini-cli-core": "file:../core",
     "@google/genai": "1.13.0",
     "@iarna/toml": "^2.2.5",
     "@modelcontextprotocol/sdk": "^1.15.1",
@@ -81,6 +81,6 @@
   "engines": {
     "node": ">=20"
   },
-  "version": "0.1.38",
+  "version": "0.1.39",
   "homepage": "https://hermannhahn.github.io/gemini-cli/"
 }
