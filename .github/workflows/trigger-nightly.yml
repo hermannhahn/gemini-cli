@@ -30,7 +30,7 @@ jobs:
           echo "NPM_TAG=$(echo "$VERSION_JSON" | jq -r .npmTag)" >> "$GITHUB_OUTPUT"
 
       - name: 'Dispatch Nightly Release Workflow'
-        uses: 'peter-evans/repository-dispatch@26b39ed'
+        uses: 'peter-evans/repository-dispatch@26b39ed245ab8f31526069329e112ab2fb224588'
         with:
           token: '${{ secrets.GITHUB_TOKEN }}'
           repository: '${{ github.repository }}'
