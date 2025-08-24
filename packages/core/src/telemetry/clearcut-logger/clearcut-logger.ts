@@ -80,7 +80,7 @@ export interface LogRequest {
 
 /**
  * Determine the surface that the user is currently using.  Surface is effectively the
- * distribution channel in which the user is using Gemini CLI.  Gemini CLI comes bundled
+ * distribution channel in which the user is using Geminid CLI.  Geminid CLI comes bundled
  * w/ Firebase Studio and Cloud Shell.  Users that manually download themselves will
  * likely be "SURFACE_NOT_SET".
  *

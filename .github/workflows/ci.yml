@@ -1,14 +1,12 @@
-name: 'Gemini CLI CI'
+name: 'Geminid CLI CI'
 
 on:
   push:
     branches:
-      - 'main'
-      - 'release'
+      - 'hermannhahn/release'
   pull_request:
     branches:
-      - 'main'
-      - 'release'
+      - 'hermannhahn/main'
   merge_group:
 
 concurrency:

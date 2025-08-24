@@ -20,14 +20,14 @@ import {
   Config,
   Config as ActualConfigType,
   ApprovalMode,
-} from '@google/gemini-cli-core';
+} from '@hahnd/geminid-core';
 import { useKeypress, Key } from './useKeypress.js';
 
 vi.mock('./useKeypress.js');
 
-vi.mock('@google/gemini-cli-core', async () => {
+vi.mock('@hahnd/geminid-core', async () => {
   const actualServerModule = (await vi.importActual(
-    '@google/gemini-cli-core',
+    '@hahnd/geminid-core',
   )) as Record<string, unknown>;
   return {
     ...actualServerModule,

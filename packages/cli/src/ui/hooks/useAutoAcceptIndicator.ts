@@ -5,7 +5,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { ApprovalMode, type Config } from '@google/gemini-cli-core';
+import { ApprovalMode, type Config } from '@hahnd/geminid-core';
 import { useKeypress } from './useKeypress.js';
 
 export interface UseAutoAcceptIndicatorArgs {

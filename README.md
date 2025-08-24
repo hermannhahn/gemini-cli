@@ -1,14 +1,14 @@
-# Gemini CLI
+# Geminid CLI
 
-[![Gemini CLI CI](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml)
-[![Version](https://img.shields.io/npm/v/@google/gemini-cli)](https://www.npmjs.com/package/@google/gemini-cli)
-[![License](https://img.shields.io/github/license/google-gemini/gemini-cli)](https://github.com/google-gemini/gemini-cli/blob/main/LICENSE)
+[![Geminid CLI CI](https://github.com/hermannhahn/gemini-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/hermannhahn/gemini-cli/actions/workflows/ci.yml)
+[![Version](https://img.shields.io/npm/v/@hahnd/geminid)](https://www.npmjs.com/package/@hahnd/geminid)
+[![License](https://img.shields.io/github/license/hermannhahn/gemini-cli)](https://github.com/hermannhahn/gemini-cli/blob/main/LICENSE)
 
-![Gemini CLI Screenshot](./docs/assets/gemini-screenshot.png)
+![Geminid CLI Screenshot](./docs/assets/gemini-screenshot.png)
 
-Gemini CLI is an open-source AI agent that brings the power of Gemini directly into your terminal. It provides lightweight access to Gemini, giving you the most direct path from your prompt to our model.
+Geminid CLI is an open-source AI agent that brings the power of Gemini directly into your terminal. It provides lightweight access to Gemini, giving you the most direct path from your prompt to our model.
 
-## 🚀 Why Gemini CLI?
+## 🚀 Why Geminid CLI?
 
 - **🎯 Free tier**: 60 requests/min and 1,000 requests/day with personal Google account
 - **🧠 Powerful Gemini 2.5 Pro**: Access to 1M token context window
@@ -25,13 +25,13 @@ Gemini CLI is an open-source AI agent that brings the power of Gemini directly i
 
 ```bash
 # Using npx (no installation required)
-npx https://github.com/google-gemini/gemini-cli
+npx https://github.com/hermannhahn/gemini-cli
 ```
 
 #### Install globally with npm
 
 ```bash
-npm install -g @google/gemini-cli
+npm install -g @hahnd/geminid
 ```
 
 #### Install globally with Homebrew (macOS/Linux)
@@ -54,7 +54,7 @@ See [Releases](./docs/releases.md) for more details.
 New preview releases will be published each week at UTC 2359 on Tuesdays. These releases will not have been fully vetted and may contain regressions or other outstanding issues. Please help us test and install with `preview` tag.
 
 ```bash
-npm install -g @google/gemini-cli@preview
+npm install -g @hahnd/geminid@preview
 ```
 
 ### Stable
@@ -62,7 +62,7 @@ npm install -g @google/gemini-cli@preview
 - New stable releases will be published each week at UTC 2000 on Tuesdays, this will be the full promotion of last week's `preview` release + any bug fixes and validations. Use `latest` tag.
 
 ```bash
-npm install -g @google/gemini-cli@latest
+npm install -g @hahnd/geminid@latest
 ```
 
 ### Nightly
@@ -70,7 +70,7 @@ npm install -g @google/gemini-cli@latest
 - New releases will be published each week at UTC 0000 each day, This will be all changes from the main branch as represented at time of release. It should be assumed there are pending validations and issues. Use `nightly` tag.
 
 ```bash
-npm install -g @google/gemini-cli@nightly
+npm install -g @hahnd/geminid@nightly
 ```
 
 ## 📋 Key Features
@@ -95,7 +95,7 @@ npm install -g @google/gemini-cli@nightly
 
 ### GitHub Integration
 
-Integrate Gemini CLI directly into your GitHub workflows with [**Gemini CLI GitHub Action**](https://github.com/google-github-actions/run-gemini-cli):
+Integrate Geminid CLI directly into your GitHub workflows with [**Geminid CLI GitHub Action**](https://github.com/google-github-actions/run-gemini-cli):
 
 - **Pull Request Reviews**: Automated code review with contextual feedback and suggestions
 - **Issue Triage**: Automated labeling and prioritization of GitHub issues based on content analysis
@@ -117,7 +117,7 @@ Choose the authentication method that best fits your needs:
 - **No API key management** - just sign in with your Google account
 - **Automatic updates** to latest models
 
-#### Start Gemini CLI, then choose OAuth and follow the browser authentication flow when prompted
+#### Start Geminid CLI, then choose OAuth and follow the browser authentication flow when prompted
 
 ```bash
 gemini
@@ -207,7 +207,7 @@ gemini
 #### Analyze existing code
 
 ```bash
-git clone https://github.com/google-gemini/gemini-cli
+git clone https://github.com/hermannhahn/gemini-cli
 cd gemini-cli
 gemini
 > Give me a summary of all of the changes that went in yesterday
@@ -241,7 +241,7 @@ gemini
 
 ### Advanced Topics
 
-- [**Architecture Overview**](./docs/architecture.md) - How Gemini CLI works
+- [**Architecture Overview**](./docs/architecture.md) - How Geminid CLI works
 - [**IDE Integration**](./docs/ide-integration.md) - VS Code companion
 - [**Sandboxing & Security**](./docs/sandbox.md) - Safe execution environments
 - [**Enterprise Deployment**](./docs/deployment.md) - Docker, system-wide config
@@ -263,7 +263,7 @@ gemini
 
 ### Using MCP Servers
 
-Configure MCP servers in `~/.gemini/settings.json` to extend Gemini CLI with custom tools:
+Configure MCP servers in `~/.gemini/settings.json` to extend Geminid CLI with custom tools:
 
 ```text
 > @github List my open pull requests
@@ -275,7 +275,7 @@ See the [MCP Server Integration guide](./docs/tools/mcp-server.md) for setup ins
 
 ## 🤝 Contributing
 
-We welcome contributions! Gemini CLI is fully open source (Apache 2.0), and we encourage the community to:
+We welcome contributions! Geminid CLI is fully open source (Apache 2.0), and we encourage the community to:
 
 - Report bugs and suggest features
 - Improve documentation
@@ -289,9 +289,9 @@ Check our [Official Roadmap](https://github.com/orgs/google-gemini/projects/11/)
 ## 📖 Resources
 
 - **[Official Roadmap](./ROADMAP.md)** - See what's coming next
-- **[NPM Package](https://www.npmjs.com/package/@google/gemini-cli)** - Package registry
-- **[GitHub Issues](https://github.com/google-gemini/gemini-cli/issues)** - Report bugs or request features
-- **[Security Advisories](https://github.com/google-gemini/gemini-cli/security/advisories)** - Security updates
+- **[NPM Package](https://www.npmjs.com/package/@hahnd/geminid)** - Package registry
+- **[GitHub Issues](https://github.com/hermannhahn/gemini-cli/issues)** - Report bugs or request features
+- **[Security Advisories](https://github.com/hermannhahn/gemini-cli/security/advisories)** - Security updates
 
 ### Uninstall
 

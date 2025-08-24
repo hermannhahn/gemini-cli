@@ -14,11 +14,11 @@ import {
   getErrorMessage,
   loadServerHierarchicalMemory,
   type FileDiscoveryService,
-} from '@google/gemini-cli-core';
+} from '@hahnd/geminid-core';
 
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+vi.mock('@hahnd/geminid-core', async (importOriginal) => {
   const original =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@hahnd/geminid-core')>();
   return {
     ...original,
     getErrorMessage: vi.fn((error: unknown) => {

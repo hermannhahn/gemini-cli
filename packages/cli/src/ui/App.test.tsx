@@ -17,7 +17,7 @@ import {
   GeminiClient,
   ideContext,
   type AuthType,
-} from '@google/gemini-cli-core';
+} from '@hahnd/geminid-core';
 import { LoadedSettings, SettingsFile, Settings } from '../config/settings.js';
 import process from 'node:process';
 import { useGeminiStream } from './hooks/useGeminiStream.js';
@@ -90,10 +90,10 @@ interface MockServerConfig {
   getScreenReader: Mock<() => boolean>;
 }
 
-// Mock @google/gemini-cli-core and its Config class
-vi.mock('@google/gemini-cli-core', async (importOriginal) => {
+// Mock @hahnd/geminid-core and its Config class
+vi.mock('@hahnd/geminid-core', async (importOriginal) => {
   const actualCore =
-    await importOriginal<typeof import('@google/gemini-cli-core')>();
+    await importOriginal<typeof import('@hahnd/geminid-core')>();
   const ConfigClassMock = vi
     .fn()
     .mockImplementation((optionsPassedToConstructor) => {
@@ -265,7 +265,7 @@ vi.mock('../hooks/useTerminalSize.js', () => ({
 
 const mockedCheckForUpdates = vi.mocked(checkForUpdates);
 const { isGitRepository: mockedIsGitRepository } = vi.mocked(
-  await import('@google/gemini-cli-core'),
+  await import('@hahnd/geminid-core'),
 );
 
 vi.mock('node:child_process');
@@ -370,11 +370,11 @@ describe('App UI', () => {
       mockedIsGitRepository.mockResolvedValue(true);
       const info: UpdateObject = {
         update: {
-          name: '@google/gemini-cli',
+          name: '@hahnd/geminid',
           latest: '1.1.0',
           current: '1.0.0',
         },
-        message: 'Gemini CLI update available!',
+        message: 'Geminid CLI update available!',
       };
       mockedCheckForUpdates.mockResolvedValue(info);
       const { spawn } = await import('node:child_process');
@@ -397,7 +397,7 @@ describe('App UI', () => {
       mockedIsGitRepository.mockResolvedValue(false);
       const info: UpdateObject = {
         update: {
-          name: '@google/gemini-cli',
+          name: '@hahnd/geminid',
           latest: '1.1.0',
           current: '1.0.0',
         },
@@ -427,7 +427,7 @@ describe('App UI', () => {
       mockedIsGitRepository.mockResolvedValue(false);
       const info: UpdateObject = {
         update: {
-          name: '@google/gemini-cli',
+          name: '@hahnd/geminid',
           latest: '1.1.0',
           current: '1.0.0',
         },
@@ -457,7 +457,7 @@ describe('App UI', () => {
       mockedIsGitRepository.mockResolvedValue(false);
       const info: UpdateObject = {
         update: {
-          name: '@google/gemini-cli',
+          name: '@hahnd/geminid',
           latest: '1.1.0',
           current: '1.0.0',
         },
@@ -490,7 +490,7 @@ describe('App UI', () => {
       process.env.GEMINI_CLI_DISABLE_AUTOUPDATER = 'true';
       const info: UpdateObject = {
         update: {
-          name: '@google/gemini-cli',
+          name: '@hahnd/geminid',
           latest: '1.1.0',
           current: '1.0.0',
         },

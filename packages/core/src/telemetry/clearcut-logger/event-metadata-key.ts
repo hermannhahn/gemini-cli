@@ -151,16 +151,16 @@ export enum EventMetadataKey {
   // Logs the total number of Google accounts ever used.
   GEMINI_CLI_GOOGLE_ACCOUNTS_COUNT = 37,
 
-  // Logs the Surface from where the Gemini CLI was invoked, eg: VSCode.
+  // Logs the Surface from where the Geminid CLI was invoked, eg: VSCode.
   GEMINI_CLI_SURFACE = 39,
 
   // Logs the session id
   GEMINI_CLI_SESSION_ID = 40,
 
-  // Logs the Gemini CLI version
+  // Logs the Geminid CLI version
   GEMINI_CLI_VERSION = 54,
 
-  // Logs the Gemini CLI Git commit hash
+  // Logs the Geminid CLI Git commit hash
   GEMINI_CLI_GIT_COMMIT_HASH = 55,
 
   // ==========================================================================

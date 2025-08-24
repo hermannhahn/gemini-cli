@@ -8,7 +8,7 @@ import React from 'react';
 import { Box, Text } from 'ink';
 import { Colors } from '../colors.js';
 import { GIT_COMMIT_INFO } from '../../generated/git-commit.js';
-import { UserTierId } from '@google/gemini-cli-core';
+import { UserTierId } from '@hahnd/geminid-core';
 import { getLicenseDisplay } from '../../utils/license.js';
 
 interface AboutBoxProps {
@@ -42,7 +42,7 @@ export const AboutBox: React.FC<AboutBoxProps> = ({
   >
     <Box marginBottom={1}>
       <Text bold color={Colors.AccentPurple}>
-        About Gemini CLI
+        About Geminid CLI
       </Text>
     </Box>
     <Box flexDirection="row">

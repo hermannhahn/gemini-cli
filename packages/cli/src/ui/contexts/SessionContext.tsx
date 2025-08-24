@@ -18,7 +18,7 @@ import {
   SessionMetrics,
   ModelMetrics,
   sessionId,
-} from '@google/gemini-cli-core';
+} from '@hahnd/geminid-core';
 
 // --- Interface Definitions ---
 

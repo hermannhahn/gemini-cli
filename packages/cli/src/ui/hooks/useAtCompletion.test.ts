@@ -9,7 +9,7 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { renderHook, waitFor, act } from '@testing-library/react';
 import { useAtCompletion } from './useAtCompletion.js';
-import { Config, FileSearch, FileSearchFactory } from '@google/gemini-cli-core';
+import { Config, FileSearch, FileSearchFactory } from '@hahnd/geminid-core';
 import {
   createTmpDir,
   cleanupTmpDir,

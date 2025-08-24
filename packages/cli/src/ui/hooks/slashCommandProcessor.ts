@@ -17,7 +17,7 @@ import {
   SlashCommandStatus,
   ToolConfirmationOutcome,
   Storage,
-} from '@google/gemini-cli-core';
+} from '@hahnd/geminid-core';
 import { useSessionStats } from '../contexts/SessionContext.js';
 import { runExitCleanup } from '../../utils/cleanup.js';
 import {

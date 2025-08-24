@@ -17,7 +17,7 @@ import {
 
 const mockIsBinary = vi.hoisted(() => vi.fn());
 const mockShellExecutionService = vi.hoisted(() => vi.fn());
-vi.mock('@google/gemini-cli-core', () => ({
+vi.mock('@hahnd/geminid-core', () => ({
   ShellExecutionService: { execute: mockShellExecutionService },
   isBinary: mockIsBinary,
 }));
@@ -35,7 +35,7 @@ import {
   type GeminiClient,
   type ShellExecutionResult,
   type ShellOutputEvent,
-} from '@google/gemini-cli-core';
+} from '@hahnd/geminid-core';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';

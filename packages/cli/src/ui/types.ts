@@ -8,7 +8,7 @@ import {
   ToolCallConfirmationDetails,
   ToolResultDisplay,
   UserTierId,
-} from '@google/gemini-cli-core';
+} from '@hahnd/geminid-core';
 
 // Only defining the state enum needed by the UI
 export enum StreamingState {

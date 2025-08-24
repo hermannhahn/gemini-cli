@@ -1,13 +1,13 @@
 {
   "name": "gemini-cli-vscode-ide-companion",
-  "displayName": "Gemini CLI Companion",
-  "description": "Enable Gemini CLI with direct access to your IDE workspace.",
-  "version": "0.1.21",
+  "displayName": "Geminid CLI Companion",
+  "description": "Enable Geminid CLI with direct access to your IDE workspace.",
+  "version": "0.1.39",
   "publisher": "google",
   "icon": "assets/icon.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/google-gemini/gemini-cli.git",
+    "url": "https://github.com/hermannhahn/gemini-cli.git",
     "directory": "packages/vscode-ide-companion"
   },
   "engines": {
@@ -39,21 +39,21 @@
     "commands": [
       {
         "command": "gemini.diff.accept",
-        "title": "Gemini CLI: Accept Diff",
+        "title": "Geminid CLI: Accept Diff",
         "icon": "$(check)"
       },
       {
         "command": "gemini.diff.cancel",
-        "title": "Gemini CLI: Close Diff Editor",
+        "title": "Geminid CLI: Close Diff Editor",
         "icon": "$(close)"
       },
       {
         "command": "gemini-cli.runGeminiCLI",
-        "title": "Gemini CLI: Run"
+        "title": "Geminid CLI: Run"
       },
       {
         "command": "gemini-cli.showNotices",
-        "title": "Gemini CLI: View Third-Party Notices"
+        "title": "Geminid CLI: View Third-Party Notices"
       }
     ],
     "menus": {

@@ -1,10 +1,10 @@
 {
-  "name": "@google/gemini-cli-core",
-  "version": "0.1.21",
-  "description": "Gemini CLI Core",
+  "name": "@hahnd/geminid-core",
+  "version": "0.1.39",
+  "description": "Geminid CLI Core",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/google-gemini/gemini-cli.git"
+    "url": "git+https://github.com/hermannhahn/gemini-cli.git"
   },
   "type": "module",
   "main": "dist/index.js",

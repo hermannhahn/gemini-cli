@@ -15,7 +15,7 @@ import {
   ToolRegistry,
   COMMON_IGNORE_PATTERNS,
   DEFAULT_FILE_EXCLUDES,
-} from '@google/gemini-cli-core';
+} from '@hahnd/geminid-core';
 import * as os from 'os';
 import { ToolCallStatus } from '../types.js';
 import { UseHistoryManagerReturn } from './useHistoryManager.js';
