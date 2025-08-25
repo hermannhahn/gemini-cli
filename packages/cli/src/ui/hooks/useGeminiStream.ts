@@ -21,12 +21,13 @@ import {
   logUserPrompt,
   GitService,
   EditorType,
-  ThoughtSummary,
   UnauthorizedError,
   UserPromptEvent,
   DEFAULT_GEMINI_FLASH_MODEL,
   parseAndFormatApiError,
+  ThoughtSummary,
 } from '@hahnd/geminid-core';
+
 import { type Part, type PartListUnion, FinishReason } from '@google/genai';
 import {
   StreamingState,
@@ -83,6 +84,11 @@ export const useGeminiStream = (
   setModelSwitchedFromQuotaError: React.Dispatch<React.SetStateAction<boolean>>,
   onEditorClose: () => void,
   onCancelSubmit: () => void,
+  narratorMode: 'off' | 'thinking' | 'response',
+  generateAndPlayTts: (
+    text: string,
+    mode: 'thinking' | 'response',
+  ) => Promise<void>,
 ) => {
   const [initError, setInitError] = useState<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -371,6 +377,9 @@ export const useGeminiStream = (
           type: item?.type as 'gemini' | 'gemini_content',
           text: newGeminiMessageBuffer,
         }));
+        if (narratorMode === 'response' && newGeminiMessageBuffer) {
+          void generateAndPlayTts(newGeminiMessageBuffer, 'response');
+        }
       } else {
         // This indicates that we need to split up this Gemini Message.
         // Splitting a message is primarily a performance consideration. There is a
@@ -391,12 +400,21 @@ export const useGeminiStream = (
           },
           userMessageTimestamp,
         );
+        if (narratorMode === 'response' && beforeText) {
+          void generateAndPlayTts(beforeText, 'response');
+        }
         setPendingHistoryItem({ type: 'gemini_content', text: afterText });
         newGeminiMessageBuffer = afterText;
       }
       return newGeminiMessageBuffer;
     },
-    [addItem, pendingHistoryItemRef, setPendingHistoryItem],
+    [
+      addItem,
+      pendingHistoryItemRef,
+      setPendingHistoryItem,
+      narratorMode,
+      generateAndPlayTts,
+    ],
   );
 
   const handleUserCancelledEvent = useCallback(
@@ -550,6 +568,9 @@ export const useGeminiStream = (
         switch (event.type) {
           case ServerGeminiEventType.Thought:
             setThought(event.value);
+            if (narratorMode === 'thinking' && event.value.description) {
+              void generateAndPlayTts(event.value.description, 'thinking');
+            }
             break;
           case ServerGeminiEventType.Content:
             geminiMessageBuffer = handleContentEvent(
@@ -608,6 +629,8 @@ export const useGeminiStream = (
       handleChatCompressionEvent,
       handleFinishedEvent,
       handleMaxSessionTurnsEvent,
+      narratorMode,
+      generateAndPlayTts,
     ],
   );
 

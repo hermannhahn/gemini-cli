@@ -9,8 +9,7 @@ const { logSlashCommand } = vi.hoisted(() => ({
 }));
 
 vi.mock('@hahnd/geminid-core', async (importOriginal) => {
-  const original =
-    await importOriginal<typeof import('@hahnd/geminid-core')>();
+  const original = await importOriginal<typeof import('@hahnd/geminid-core')>();
 
   return {
     ...original,

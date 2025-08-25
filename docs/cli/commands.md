@@ -86,6 +86,24 @@ Slash commands provide meta-level control over the CLI itself.
       - **Description:** Reload the hierarchical instructional memory from all `GEMINI.md` files found in the configured locations (global, project/ancestors, and sub-directories). This command updates the model with the latest `GEMINI.md` content.
     - **Note:** For more details on how `GEMINI.md` files contribute to hierarchical memory, see the [CLI Configuration documentation](./configuration.md#4-geminimd-files-hierarchical-instructional-context).
 
+- **`/narrator`**
+  - **Description:** Sets the narrator mode (off, thinking, response).
+  - **Usage:** `/narrator <mode>` where `<mode>` can be `off`, `thinking`, or `response`.
+  - **Details:**
+    - `off`: Desativa a narração.
+    - `thinking`: Ativa a narração apenas para os pensamentos do Gemini.
+    - `response`: Ativa a narração para as respostas completas do Gemini.
+  - **Note:** Requer as variáveis de ambiente `MICROSOFT_TTS_KEY` e `MICROSOFT_TTS_REGION` configuradas para funcionar. Opcionalmente, `MICROSOFT_TTS_THINKING`, `MICROSOFT_TTS_VOICE` e `MICROSOFT_TTS_LANGUAGE` podem ser configuradas para personalizar a voz e o idioma.
+
+- **`/narrator`**
+  - **Description:** Sets the narrator mode (off, thinking, response).
+  - **Usage:** `/narrator <mode>` where `<mode>` can be `off`, `thinking`, or `response`.
+  - **Details:**
+    - `off`: Desativa a narração.
+    - `thinking`: Ativa a narração apenas para os pensamentos do Gemini.
+    - `response`: Ativa a narração para as respostas completas do Gemini.
+  - **Note:** Requer as variáveis de ambiente `MICROSOFT_TTS_KEY` e `MICROSOFT_TTS_REGION` configuradas para funcionar. Opcionalmente, `MICROSOFT_TTS_THINKING`, `MICROSOFT_TTS_VOICE` e `MICROSOFT_TTS_LANGUAGE` podem ser configuradas para personalizar a voz e o idioma.
+
 - **`/restore`**
   - **Description:** Restores the project files to the state they were in just before a tool was executed. This is particularly useful for undoing file edits made by a tool. If run without a tool call ID, it will list available checkpoints to restore from.
   - **Usage:** `/restore [tool_call_id]`

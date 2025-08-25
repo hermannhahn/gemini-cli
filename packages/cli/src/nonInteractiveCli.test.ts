@@ -20,8 +20,7 @@ import { vi } from 'vitest';
 // Mock core modules
 vi.mock('./ui/hooks/atCommandProcessor.js');
 vi.mock('@hahnd/geminid-core', async (importOriginal) => {
-  const original =
-    await importOriginal<typeof import('@hahnd/geminid-core')>();
+  const original = await importOriginal<typeof import('@hahnd/geminid-core')>();
   return {
     ...original,
     executeToolCall: vi.fn(),

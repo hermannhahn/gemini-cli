@@ -55,6 +55,7 @@ export const useSlashCommandProcessor = (
   toggleVimEnabled: () => Promise<boolean>,
   setIsProcessing: (isProcessing: boolean) => void,
   setGeminiMdFileCount: (count: number) => void,
+  setNarratorMode: (mode: 'off' | 'thinking' | 'response') => void,
 ) => {
   const session = useSessionStats();
   const [commands, setCommands] = useState<readonly SlashCommand[]>([]);
@@ -183,6 +184,7 @@ export const useSlashCommandProcessor = (
         toggleVimEnabled,
         setGeminiMdFileCount,
         reloadCommands,
+        setNarratorMode,
       },
       session: {
         stats: session.stats,
@@ -207,6 +209,7 @@ export const useSlashCommandProcessor = (
       sessionShellAllowlist,
       setGeminiMdFileCount,
       reloadCommands,
+      setNarratorMode,
     ],
   );
 

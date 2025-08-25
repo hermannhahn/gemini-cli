@@ -19,8 +19,7 @@ import { MessageActionReturn } from './types.js';
 import { Type, CallableTool } from '@google/genai';
 
 vi.mock('@hahnd/geminid-core', async (importOriginal) => {
-  const actual =
-    await importOriginal<typeof import('@hahnd/geminid-core')>();
+  const actual = await importOriginal<typeof import('@hahnd/geminid-core')>();
   return {
     ...actual,
     getMCPServerStatus: vi.fn(),

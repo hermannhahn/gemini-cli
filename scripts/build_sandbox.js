@@ -86,12 +86,9 @@ if (!argv.s) {
 console.log('packing @hahnd/geminid ...');
 const cliPackageDir = join('packages', 'cli');
 rmSync(join(cliPackageDir, 'dist', 'google-gemini-cli-*.tgz'), { force: true });
-execSync(
-  `npm pack -w @hahnd/geminid --pack-destination ./packages/cli/dist`,
-  {
-    stdio: 'ignore',
-  },
-);
+execSync(`npm pack -w @hahnd/geminid --pack-destination ./packages/cli/dist`, {
+  stdio: 'ignore',
+});
 
 console.log('packing @hahnd/geminid-core ...');
 const corePackageDir = join('packages', 'core');

@@ -62,6 +62,7 @@ export interface CommandContext {
     toggleVimEnabled: () => Promise<boolean>;
     setGeminiMdFileCount: (count: number) => void;
     reloadCommands: () => void;
+    setNarratorMode: (mode: 'off' | 'thinking' | 'response') => void;
   };
   // Session-specific data
   session: {

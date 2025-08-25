@@ -54,8 +54,10 @@ export const createMockCommandContext = (
       loadHistory: vi.fn(),
       toggleCorgiMode: vi.fn(),
       toggleVimEnabled: vi.fn(),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any,
+      setGeminiMdFileCount: vi.fn(),
+      reloadCommands: vi.fn(),
+      setNarratorMode: vi.fn(),
+    },
     session: {
       sessionShellAllowlist: new Set<string>(),
       stats: {
