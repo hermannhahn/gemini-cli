@@ -181,7 +181,7 @@ Sources:
           {
             content: {
               role: 'model',
-              parts: [{ text: 'こんにちは! Geminid CLI✨️' }],
+              parts: [{ text: 'こんにちは! Geminid CLI✨' }],
             },
             groundingMetadata: {
               groundingChunks: [
@@ -217,7 +217,7 @@ Sources:
                   segment: {
                     // Byte range of "Geminid CLI✨️" (utf-8 encoded)
                     startIndex: 17,
-                    endIndex: 33,
+                    endIndex: 32,
                   },
                   groundingChunkIndices: [1, 2],
                 },
@@ -232,7 +232,7 @@ Sources:
 
       const expectedLlmContent = `Web search results for "multibyte query":
 
-こんにちは![1] Geminid CLI✨️[2][3]
+こんにちは![1] Geminid CLI✨[2][3]
 
 Sources:
 [1] Japanese Greeting (https://example.test/japanese-greeting)

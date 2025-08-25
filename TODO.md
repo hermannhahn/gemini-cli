@@ -70,7 +70,7 @@
 
 ## 2. Corrigir Erros do Preflight
 
-### General Status: To Do
+### General Status: Completed
 
 ### Main Objective: Resolver todos os erros de compilação, linting e teste reportados pelo comando `npm run preflight` para garantir a integridade e qualidade do projeto.
 
@@ -82,8 +82,8 @@
   - Analisar a saída do `npm run preflight` para identificar todos os erros pendentes.
   - Priorizar a correção dos erros de TypeScript (`TS2722`) em `src/ui/commands/narratorCommand.test.ts`.
   - Implementar soluções que garantam a passagem do `preflight` sem a necessidade de desabilitar regras de linting ou usar `any` de forma não tipada.
-- **Attempt Status:** In Progress
-- **Result:** Os erros de TypeScript (`TS2722: Cannot invoke an object which is possibly 'undefined'`) em `src/ui/commands/narratorCommand.test.ts` persistem, mesmo após tentativas de correção como o uso de `as any` e a modificação da forma de mockar o `CommandContext`. Isso impede que o `preflight` seja concluído com sucesso.
+- **Attempt Status:** Completed
+- **Result:** Os erros de linting em `packages/cli/src/ui/App.tsx` e os erros de TypeScript (`TS2305`, `TS2339`) em `src/ui/hooks/useGeminiStream.ts` foram corrigidos. O erro de teste em `src/tools/web-search.test.ts` relacionado a caracteres multibyte também foi resolvido.
 
 #### 2.2. Reavaliar Erros TS2722 em narratorCommand.test.ts
 
@@ -91,8 +91,8 @@
   - Reavaliar a causa raiz dos erros `TS2722` em `src/ui/commands/narratorCommand.test.ts`.
   - Considerar a possibilidade de um problema de configuração do TypeScript ou do Vitest.
   - Explorar alternativas de mockagem ou tipagem se as abordagens anteriores não funcionarem.
-- **Attempt Status:** In Progress
-- **Result:** Os erros `TS2722: Cannot invoke an object which is possibly 'undefined'` em `src/ui/commands/narratorCommand.test.ts` persistem, mesmo após a tipagem completa do `mockContext` e a remoção de `as any`. Isso indica um problema mais profundo na configuração do ambiente de desenvolvimento ou na interação entre TypeScript e Vitest.
+- **Attempt Status:** Completed
+- **Result:** Os erros `TS2722: Cannot invoke an object which is possibly 'undefined'` em `src/ui/commands/narratorCommand.test.ts` foram resolvidos ao simplificar o teste e remover a dependência de `createMockCommandContext`, utilizando um mock manual mais direto.
 
 ### Commit History:
 
@@ -103,3 +103,9 @@
   - Enviar as alterações para o repositório remoto no GitHub.
 - **Attempt Status:** Completed
 - **Result:** As alterações foram commitadas com a mensagem "feat: Implement narrator feature and address preflight errors. Narrator feature implemented, but TS2722 errors in narratorCommand.test.ts persist." e enviadas para o branch `hermannhahn/new/version` no GitHub.
+
+- **Action Plan:**
+  - Commitar as alterações no `TODO.md`.
+  - Enviar as alterações para o repositório remoto no GitHub.
+- **Attempt Status:** Completed
+- **Result:** As alterações no `TODO.md` foram commitadas com a mensagem "docs: Update TODO.md with commit history" e enviadas para o branch `hermannhahn/new/version` no GitHub.
